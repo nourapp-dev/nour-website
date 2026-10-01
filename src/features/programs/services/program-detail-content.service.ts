@@ -111,7 +111,7 @@ export async function getProgramDetailContent(
   if (error) throw new Error(`تعذر تحميل تفاصيل البرنامج: ${error.message}`);
 
   return {
-    itinerary: (itinerary.data ?? []).map((row: any) => ({
+    itinerary: (itinerary.data ?? []).map((row) => ({
       id: row.id,
       dayNumber: row.day_number,
       titleAr: row.title_ar,
@@ -124,7 +124,7 @@ export async function getProgramDetailContent(
       endTime: row.end_time ?? "",
       sortOrder: row.sort_order,
     })),
-    inclusions: (inclusions.data ?? []).map((row: any) => ({
+    inclusions: (inclusions.data ?? []).map((row) => ({
       id: row.id,
       inclusionType: row.inclusion_type,
       titleAr: row.title_ar,
@@ -133,7 +133,7 @@ export async function getProgramDetailContent(
       descriptionEn: row.description_en ?? "",
       sortOrder: row.sort_order,
     })),
-    cancellation: (cancellation.data ?? []).map((row: any) => ({
+    cancellation: (cancellation.data ?? []).map((row) => ({
       id: row.id,
       titleAr: row.title_ar,
       titleEn: row.title_en,
@@ -143,7 +143,7 @@ export async function getProgramDetailContent(
       refundPercent: n(row.refund_percent),
       sortOrder: row.sort_order,
     })),
-    meetingPoints: (meetingPoints.data ?? []).map((row: any) => ({
+    meetingPoints: (meetingPoints.data ?? []).map((row) => ({
       id: row.id,
       nameAr: row.name_ar,
       nameEn: row.name_en,
@@ -156,7 +156,7 @@ export async function getProgramDetailContent(
       notesEn: row.notes_en ?? "",
       sortOrder: row.sort_order,
     })),
-    priceTiers: (priceTiers.data ?? []).map((row: any) => ({
+    priceTiers: (priceTiers.data ?? []).map((row) => ({
       id: row.id,
       nameAr: row.name_ar,
       nameEn: row.name_en,
@@ -168,7 +168,7 @@ export async function getProgramDetailContent(
       maxTravelers: n(row.max_travelers),
       sortOrder: row.sort_order,
     })),
-    faqs: (faqs.data ?? []).map((row: any) => ({
+    faqs: (faqs.data ?? []).map((row) => ({
       id: row.id,
       questionAr: row.question_ar,
       questionEn: row.question_en,

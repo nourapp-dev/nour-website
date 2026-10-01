@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getErrorMessage } from "../../core/utils/errors";
 import { createClient } from "../../lib/supabase/client";
 import { getMedia, type MediaItem } from "../media/repositories/media.repository";
 
@@ -93,7 +94,7 @@ export default function ArticlesPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  async function load() {
+  const fetchContent = useCallback(async () => {
     const [{ data: articles, error: articlesError }, { data: categoryRows, error: categoriesError }, mediaItems] = await Promise.all([
       supabase
         .from("articles")
@@ -109,18 +110,39 @@ export default function ArticlesPage() {
     ]);
 
     if (articlesError || categoriesError) {
-      setError(articlesError?.message || categoriesError?.message || "تعذر تحميل بيانات المقالات.");
-      return;
+      throw new Error(articlesError?.message || categoriesError?.message || "تعذر تحميل بيانات المقالات.");
     }
 
-    setItems((articles || []) as Article[]);
-    setCategories((categoryRows || []) as Category[]);
-    setMedia(mediaItems.filter((item) => item.mimeType.startsWith("image/")));
-  }
+    return {
+      articles: (articles ?? []) as Article[],
+      categories: (categoryRows ?? []) as Category[],
+      media: mediaItems.filter((item) => item.mimeType.startsWith("image/")),
+    };
+  }, [supabase]);
+
+  const applyContent = useCallback((content: Awaited<ReturnType<typeof fetchContent>>) => {
+    setItems(content.articles);
+    setCategories(content.categories);
+    setMedia(content.media);
+  }, []);
 
   useEffect(() => {
-    void load();
-  }, []);
+    let active = true;
+    fetchContent().then((content) => {
+      if (active) applyContent(content);
+    }).catch((error: unknown) => {
+      if (active) setError(getErrorMessage(error, "تعذر تحميل بيانات المقالات."));
+    });
+    return () => { active = false; };
+  }, [fetchContent, applyContent]);
+
+  async function load() {
+    try {
+      applyContent(await fetchContent());
+    } catch (error) {
+      setError(getErrorMessage(error, "تعذر تحميل بيانات المقالات."));
+    }
+  }
 
   async function save(event: React.FormEvent) {
     event.preventDefault();

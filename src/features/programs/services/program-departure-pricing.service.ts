@@ -14,7 +14,21 @@ export type DeparturePriceTier = {
   sortOrder: number;
 };
 
-const mapTier = (row: any): DeparturePriceTier => ({
+type DeparturePriceTierRow = {
+  id: string;
+  departure_id: string;
+  name_ar: string;
+  name_en: string;
+  description_ar: string | null;
+  description_en: string | null;
+  price: number | string;
+  currency_code: string;
+  min_travelers: number | null;
+  max_travelers: number | null;
+  sort_order: number | null;
+};
+
+const mapTier = (row: DeparturePriceTierRow): DeparturePriceTier => ({
   id: row.id,
   departureId: row.departure_id,
   nameAr: row.name_ar,

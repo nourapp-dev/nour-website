@@ -32,3 +32,6 @@ jobs:
 
       - name: Lint and typecheck
         run: npm run quality
+
+      - name: Regression tests
+        run: npm test

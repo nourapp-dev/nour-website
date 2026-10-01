@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import useCurrentTime from "../../src/core/hooks/useCurrentTime";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, CheckCircle2, Minus, Plus, Users, WalletCards } from "lucide-react";
@@ -31,8 +32,9 @@ export default function ProgramBookingSelector() {
 
   const [departureId, setDepartureId] = useState("");
   const [priceTierId, setPriceTierId] = useState("");
-  const [travelers, setTravelers] = useState(1);
-  const [prepared, setPrepared] = useState(false);
+  const [travelerCount, setTravelers] = useState(1);
+  const now = useCurrentTime();
+  const [preparedKey, setPreparedKey] = useState<string | null>(null);
 
   const programQuery = useQuery({
     queryKey: ["public", "program-booking-id", slug],
@@ -65,7 +67,7 @@ export default function ProgramBookingSelector() {
 
   const eligibleDepartures = (departuresQuery.data ?? []).filter((departure) => {
     if (departure.status !== "open" || departure.seatsAvailable <= 0) return false;
-    if (departure.bookingDeadline && new Date(departure.bookingDeadline).getTime() < Date.now()) return false;
+    if (departure.bookingDeadline && new Date(departure.bookingDeadline).getTime() < now) return false;
     return true;
   });
 
@@ -81,27 +83,18 @@ export default function ProgramBookingSelector() {
       setDepartureId(nextId);
       setPriceTierId("");
       setTravelers(1);
-      setPrepared(false);
+      setPreparedKey(null);
     };
     window.addEventListener("nour:select-departure", onSelectDeparture as EventListener);
     return () => window.removeEventListener("nour:select-departure", onSelectDeparture as EventListener);
   }, [eligibleDepartures]);
 
-  useEffect(() => {
+  const changeDeparture = (nextId: string) => {
+    setDepartureId(nextId);
     setPriceTierId("");
     setTravelers(1);
-    setPrepared(false);
-  }, [departureId]);
-
-  useEffect(() => {
-    if (!selectedTier) return;
-    const min = selectedTier.minTravelers ?? 1;
-    const maxByTier = selectedTier.maxTravelers ?? Number.POSITIVE_INFINITY;
-    const maxBySeats = selectedDeparture?.seatsAvailable ?? Number.POSITIVE_INFINITY;
-    const max = Math.min(maxByTier, maxBySeats);
-    setTravelers((current) => Math.min(Math.max(current, min), max));
-    setPrepared(false);
-  }, [priceTierId, selectedTier, selectedDeparture]);
+    setPreparedKey(null);
+  };
 
   if (!slug || programQuery.isLoading || departuresQuery.isLoading || pricingQuery.isLoading) return null;
   if (!programQuery.data || !eligibleDepartures.length) return null;
@@ -110,8 +103,12 @@ export default function ProgramBookingSelector() {
   const maxTravelers = selectedTier
     ? Math.min(selectedTier.maxTravelers ?? Number.POSITIVE_INFINITY, selectedDeparture?.seatsAvailable ?? Number.POSITIVE_INFINITY)
     : selectedDeparture?.seatsAvailable ?? 1;
+  const travelers = Math.min(Math.max(travelerCount, minTravelers), maxTravelers);
   const total = selectedTier ? selectedTier.price * travelers : 0;
   const canContinue = Boolean(selectedDeparture && selectedTier && travelers >= minTravelers && travelers <= maxTravelers);
+
+  const selectionKey = JSON.stringify([programQuery.data.id, departureId, priceTierId, travelers, total, selectedTier?.currencyCode]);
+  const prepared = canContinue && preparedKey === selectionKey;
 
   const prepareSelection = () => {
     if (!programQuery.data || !selectedDeparture || !selectedTier || !canContinue) return;
@@ -136,11 +133,11 @@ export default function ProgramBookingSelector() {
       url.searchParams.set("departure_id", selection.departureId);
       url.searchParams.set("price_tier_id", selection.priceTierId);
       url.searchParams.set("travelers", String(selection.travelers));
-      window.location.href = url.toString();
+      window.location.assign(url.toString());
       return;
     }
 
-    setPrepared(true);
+    setPreparedKey(selectionKey);
   };
 
   return (
@@ -156,7 +153,7 @@ export default function ProgramBookingSelector() {
           <div className="pbs-steps">
             <label>
               <span><CalendarDays />{isArabic ? "1. موعد الانطلاق" : "1. Departure"}</span>
-              <select value={departureId} onChange={(event) => setDepartureId(event.target.value)}>
+              <select value={departureId} onChange={(event) => changeDeparture(event.target.value)}>
                 <option value="">{isArabic ? "اختر موعدًا متاحًا" : "Choose an available departure"}</option>
                 {eligibleDepartures.map((departure) => (
                   <option key={departure.id} value={departure.id}>
@@ -183,9 +180,9 @@ export default function ProgramBookingSelector() {
             <div className="pbs-travelers">
               <span><Users />{isArabic ? "3. عدد المسافرين" : "3. Travelers"}</span>
               <div>
-                <button type="button" onClick={() => setTravelers((value) => Math.max(minTravelers, value - 1))} disabled={!selectedTier || travelers <= minTravelers}><Minus /></button>
+                <button type="button" onClick={() => setTravelers(Math.max(minTravelers, travelers - 1))} disabled={!selectedTier || travelers <= minTravelers}><Minus /></button>
                 <strong>{travelers}</strong>
-                <button type="button" onClick={() => setTravelers((value) => Math.min(maxTravelers, value + 1))} disabled={!selectedTier || travelers >= maxTravelers}><Plus /></button>
+                <button type="button" onClick={() => setTravelers(Math.min(maxTravelers, travelers + 1))} disabled={!selectedTier || travelers >= maxTravelers}><Plus /></button>
               </div>
               {selectedTier ? <small>{isArabic ? `المسموح لهذه الفئة: ${minTravelers}${Number.isFinite(maxTravelers) ? ` – ${maxTravelers}` : "+"}` : `Allowed for this tier: ${minTravelers}${Number.isFinite(maxTravelers) ? ` – ${maxTravelers}` : "+"}`}</small> : null}
             </div>

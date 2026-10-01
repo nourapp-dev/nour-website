@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -265,10 +267,10 @@ export default function NourWorldMapEnhancements({ language }: Props) {
               : "You can browse journeys available from other countries now. Programs for this country will appear as soon as they are published."}
           </p>
         </div>
-        <a href="/programs">
+        <Link href="/programs">
           {isArabic ? "استعرض البرامج المتاحة" : "Explore available programs"}
           <span aria-hidden="true">{isArabic ? "←" : "→"}</span>
-        </a>
+        </Link>
       </div>
       <AccessibilityAndChipStyles />
     </>

@@ -1,9 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { getErrorMessage } from "../../../src/core/utils/errors";
 import { useEffect, useMemo, useState } from "react";
 import { Eye, EyeOff, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { createClient } from "../../../src/lib/supabase/client";
+import { getSafeInternalPath } from "../../../src/core/utils/navigation";
+
+function getNextPath() {
+  const params = new URLSearchParams(window.location.search);
+  return getSafeInternalPath(params.get("next"), "/account/profile");
+}
 
 export default function PilgrimLoginPage() {
   const supabase = useMemo(() => createClient(), []);
@@ -14,15 +21,13 @@ export default function PilgrimLoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [nextPath, setNextPath] = useState("/account/profile");
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get("next");
-    if (next && next.startsWith("/") && !next.startsWith("//")) setNextPath(next);
+    let active = true;
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) window.location.replace(next && next.startsWith("/") ? next : "/account/profile");
+      if (active && data.user) window.location.replace(getNextPath());
     });
+    return () => { active = false; };
   }, [supabase]);
 
   const submit = async (event: React.FormEvent) => {
@@ -38,7 +43,7 @@ export default function PilgrimLoginPage() {
       if (mode === "login") {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (signInError) throw signInError;
-        window.location.assign(nextPath);
+        window.location.assign(getNextPath());
         return;
       }
 
@@ -50,8 +55,8 @@ export default function PilgrimLoginPage() {
       if (signUpError) throw signUpError;
       if (data.session) window.location.assign("/account/profile");
       else setMessage("تم إنشاء الحساب. تحقق من بريدك الإلكتروني لتأكيد الحساب ثم سجل الدخول.");
-    } catch (authError: any) {
-      const text = String(authError?.message ?? "");
+    } catch (authError) {
+      const text = getErrorMessage(authError, "");
       setError(text.includes("Invalid login") ? "البريد الإلكتروني أو كلمة المرور غير صحيحة." : text || "تعذر إكمال العملية.");
     } finally {
       setSubmitting(false);

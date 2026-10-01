@@ -12,24 +12,25 @@ import {
   getProgramDetailContent,
   updateProgramDetailItem,
   type ProgramDetailSection,
+  type ProgramDetailContent,
 } from "./services/program-detail-content.service";
 
 type Props = { programId: string };
 type FormState = Record<string, string>;
 type Field = { key: string; label: string; type?: "text" | "number" | "textarea" | "time" | "datetime-local" | "select"; options?: { value: string; label: string }[] };
 
-type SectionConfig = {
+type SectionConfig<Item> = {
   label: string;
   fields: Field[];
   empty: FormState;
   toPayload: (form: FormState) => Record<string, unknown>;
-  fromItem: (item: any) => FormState;
-  title: (item: any) => string;
+  fromItem: (item: Item) => FormState;
+  title: (item: Item) => string;
 };
 
 const numberOrNull = (value: string) => value.trim() === "" ? null : Number(value);
 
-const configs: Record<ProgramDetailSection, SectionConfig> = {
+const configs: { [S in ProgramDetailSection]: SectionConfig<ProgramDetailContent[S][number]> } = {
   itinerary: {
     label: "الجدول اليومي",
     fields: [
@@ -133,6 +134,11 @@ const configs: Record<ProgramDetailSection, SectionConfig> = {
   },
 };
 
+function getSectionConfig<S extends ProgramDetailSection>(section: S) {
+  // The selected section determines both its record type and its editor.
+  return configs[section] as SectionConfig<ProgramDetailContent[S][number]>;
+}
+
 const sections = Object.keys(configs) as ProgramDetailSection[];
 
 export default function ProgramDetailContentPage({ programId }: Props) {
@@ -141,7 +147,7 @@ export default function ProgramDetailContentPage({ programId }: Props) {
   const [section, setSection] = useState<ProgramDetailSection>("itinerary");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(configs.itinerary.empty);
-  const config = configs[section];
+  const config = getSectionConfig(section);
 
   const programQuery = useQuery({
     queryKey: ["admin", "program", programId, "content-title"],
@@ -207,7 +213,7 @@ export default function ProgramDetailContentPage({ programId }: Props) {
           <div className="pd-section-head"><h2>{config.label}</h2><button onClick={() => { setEditingId(null); setForm(config.empty); }}><Plus size={16}/> إضافة</button></div>
           {contentQuery.isLoading ? <p>جارٍ التحميل...</p> : null}
           {!contentQuery.isLoading && items.length === 0 ? <div className="pd-empty">لا توجد عناصر في هذا القسم حتى الآن.</div> : null}
-          {items.map((item: any) => (
+          {items.map((item) => (
             <article key={item.id}>
               <strong>{config.title(item)}</strong>
               <div>

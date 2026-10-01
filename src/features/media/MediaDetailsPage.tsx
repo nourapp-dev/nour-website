@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {
   type FormEvent,
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -67,11 +66,14 @@ export default function MediaDetailsPage({
     queryFn: () => getMediaById(supabase, mediaId),
   });
 
-  useEffect(() => {
-    if (!media) return;
-    setAltAr(media.altAr);
-    setAltEn(media.altEn);
-  }, [media]);
+  const [previousMedia, setPreviousMedia] = useState<typeof media>(undefined);
+  if (media !== previousMedia) {
+    setPreviousMedia(media);
+    if (media) {
+      setAltAr(media.altAr);
+      setAltEn(media.altEn);
+    }
+  }
 
   async function handleSaveAltText(
     event: FormEvent<HTMLFormElement>,

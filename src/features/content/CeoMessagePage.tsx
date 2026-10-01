@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getErrorMessage } from "../../core/utils/errors";
 import { createClient } from "../../lib/supabase/client";
 import { getMedia, type MediaItem } from "../media/repositories/media.repository";
 import "./ceo-message-admin.css";
@@ -35,10 +36,7 @@ export default function CeoMessagePage() {
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<string>("");
 
-  async function load() {
-    setLoading(true);
-    setFeedback("");
-
+  const fetchContent = useCallback(async () => {
     const [{ data, error }, mediaItems] = await Promise.all([
       supabase
         .from("platform_settings")
@@ -48,20 +46,39 @@ export default function CeoMessagePage() {
       getMedia(supabase).catch(() => []),
     ]);
 
-    setLoading(false);
+    if (error) throw error;
+    return {
+      value: { ...emptyValue, ...(data?.value_json as Partial<CeoMessageValue>) },
+      media: mediaItems.filter((item) => item.mimeType.startsWith("image/")),
+    };
+  }, [supabase]);
 
-    if (error) {
-      setFeedback(`تعذر تحميل كلمة الرئيس التنفيذي: ${error.message}`);
-      return;
-    }
-
-    setValue({ ...emptyValue, ...(data?.value_json as Partial<CeoMessageValue>) });
-    setMedia(mediaItems.filter((item) => item.mimeType.startsWith("image/")));
-  }
+  const applyContent = useCallback((content: Awaited<ReturnType<typeof fetchContent>>) => {
+    setValue(content.value);
+    setMedia(content.media);
+  }, []);
 
   useEffect(() => {
-    void load();
-  }, []);
+    let active = true;
+    fetchContent().then((content) => {
+      if (active) applyContent(content);
+    }).catch((error: unknown) => {
+      if (active) setFeedback(`تعذر تحميل كلمة الرئيس التنفيذي: ${getErrorMessage(error, "يرجى المحاولة مجددًا.")}`);
+    }).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [fetchContent, applyContent]);
+
+  async function load() {
+    setLoading(true);
+    setFeedback("");
+    try {
+      applyContent(await fetchContent());
+    } catch (error) {
+      setFeedback(`تعذر تحميل كلمة الرئيس التنفيذي: ${getErrorMessage(error, "يرجى المحاولة مجددًا.")}`);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function save(event: React.FormEvent) {
     event.preventDefault();

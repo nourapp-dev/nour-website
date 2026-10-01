@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -449,13 +448,10 @@ export default function AdminSettingsPage() {
   const settings =
     settingsQuery.data ?? [];
 
-  useEffect(() => {
-    if (!settings.length) {
-      return;
-    }
-
-    const nextValues: SettingsFormValues =
-      {};
+  const [previousSettings, setPreviousSettings] = useState<typeof settingsQuery.data>(undefined);
+  if (settingsQuery.data !== previousSettings) {
+    setPreviousSettings(settingsQuery.data);
+    const nextValues: SettingsFormValues = {};
 
     settings.forEach((setting) => {
       nextValues[setting.setting_key] =
@@ -464,7 +460,7 @@ export default function AdminSettingsPage() {
 
     setFormValues(nextValues);
     setInitialValues(nextValues);
-  }, [settings]);
+  }
 
   const changedKeys = useMemo(() => {
     return settings
