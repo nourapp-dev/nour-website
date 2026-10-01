@@ -223,8 +223,11 @@ export default function ProgramsPreview({
         visiblePrograms.length === 0 ? (
           <div className="nr-programs-state">
             {isArabic
-              ? "لا توجد برامج منشورة حاليًا."
-              : "There are no published programs right now."}
+              ? "لا توجد برامج متاحة حاليًا. يسعدنا الرد على استفساراتك حول البرامج والخدمات."
+              : "No programs are available right now. We are here to answer your questions about programs and services."}
+            <a href="#contact" className="nr-programs-retry">
+              {isArabic ? "تواصل معنا" : "Contact us"}
+            </a>
           </div>
         ) : null}
 

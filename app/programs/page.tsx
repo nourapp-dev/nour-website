@@ -388,16 +388,21 @@ function PublicProgramsContent() {
           ) : visiblePrograms.length === 0 ? (
             <div className="nr-all-programs-state">
               <strong>
-                {isArabic
-                  ? "لا توجد برامج مطابقة"
-                  : "No matching programs"}
+                {programs.length === 0
+                  ? (isArabic ? "لا توجد برامج متاحة حاليًا" : "No programs are available right now")
+                  : (isArabic ? "لا توجد برامج مطابقة" : "No matching programs")}
               </strong>
 
               <p>
-                {isArabic
-                  ? "جرّب تغيير كلمات البحث أو اختيار دولة أخرى."
-                  : "Try another search or country."}
+                {programs.length === 0
+                  ? (isArabic ? "يسعد فريق نور آب بالإجابة عن استفساراتك حول البرامج والخدمات." : "The NourApp team is here to answer your questions about programs and services.")
+                  : (isArabic ? "جرّب تغيير كلمات البحث أو اختيار دولة أخرى." : "Try another search or country.")}
               </p>
+              {programs.length === 0 ? (
+                <Link href="/#contact" className="nr-all-programs-details">
+                  {isArabic ? "تواصل معنا" : "Contact us"}
+                </Link>
+              ) : null}
             </div>
           ) : (
             <div className="nr-all-programs-grid">

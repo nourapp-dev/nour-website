@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import type { Language } from "../../data/home";
+import { WEBSITE_BOOKING_ENABLED } from "../../../src/core/config/website-booking";
 
 type ServiceIconName =
   | "packages"
@@ -96,19 +97,19 @@ const services: Service[] = [
     accent: "gold",
   },
   {
-    titleAr: "الدفع المرن",
-    titleEn: "Flexible payment",
+    titleAr: WEBSITE_BOOKING_ENABLED ? "الدفع المرن" : "الحجز والدفع",
+    titleEn: WEBSITE_BOOKING_ENABLED ? "Flexible payment" : "Booking and payment",
     textAr:
-      "خيارات دفع آمنة ومرنة تساعدك على اختيار الطريقة الأنسب لميزانيتك وإتمام الحجز بسهولة.",
+      WEBSITE_BOOKING_ENABLED ? "خيارات دفع آمنة ومرنة تساعدك على اختيار الطريقة الأنسب لميزانيتك وإتمام الحجز بسهولة." : "الحجز والدفع عبر الموقع متوقفان مؤقتًا. تواصل مع فريق نور آب للاستفسار عن البرامج والخدمات.",
     textEn:
-      "Secure and flexible payment options that help you choose what fits your budget and complete booking easily.",
-    labelAr: "استعرض خيارات الدفع",
-    labelEn: "View payment options",
+      WEBSITE_BOOKING_ENABLED ? "Secure and flexible payment options that help you choose what fits your budget and complete booking easily." : "Website booking and payment are temporarily paused. Contact the NourApp team with questions about programs and services.",
+    labelAr: WEBSITE_BOOKING_ENABLED ? "استعرض خيارات الدفع" : "تواصل معنا",
+    labelEn: WEBSITE_BOOKING_ENABLED ? "View payment options" : "Contact us",
     icon: "payment",
     accent: "cyan",
-    badgeAr: "خيارات متعددة",
-    badgeEn: "Multiple options",
-    paymentMethods: ["Tabby", "Tamara", "Visa", "Mastercard", "Apple Pay"],
+    badgeAr: WEBSITE_BOOKING_ENABLED ? "خيارات متعددة" : "متوقف مؤقتًا",
+    badgeEn: WEBSITE_BOOKING_ENABLED ? "Multiple options" : "Temporarily paused",
+    paymentMethods: WEBSITE_BOOKING_ENABLED ? ["Tabby", "Tamara", "Visa", "Mastercard", "Apple Pay"] : undefined,
   },
 ];
 
@@ -183,8 +184,8 @@ export default function Services({
 
           <p>
             {isArabic
-              ? "برامج، تأشيرات، سكن، نقل، إرشاد ودفع ضمن تجربة رقمية واحدة تساعدك على اتخاذ القرار ومتابعة تفاصيل رحلتك بسهولة."
-              : "Programs, visas, accommodation, transport, guidance, and payments in one digital experience that helps you decide and manage your journey with ease."}
+              ? "برامج، تأشيرات، سكن، نقل وإرشاد ضمن تجربة رقمية واحدة تساعدك على مقارنة الخدمات والتخطيط لرحلتك بسهولة."
+              : "Programs, visas, accommodation, transport, and guidance in one digital experience to help you compare services and plan your journey."}
           </p>
         </motion.header>
 
@@ -254,7 +255,7 @@ export default function Services({
                   service.icon === "packages"
                     ? "#programs"
                     : service.icon === "payment"
-                      ? "#payments"
+                      ? (WEBSITE_BOOKING_ENABLED ? "#payments" : "#contact")
                       : service.icon === "hotel"
                         ? "#programs"
                         : "#journey"

@@ -28,6 +28,8 @@ import type {
 
 import NewsletterSubscribeForm from "../../../src/features/subscribers/components/NewsletterSubscribeForm";
 import { usePublicSettings } from "../../../src/features/settings/providers/PublicSettingsProvider";
+import usePublicContact from "../../../src/features/settings/hooks/usePublicContact";
+import { normalizePublicUrl } from "../../../src/features/settings/utils/public-contact";
 
 type FooterProps = {
   t: HomeCopy;
@@ -46,25 +48,11 @@ type SocialLink = {
   icon: SocialIcon;
 };
 
-function normalizeExternalUrl(value: string): string {
-  const trimmedValue = value.trim();
-
-  if (!trimmedValue) return "";
-
-  if (
-    trimmedValue.startsWith("http://") ||
-    trimmedValue.startsWith("https://")
-  ) {
-    return trimmedValue;
-  }
-
-  return `https://${trimmedValue}`;
-}
-
 export default function Footer({
   language,
 }: FooterProps) {
   const { getText } = usePublicSettings();
+  const contact = usePublicContact();
   const isArabic = language === "ar";
 
   const platformName = getText(
@@ -72,26 +60,6 @@ export default function Footer({
       ? "general.platform_name"
       : "general.platform_name_en",
     isArabic ? "نور آب" : "NourApp",
-  );
-
-  const supportPhone = getText(
-    "contact.support_phone",
-    "+966567488377",
-  );
-
-  const whatsappNumber = getText(
-    "contact.whatsapp_number",
-    supportPhone,
-  );
-
-  const supportEmail = getText(
-    "contact.support_email",
-    "support@nourappglobal.com",
-  );
-
-  const websiteUrl = getText(
-    "contact.website_url",
-    "https://nourappglobal.com",
   );
 
   const address = getText(
@@ -103,23 +71,7 @@ export default function Footer({
       : "Saudi Arabia",
   );
 
-  const normalizedPhone = supportPhone.replace(
-    /[^\d+]/g,
-    "",
-  );
-
-  const normalizedWhatsappNumber =
-    whatsappNumber.replace(/\D/g, "");
-
-  const whatsappUrl = normalizedWhatsappNumber
-    ? `https://wa.me/${normalizedWhatsappNumber}`
-    : "";
-
-  const normalizedWebsiteUrl =
-    normalizeExternalUrl(websiteUrl);
-
-  const displayedWebsite = websiteUrl
-    .trim()
+  const displayedWebsite = contact.websiteHref
     .replace(/^https?:\/\//, "")
     .replace(/\/$/, "");
 
@@ -161,11 +113,11 @@ export default function Footer({
       icon: FaTiktok,
     },
   ]
-    .filter((item) => item.url.trim().length > 0)
     .map((item) => ({
       ...item,
-      url: normalizeExternalUrl(item.url),
-    }));
+      url: normalizePublicUrl(item.url),
+    }))
+    .filter((item) => item.url.length > 0);
 
   return (
     <footer
@@ -263,23 +215,23 @@ export default function Footer({
           </span>
 
           <div className="nr-footer-contact">
-            {normalizedPhone ? (
-              <a href={`tel:${normalizedPhone}`} dir="ltr">
+            {contact.phone ? (
+              <a href={contact.phoneHref} dir="ltr">
                 <Phone />
-                <span>{supportPhone}</span>
+                <span>{contact.phoneLabel}</span>
               </a>
             ) : null}
 
-            {supportEmail ? (
-              <a href={`mailto:${supportEmail}`} dir="ltr">
+            {contact.email ? (
+              <a href={`mailto:${contact.email}`} dir="ltr">
                 <Mail />
-                <span>{supportEmail}</span>
+                <span>{contact.email}</span>
               </a>
             ) : null}
 
-            {whatsappUrl ? (
+            {contact.whatsappHref ? (
               <a
-                href={whatsappUrl}
+                href={contact.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -300,9 +252,9 @@ export default function Footer({
           </span>
 
           <div className="nr-footer-contact">
-            {normalizedWebsiteUrl ? (
+            {contact.websiteHref ? (
               <a
-                href={normalizedWebsiteUrl}
+                href={contact.websiteHref}
                 target="_blank"
                 rel="noopener noreferrer"
               >

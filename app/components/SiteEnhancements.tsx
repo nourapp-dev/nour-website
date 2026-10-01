@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useLanguage } from "../../src/core/i18n";
+import usePublicContact from "../../src/features/settings/hooks/usePublicContact";
 
 const revealSelectors = [
   ".nr-goals",
@@ -20,6 +22,8 @@ const revealSelectors = [
 ].join(", ");
 
 export default function SiteEnhancements() {
+  const contact = usePublicContact();
+  const { language } = useLanguage();
   const [progress, setProgress] = useState(0);
   const [showTop, setShowTop] = useState(false);
 
@@ -109,10 +113,10 @@ export default function SiteEnhancements() {
 
       <motion.a
         className="modern-whatsapp"
-        href="https://wa.me/966567488377"
+        href={contact.whatsappHref}
         target="_blank"
         rel="noreferrer"
-        aria-label="التواصل عبر واتساب"
+        aria-label={language === "ar" ? "التواصل عبر واتساب" : "Contact on WhatsApp"}
         initial={{
           opacity: 0,
           scale: 0.8,
@@ -137,7 +141,7 @@ export default function SiteEnhancements() {
           <motion.button
             className="modern-back-top"
             type="button"
-            aria-label="العودة إلى أعلى الصفحة"
+            aria-label={language === "ar" ? "العودة إلى أعلى الصفحة" : "Back to top"}
             onClick={scrollToTop}
             initial={{
               opacity: 0,

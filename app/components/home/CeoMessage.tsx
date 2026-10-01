@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { createClient } from "../../../src/lib/supabase/client";
+import { getPublishedMessage } from "../../../src/features/settings/utils/public-content";
 
 type Props = { language: "ar" | "en" };
 type Value = {
@@ -40,7 +41,8 @@ export default function CeoMessage({ language }: Props) {
   const ar = language === "ar";
   const name = ar ? value.name_ar : value.name_en;
   const title = ar ? value.title_ar : value.title_en;
-  const message = ar ? value.message_ar : value.message_en;
+  const message = getPublishedMessage(ar ? value.message_ar : value.message_en);
+  if (!message) return null;
 
   return (
     <section className="nr-ceo" dir={ar ? "rtl" : "ltr"}>
