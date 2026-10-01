@@ -1,6 +1,8 @@
 # Supabase migration readiness
 
-Status: source inventory and operator-run host preflight completed on 2026-10-01 UTC. The destination is not prepared and the website still uses the managed project. No source data, credentials, DNS records or server packages were changed during the inventory.
+Status: migration deferred by the owner on 2026-10-02 (Asia/Riyadh). The website remains on Hostinger with the existing managed Supabase project for Database, Auth and Storage. Do not continue target installation or data transfer as part of repository cleanup.
+
+Source inventory and operator-run host preflight completed on 2026-10-01 UTC. No target stack was installed and no data was transferred. No source data, credentials, DNS records or server packages were changed during the inventory. The following assessment is retained for a future migration request.
 
 ## Destination decision
 
