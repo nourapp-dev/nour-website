@@ -179,7 +179,7 @@ To undo only the initial proxy cutover, preserve the custom `nour-website.conf` 
 
 ## Remaining launch checks
 
-The deployment is serving the site, but public content still needs review before promotion: several published programs have test names/prices, the English CEO message is `test`, the footer phone differs from the header, and social links contain placeholders. The paused homepage also retains a payment-options link to the hidden `#payments` section. These findings were observed; no production content was edited during verification.
+The initial browser check found published programs with test names/prices, a placeholder English CEO message, inconsistent phone details, malformed social links and a payment link pointing to a hidden section. See the [public launch cleanup](public-launch-cleanup.md) for the follow-up findings and the fixes prepared after this deployment. The initial cutover did not modify database content.
 
 Authenticated customer/admin flows, the Supabase redirect allowlist and retirement of any previous website deployment still require verification. No real reservation or payment was created by the deployment checks. Keep website bookings paused until their separate activation review is complete.
 

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import usePublicContact from "../../../src/features/settings/hooks/usePublicContact";
 import type {
   HomeCopy,
   Language,
@@ -40,6 +41,7 @@ export default function Header({
   onMenuToggle,
   onMenuClose,
 }: Props) {
+  const contact = usePublicContact();
   const menuButton = useRef<HTMLButtonElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
@@ -140,8 +142,8 @@ export default function Header({
               </span>
             </div>
 
-            <a className="nr-v2-phone" href="tel:+966567488377" dir="ltr">
-              +966 56 748 8377
+            <a className="nr-v2-phone" href={contact.phoneHref} dir="ltr">
+              {contact.phoneLabel}
             </a>
           </div>
         </div>
