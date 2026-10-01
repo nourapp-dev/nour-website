@@ -48,8 +48,10 @@ The website runs on the existing **Hostinger VPS with AlmaLinux 8 and cPanel**, 
 | Setting | Value |
 | --- | --- |
 | Repository | `nourapp-dev/nour-website` |
+| Integration branch | `master` |
 | Initial deployed branch | `feat/website-browse-mode-hostinger` |
 | Initial deployed commit | `9ed4386452886783b10a0c8f83a8bae4c5e65171` |
+| Last verified website release | `9f0f19bd52cb74de3723415ed9b0cf6ffe0c574d` (Nour browser icon) |
 | Runtime | Dedicated Node.js 24.21.0 |
 | Install | `npm ci` |
 | VPS build | `npm run build -- --webpack` |
@@ -59,6 +61,8 @@ The website runs on the existing **Hostinger VPS with AlmaLinux 8 and cPanel**, 
 
 See the [Hostinger VPS runbook](docs/hostinger-vps.md) for the installed paths, environment, proxy configuration, health checks, isolated release updates and rollback.
 
-**The directory named `nour-website-staging` is now serving production. Build future releases in a separate directory.** Do not run `npm ci`, rebuild `.next`, or switch Git branches inside the running release.
+The initial production release used a directory named `nour-website-staging`; subsequent releases use separate directories under `/home/nourapp/nour-website-releases`. Confirm the active working directory with `systemctl show nour-website.service -p WorkingDirectory` before maintenance. Do not run `npm ci`, rebuild `.next`, or switch Git branches inside the running release.
 
 This is a Node.js application, not a static export. Supabase still provides the existing database, storage and authentication; these were not migrated to the VPS. Keep environment files private and outside Git.
+
+Database migration is deferred by the owner's decision on 2026-10-02 (Asia/Riyadh). The [migration assessment](docs/supabase-hostinger-migration.md) is retained for future reference. Merging repository changes does not run that assessment, install database services or switch the live website's provider.
