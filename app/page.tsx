@@ -18,6 +18,7 @@ import Statistics from "./components/home/NourStatistics";
 import CeoMessage from "./components/home/CeoMessage";
 import ArticlesPreview from "./components/home/ArticlesPreview";
 import Payments from "./components/home/Payments";
+import { WEBSITE_BOOKING_ENABLED } from "../src/core/config/website-booking";
 import CTA from "./components/home/CTA";
 import { appScreens, copy, sectionIds, type SectionId, type Theme } from "./data/home";
 
@@ -107,7 +108,7 @@ export default function Home() {
       <Statistics language={language} />
       <CeoMessage language={language} />
       <ArticlesPreview language={language} />
-      <Payments language={language} />
+      {WEBSITE_BOOKING_ENABLED ? <Payments language={language} /> : null}
       <CTA t={t} language={language} />
       <Footer t={t} language={language} />
 

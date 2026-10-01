@@ -1,4 +1,5 @@
 import type { Variants } from "framer-motion";
+import { WEBSITE_BOOKING_ENABLED } from "../../src/core/config/website-booking";
 
 export type Language = "ar" | "en";
 export type Theme = "light" | "dark";
@@ -8,7 +9,7 @@ export const sectionIds: SectionId[] = ["home", "programs", "journey", "about", 
 
 export const copy = {
   ar: {
-    nav: ["الرئيسية", "برامج العمرة", "كيف تحجز", "عن نور", "تواصل معنا"],
+    nav: ["الرئيسية", "برامج العمرة", "كيف تعمل نور", "عن نور", "تواصل معنا"],
     heroEyebrow: "تطبيق  نور آب للعمرة",
     heroTitle: "رحلتك إلى العمرة تبدأ من  نور آب",
     heroText: "اكتشف برامج عمرة متنوعة، قارن بين الباقات والخدمات، وأكمل حجزك بسهولة ضمن تجربة رقمية واضحة وآمنة.",
@@ -32,14 +33,14 @@ export const copy = {
     journeySteps: [
       { number: "01", title: "استعرض البرامج", text: "تصفح برامج وباقات العمرة المتاحة واختر ما يناسب احتياجاتك." },
       { number: "02", title: "قارن الخدمات", text: "قارن بين السكن والنقل والخدمات والأسعار بكل وضوح." },
-      { number: "03", title: "أكمل الحجز", text: "أدخل بياناتك، اختر وسيلة الدفع، وأكد الحجز بأمان." },
-      { number: "04", title: "تابع رحلتك", text: "احصل على تفاصيل البرنامج والتحديثات من خلال تطبيق  نور آب." },
+      { number: "03", title: WEBSITE_BOOKING_ENABLED ? "أكمل الحجز" : "الحجز الإلكتروني", text: WEBSITE_BOOKING_ENABLED ? "أدخل بياناتك، اختر وسيلة الدفع، وأكد الحجز بأمان." : "الحجز عبر الموقع متوقف مؤقتًا. سنعلن هنا عند تفعيل الخدمة." },
+      { number: "04", title: WEBSITE_BOOKING_ENABLED ? "تابع رحلتك" : "تواصل معنا", text: WEBSITE_BOOKING_ENABLED ? "احصل على تفاصيل البرنامج والتحديثات من خلال تطبيق نور آب." : "تواصل مع فريق نور آب للاستفسار عن البرامج والخدمات." },
     ],
     footer: "© 2026  نور آب. جميع الحقوق محفوظة.",
     lang: "English",
   },
   en: {
-    nav: ["Home", "Umrah programs", "How to book", "About Nour", "Contact"],
+    nav: ["Home", "Umrah programs", "How it works", "About Nour", "Contact"],
     heroEyebrow: "NourApp Umrah App",
     heroTitle: "Your Umrah journey begins with NourApp",
     heroText: "Discover diverse Umrah programs, compare packages and services, and complete your booking through a clear and secure digital experience.",
@@ -63,8 +64,8 @@ export const copy = {
     journeySteps: [
       { number: "01", title: "Explore programs", text: "Browse available Umrah programs and choose the option that suits you." },
       { number: "02", title: "Compare services", text: "Compare accommodation, transport, services, and prices clearly." },
-      { number: "03", title: "Complete booking", text: "Enter your details, select a payment method, and confirm securely." },
-      { number: "04", title: "Follow your journey", text: "Access program information and updates through the NourApp app." },
+      { number: "03", title: WEBSITE_BOOKING_ENABLED ? "Complete booking" : "Online booking", text: WEBSITE_BOOKING_ENABLED ? "Enter your details, select a payment method, and confirm securely." : "Website booking is temporarily paused. We will announce here when the service opens." },
+      { number: "04", title: WEBSITE_BOOKING_ENABLED ? "Follow your journey" : "Get in touch", text: WEBSITE_BOOKING_ENABLED ? "Access program information and updates through the NourApp app." : "Contact the NourApp team with questions about programs and services." },
     ],
     footer: "© 2026 NourApp. All rights reserved.",
     lang: "العربية",

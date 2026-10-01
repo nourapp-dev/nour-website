@@ -6,13 +6,14 @@ import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Clock3, Users, WalletCards } from "lucide-react";
 
 import { useLanguage } from "../../src/core/i18n";
+import { WEBSITE_BOOKING_ENABLED } from "../../src/core/config/website-booking";
 import { createClient } from "../../src/lib/supabase/client";
 import { getPublicProgramDepartures, type ProgramDepartureStatus } from "../../src/features/programs/services/program-departures.service";
 import { getPublicDeparturePriceTiers } from "../../src/features/programs/services/program-departure-pricing.service";
 
 const statusCopy: Record<ProgramDepartureStatus, { ar: string; en: string }> = {
   scheduled: { ar: "قريبًا", en: "Scheduled" },
-  open: { ar: "متاح للحجز", en: "Open" },
+  open: { ar: WEBSITE_BOOKING_ENABLED ? "متاح للحجز" : "موعد معلن", en: WEBSITE_BOOKING_ENABLED ? "Open" : "Published departure" },
   full: { ar: "مكتمل", en: "Full" },
   closed: { ar: "مغلق", en: "Closed" },
   cancelled: { ar: "ملغى", en: "Cancelled" },
@@ -64,7 +65,7 @@ export default function ProgramDepartures() {
         <div className="pdep-public-head">
           <span>{isArabic ? "اختر موعد رحلتك" : "Choose your departure"}</span>
           <h2>{isArabic ? "مواعيد الانطلاق والتوفر" : "Departures & availability"}</h2>
-          <p>{isArabic ? "اطّلع على أقرب المواعيد وحالة المقاعد والأسعار المتاحة قبل الانتقال للحجز." : "See upcoming dates, seat availability, and pricing before booking."}</p>
+          <p>{isArabic ? "اطّلع على مواعيد الرحلات وتفاصيل الأسعار المعلنة." : "Explore departure dates and published pricing."}</p>
         </div>
 
         <div className="pdep-public-grid">
@@ -73,7 +74,7 @@ export default function ProgramDepartures() {
             const end = departure.endAt ? new Date(departure.endAt) : null;
             const bookingDeadline = departure.bookingDeadline ? new Date(departure.bookingDeadline) : null;
             const status = statusCopy[departure.status];
-            const lowSeats = departure.status === "open" && departure.seatsAvailable > 0 && departure.seatsAvailable <= 5;
+            const lowSeats = WEBSITE_BOOKING_ENABLED && departure.status === "open" && departure.seatsAvailable > 0 && departure.seatsAvailable <= 5;
             const departurePrices = priceTiers.filter((tier) => tier.departureId === departure.id);
 
             return (
@@ -92,8 +93,10 @@ export default function ProgramDepartures() {
                 </div>
 
                 <div className="pdep-public-meta">
-                  <span><Users />{isArabic ? `${departure.seatsAvailable} مقعد متاح من ${departure.capacityTotal}` : `${departure.seatsAvailable} of ${departure.capacityTotal} seats available`}</span>
-                  {bookingDeadline ? <span><Clock3 />{isArabic ? "آخر موعد للحجز: " : "Book by: "}{new Intl.DateTimeFormat(isArabic ? "ar-SA" : "en-US", { dateStyle: "medium" }).format(bookingDeadline)}</span> : null}
+                  <span><Users />{WEBSITE_BOOKING_ENABLED
+                    ? (isArabic ? `${departure.seatsAvailable} مقعد متاح من ${departure.capacityTotal}` : `${departure.seatsAvailable} of ${departure.capacityTotal} seats available`)
+                    : (isArabic ? `سعة الرحلة: ${departure.capacityTotal} مسافرًا` : `Departure capacity: ${departure.capacityTotal} travelers`)}</span>
+                  {WEBSITE_BOOKING_ENABLED && bookingDeadline ? <span><Clock3 />{isArabic ? "آخر موعد للحجز: " : "Book by: "}{new Intl.DateTimeFormat(isArabic ? "ar-SA" : "en-US", { dateStyle: "medium" }).format(bookingDeadline)}</span> : null}
                 </div>
 
                 {departurePrices.length ? (

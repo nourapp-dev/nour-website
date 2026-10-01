@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import WebsiteBookingNotice from "../WebsiteBookingNotice";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import type { Language } from "../../data/home";
@@ -46,8 +47,9 @@ export default function ProgramSearch({ language }: { language: Language }) {
         {isArabic ? <ArrowLeft size={19} aria-hidden="true" /> : <ArrowRight size={19} aria-hidden="true" />}
       </button>
       <p id="hero-search-hint" aria-live="polite">
-        {isError ? <>{isArabic ? "تعذر تحميل الدول. يمكنك استعراض جميع البرامج أو " : "Countries could not load. Browse all programs or "}<button type="button" className="nr-program-search-retry" onClick={() => void refetch()}>{isArabic ? "المحاولة مجددًا" : "try again"}</button>.</> : isArabic ? "اختر ما يناسبك، وراجع تفاصيل الرحلة قبل الحجز." : "Find your fit and review the trip details before booking."}
+        {isError ? <>{isArabic ? "تعذر تحميل الدول. يمكنك استعراض جميع البرامج أو " : "Countries could not load. Browse all programs or "}<button type="button" className="nr-program-search-retry" onClick={() => void refetch()}>{isArabic ? "المحاولة مجددًا" : "try again"}</button>.</> : isArabic ? "اختر ما يناسبك، وقارن تفاصيل البرامج والخدمات." : "Find your fit and compare program details and services."}
       </p>
+      <WebsiteBookingNotice language={language} compact />
       <style jsx>{`
         .nr-program-search { margin-top: 26px; max-width: 640px; padding: 20px; border: 1px solid rgba(255,255,255,.4); border-radius: 22px; background: #fff; box-shadow: 0 18px 48px rgba(7,35,81,.18); color: #173557; text-align: start; }
         .nr-program-search-fields { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; }
