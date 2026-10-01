@@ -2,6 +2,7 @@
 
 import type { ComponentType } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ExternalLink,
   Globe2,
@@ -256,7 +257,7 @@ export default function Footer({
           ) : null}
         </div>
 
-        <div className="nr-footer-column">
+        <div className="nr-footer-column" id="contact" style={{ scrollMarginTop: 130 }}>
           <span className="nr-footer-column-title">
             {isArabic ? "تواصل معنا" : "Contact"}
           </span>
@@ -325,6 +326,8 @@ export default function Footer({
           </span>
 
           <div className="nr-footer-links">
+            <Link href="/become-a-partner"><span>{isArabic ? "كن شريك نور" : "Partner with Nour"}</span><ExternalLink /></Link>
+            <Link href="/join-us"><span>{isArabic ? "انضم إلى فريقنا" : "Join our team"}</span><ExternalLink /></Link>
             <a href="/privacy">
               <span>
                 {isArabic

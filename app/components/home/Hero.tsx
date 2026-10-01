@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import ProgramSearch from "./ProgramSearch";
 import {
   motion,
   useMotionValue,
@@ -119,7 +120,7 @@ export default function Hero({ t }: Props) {
           </motion.p>
 
           <motion.div className="nr-premium-service-line" variants={fadeItem}>
-            <span>{isArabic ? "تأشيرة" : "Visa"}</span>
+            <span>{isArabic ? "برامج عمرة" : "Umrah programs"}</span>
             <i />
             <span>{isArabic ? "سكن" : "Hotels"}</span>
             <i />
@@ -130,16 +131,8 @@ export default function Hero({ t }: Props) {
             <span>{isArabic ? "متابعة الرحلة" : "Journey tracking"}</span>
           </motion.div>
 
-          <motion.div className="nr-premium-actions" variants={fadeItem}>
-            <a className="nr-premium-primary" href="#programs">
-              <span>{isArabic ? "استعرض برامج العمرة" : "Explore Umrah programs"}</span>
-              <ArrowIcon isArabic={isArabic} />
-            </a>
-            <a className="nr-premium-secondary" href="#features">
-              <span>{isArabic ? "استكشف خدمات  نور آب" : "Explore NourApp services"}</span>
-              <PlayIcon />
-            </a>
-          </motion.div>
+          <ProgramSearch language={isArabic ? "ar" : "en"} />
+          <a className="nr-hero-how-link" href="#journey">{isArabic ? "كيف أحجز رحلتي؟" : "How do I book my trip?"}</a>
 
           <motion.div className="nr-premium-trust" variants={fadeItem}>
             <div>
@@ -262,11 +255,14 @@ export default function Hero({ t }: Props) {
 
           <FloatingCard className="nr-floating-card nr-floating-card-booking" delay={0.55} icon={<CheckIcon />} title={isArabic ? "تم تأكيد الحجز" : "Booking confirmed"} subtitle={isArabic ? "البرنامج جاهز" : "Program ready"} />
           <FloatingCard className="nr-floating-card nr-floating-card-hotel" delay={0.72} icon={<HotelIcon />} title={isArabic ? "الفندق محجوز" : "Hotel reserved"} subtitle={isArabic ? "قريب من الحرم" : "Near the Haram"} />
-          <FloatingCard className="nr-floating-card nr-floating-card-visa" delay={0.88} icon={<VisaIcon />} title={isArabic ? "التأشيرة جاهزة" : "Visa ready"} subtitle={isArabic ? "تحديث فوري" : "Instant update"} />
+          <FloatingCard className="nr-floating-card nr-floating-card-visa" delay={0.88} icon={<VisaIcon />} title={isArabic ? "تفاصيل رحلتك" : "Your trip details"} subtitle={isArabic ? "في مكان واحد" : "In one place"} />
         </motion.div>
       </div>
 
       <style jsx global>{`
+        .nr-hero-how-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; color: #fff; font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 5px; }
+        .nr-hero-how-link:focus-visible { outline: 3px solid #ffc313; outline-offset: 4px; border-radius: 4px; }
+
         .nr-premium-hero {
           position: relative;
           min-height: 770px;
@@ -447,52 +443,6 @@ export default function Hero({ t }: Props) {
           border-radius: 50%;
           background: #ffc313;
           box-shadow: 0 0 12px rgba(255,195,19,.55);
-        }
-
-        .nr-premium-actions {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-          margin-top: 31px;
-        }
-
-        .nr-premium-actions a {
-          min-height: 60px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          padding-inline: 34px;
-          border-radius: 18px;
-          font-size: 16px;
-          font-weight: 900;
-          transition:
-            transform .22s ease,
-            box-shadow .22s ease,
-            border-color .22s ease,
-            background .22s ease;
-        }
-
-        .nr-premium-actions a svg {
-          width: 18px;
-          height: 18px;
-        }
-
-        .nr-premium-actions a:hover {
-          transform: translateY(-4px);
-        }
-
-        .nr-premium-primary {
-          color: #13365e;
-          background: #ffc313;
-          box-shadow: 0 18px 38px rgba(255,195,19,.28);
-        }
-
-        .nr-premium-secondary {
-          color: #fff;
-          border: 1px solid rgba(255,255,255,.32);
-          background: rgba(255,255,255,.09);
-          backdrop-filter: blur(12px);
         }
 
         .nr-premium-trust {
@@ -762,22 +712,6 @@ export default function Hero({ t }: Props) {
     font-size: 10px !important;
   }
 
-  .nr-premium-actions {
-    width: 100% !important;
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 9px !important;
-    margin-top: 20px !important;
-  }
-
-  .nr-premium-actions a {
-    width: 100% !important;
-    min-height: 52px !important;
-    padding-inline: 16px !important;
-    border-radius: 15px !important;
-    font-size: 14px !important;
-  }
-
   .nr-premium-trust {
     width: 100% !important;
     display: grid !important;
@@ -800,13 +734,13 @@ export default function Hero({ t }: Props) {
   }
 
   .nr-premium-trust strong {
-    font-size: 10px !important;
-    line-height: 1.25 !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
   }
 
   .nr-premium-trust small {
-    font-size: 7px !important;
-    line-height: 1.25 !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
   }
 
   .nr-premium-visual {
@@ -832,7 +766,6 @@ export default function Hero({ t }: Props) {
     top: 76px !important;
     left: 50% !important;
     right: auto !important;
-    inset-inline: auto !important;
     transform: translateX(-78%) !important;
   }
 
@@ -842,7 +775,6 @@ export default function Hero({ t }: Props) {
     bottom: auto !important;
     left: 50% !important;
     right: auto !important;
-    inset-inline: auto !important;
     transform: translateX(8%) !important;
   }
 
@@ -876,14 +808,14 @@ export default function Hero({ t }: Props) {
   }
 
   .nr-floating-card strong {
-    font-size: 9px !important;
-    line-height: 1.25 !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
   }
 
   .nr-floating-card small {
     margin-top: 2px !important;
-    font-size: 7px !important;
-    line-height: 1.25 !important;
+    font-size: 10px !important;
+    line-height: 1.5 !important;
   }
 
   .nr-floating-card-booking {
@@ -976,9 +908,6 @@ function FloatingCard({ className, delay, icon, title, subtitle }: { className: 
   );
 }
 
-function SparkleIcon(){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3Z"/></svg>}
-function ArrowIcon({isArabic}:{isArabic:boolean}){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{isArabic?<path d="M19 12H5m6 6-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>:<path d="M5 12h14m-6-6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round"/>}</svg>}
-function PlayIcon(){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/></svg>}
 function CheckIcon(){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m5 12 4 4L19 6"/></svg>}
 function HotelIcon(){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M4 21V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16"/><path d="M2 21h20M8 7h2M14 7h2M10 21v-5h4v5"/></svg>}
 function VisaIcon(){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h5M8 16h7"/></svg>}

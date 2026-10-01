@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { MotionConfig } from "framer-motion";
 import usePersistentState from "../src/core/hooks/usePersistentState";
 import { useLanguage } from "../src/core/i18n";
 import SiteEnhancements from "./components/SiteEnhancements";
@@ -72,6 +73,7 @@ export default function Home() {
   }, []);
 
   return (
+    <MotionConfig reducedMotion="user">
     <main className="nour-redesign">
       <SiteEnhancements />
       <PublicHeader
@@ -178,5 +180,6 @@ export default function Home() {
         }
       `}</style>
     </main>
+    </MotionConfig>
   );
 }

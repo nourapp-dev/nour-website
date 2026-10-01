@@ -9,60 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 
 import type { Language } from "../../data/home";
 import { createClient } from "../../../src/lib/supabase/client";
+import usePublicProgramCatalog from "../../../src/features/programs/hooks/usePublicProgramCatalog";
+import { getNextPublicDepartures } from "../../../src/features/programs/services/program-departures.service";
 
 type Props = {
   language: Language;
-};
-
-type ProgramRow = {
-  id: string;
-  title_ar: string;
-  title_en: string;
-  slug: string;
-  summary_ar: string | null;
-  summary_en: string | null;
-  country_id: string | null;
-  duration_days: number;
-  duration_nights: number;
-  base_price: number | string;
-  currency_code: string;
-  is_featured: boolean;
-  sort_order: number;
-  created_at: string;
-  cover_media:
-    | {
-        bucket: string;
-        path: string;
-      }
-    | {
-        bucket: string;
-        path: string;
-      }[]
-    | null;
-};
-
-type CountryRow = {
-  id: string;
-  name_ar: string;
-  name_en: string;
-};
-
-type PublicProgram = {
-  id: string;
-  titleAr: string;
-  titleEn: string;
-  slug: string;
-  summaryAr: string;
-  summaryEn: string;
-  countryId: string | null;
-  countryNameAr: string;
-  countryNameEn: string;
-  durationDays: number;
-  durationNights: number;
-  basePrice: number;
-  currencyCode: string;
-  isFeatured: boolean;
-  coverUrl: string | null;
 };
 
 const containerVariants: Variants = {
@@ -88,28 +39,6 @@ const cardVariants: Variants = {
     },
   },
 };
-
-function getCoverMedia(
-  media: ProgramRow["cover_media"],
-) {
-  if (!media) {
-    return null;
-  }
-
-  if (Array.isArray(media)) {
-    return media[0] ?? null;
-  }
-
-  return media;
-}
-
-function createPublicMediaUrl(
-  supabaseUrl: string,
-  bucket: string,
-  path: string,
-) {
-  return `${supabaseUrl}/storage/v1/object/public/${bucket}/${path}`;
-}
 
 function formatPrice(
   value: number,
@@ -166,139 +95,6 @@ function formatNights(
     : `${nights} nights`;
 }
 
-async function loadPublicPrograms(
-  supabase: ReturnType<typeof createClient>,
-): Promise<PublicProgram[]> {
-  const { data, error } = await supabase
-    .from("programs")
-    .select(`
-      id,
-      title_ar,
-      title_en,
-      slug,
-      summary_ar,
-      summary_en,
-      country_id,
-      duration_days,
-      duration_nights,
-      base_price,
-      currency_code,
-      is_featured,
-      sort_order,
-      created_at,
-      cover_media:media!programs_cover_media_id_fkey (
-        bucket,
-        path
-      )
-    `)
-    .eq("status", "published")
-    .eq("is_active", true)
-    .is("deleted_at", null)
-    .order("is_featured", {
-      ascending: false,
-    })
-    .order("sort_order", {
-      ascending: true,
-    })
-    .order("created_at", {
-      ascending: false,
-    })
-    .limit(6);
-
-  if (error) {
-    throw new Error(
-      `Failed to load public programs: ${error.message}`,
-    );
-  }
-
-  const rows = (data ?? []) as ProgramRow[];
-
-  const countryIds = [
-    ...new Set(
-      rows
-        .map((program) => program.country_id)
-        .filter(
-          (countryId): countryId is string =>
-            typeof countryId === "string",
-        ),
-    ),
-  ];
-
-  const countryMap = new Map<
-    string,
-    CountryRow
-  >();
-
-  if (countryIds.length > 0) {
-    const {
-      data: countriesData,
-      error: countriesError,
-    } = await supabase
-      .from("countries")
-      .select("id,name_ar,name_en")
-      .in("id", countryIds)
-      .eq("is_active", true)
-      .is("deleted_at", null);
-
-    if (countriesError) {
-      throw new Error(
-        `Failed to load program countries: ${countriesError.message}`,
-      );
-    }
-
-    (
-      (countriesData ?? []) as CountryRow[]
-    ).forEach((country) => {
-      countryMap.set(country.id, country);
-    });
-  }
-
-  const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-
-  return rows.map((program) => {
-    const country = program.country_id
-      ? countryMap.get(program.country_id)
-      : undefined;
-
-    const coverMedia = getCoverMedia(
-      program.cover_media,
-    );
-
-    return {
-      id: program.id,
-      titleAr: program.title_ar,
-      titleEn: program.title_en,
-      slug: program.slug,
-      summaryAr: program.summary_ar ?? "",
-      summaryEn: program.summary_en ?? "",
-      countryId: program.country_id,
-      countryNameAr:
-        country?.name_ar ?? "",
-      countryNameEn:
-        country?.name_en ?? "",
-      durationDays:
-        program.duration_days,
-      durationNights:
-        program.duration_nights,
-      basePrice:
-        Number(program.base_price) || 0,
-      currencyCode:
-        program.currency_code,
-      isFeatured:
-        program.is_featured,
-      coverUrl:
-        coverMedia && supabaseUrl
-          ? createPublicMediaUrl(
-              supabaseUrl,
-              coverMedia.bucket,
-              coverMedia.path,
-            )
-          : null,
-    };
-  });
-}
-
 export default function ProgramsPreview({
   language,
 }: Props) {
@@ -310,23 +106,16 @@ export default function ProgramsPreview({
     [],
   );
 
-  const {
-    data: programs = [],
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: [
-      "public",
-      "programs-preview",
-    ],
-    queryFn: () =>
-      loadPublicPrograms(supabase),
-    staleTime: 2 * 60 * 1000,
-    refetchOnWindowFocus: false,
+  const { data: programs = [], isLoading, isError, refetch } = usePublicProgramCatalog();
+  const visiblePrograms = programs.slice(0, 3);
+  const programIds = visiblePrograms.map((program) => program.id);
+  const departuresQuery = useQuery({
+    queryKey: ["public", "programs-preview-departures", programIds],
+    queryFn: () => getNextPublicDepartures(supabase, programIds),
+    enabled: programIds.length > 0,
+    staleTime: 30_000,
+    refetchInterval: 60_000,
   });
-
-  const visiblePrograms =
-    programs.slice(0, 3);
 
   return (
     <section
@@ -387,8 +176,8 @@ export default function ProgramsPreview({
 
               <p>
                 {isArabic
-                  ? "استكشف برامج عمرة مختارة، قارن المدة والسعر والدولة، ثم افتح التفاصيل الكاملة قبل المتابعة عبر تطبيق نور آب."
-                  : "Explore selected Umrah programs, compare duration, price, and country, then open the full details before continuing in NourApp."}
+                  ? "قارن بلد الانطلاق والمدة والسعر، ثم راجع المواعيد والخدمات واختر رحلتك."
+                  : "Compare departure countries, duration, and prices, then review dates and services to choose your trip."}
               </p>
             </div>
 
@@ -425,6 +214,7 @@ export default function ProgramsPreview({
             {isArabic
               ? "تعذر تحميل البرامج حاليًا."
               : "Unable to load programs right now."}
+            <button type="button" className="nr-programs-retry" onClick={() => void refetch()}>{isArabic ? "إعادة المحاولة" : "Try again"}</button>
           </div>
         ) : null}
 
@@ -484,7 +274,7 @@ export default function ProgramsPreview({
                       y: -10,
                     }}
                   >
-                    <a
+                    <Link
                       className="nr-program-card-link"
                       href={detailsUrl}
                       aria-label={
@@ -556,7 +346,7 @@ export default function ProgramsPreview({
                           )}
                         </span>
                       </div>
-                    </a>
+                    </Link>
 
                     <div className="nr-program-body">
                       <div className="nr-program-title-row">
@@ -569,13 +359,13 @@ export default function ProgramsPreview({
                           </span>
 
                           <h3>
-                            <a
+                            <Link
                               href={
                                 detailsUrl
                               }
                             >
                               {title}
-                            </a>
+                            </Link>
                           </h3>
                         </div>
 
@@ -630,11 +420,18 @@ export default function ProgramsPreview({
                                 : "Not specified")}
                           </b>
                           <small>
-                            {isArabic ? "الدولة" : "Country"}
+                            {isArabic ? "بلد الانطلاق" : "Departure country"}
                           </small>
                         </span>
                       </div>
 
+                      <div className="nr-program-departure">
+                        <CalendarIcon />
+                        <div>
+                          <small>{isArabic ? "أقرب موعد متاح" : "Next available departure"}</small>
+                          {departuresQuery.data?.[program.id] ? <time dateTime={departuresQuery.data[program.id]}>{new Intl.DateTimeFormat(isArabic ? "ar-SA" : "en-GB", { day: "numeric", month: "short", year: "numeric", calendar: "gregory", timeZone: "Asia/Riyadh" }).format(new Date(departuresQuery.data[program.id]))}</time> : <span>{departuresQuery.isLoading ? (isArabic ? "جارٍ تحميل المواعيد..." : "Loading dates...") : (isArabic ? "راجع المواعيد في تفاصيل البرنامج" : "See dates in the program details")}</span>}
+                        </div>
+                      </div>
                       <div className="nr-program-divider" />
 
                       <div className="nr-program-footer">
@@ -661,29 +458,20 @@ export default function ProgramsPreview({
                         </div>
 
                         <div className="nr-program-actions">
-                          <a
-                            className="nr-program-details"
-                            href={detailsUrl}
-                          >
-                            {isArabic
-                              ? "التفاصيل"
-                              : "Details"}
-                          </a>
-
-                          <a
+                          <Link
                             className="nr-program-primary"
                             href={detailsUrl}
                           >
                             <span>
                               {isArabic
-                                ? "استكشف البرنامج"
-                                : "Explore program"}
+                                ? "التفاصيل والحجز"
+                                : "Details & booking"}
                             </span>
 
                             <ArrowIcon
                               language={language}
                             />
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -714,13 +502,20 @@ export default function ProgramsPreview({
 
           <p>
             {isArabic
-              ? "الحجز يتم عبر تطبيق نور آب. يمكنك من الموقع استعراض البرنامج وتفاصيله قبل الانتقال إلى التطبيق."
-              : "Booking is completed through the NourApp application. The website lets you review the program and its details first."}
+              ? "السعر يبدأ من القيمة المعروضة، وقد يختلف حسب موعد الرحلة والفئة وعدد المسافرين. راجع التفاصيل قبل تأكيد الحجز."
+              : "Prices start from the amount shown and may vary by departure, tier, and traveler count. Review the details before confirming your booking."}
           </p>
         </motion.div>
       </div>
 
       <style jsx global>{`
+        .nr-programs-preview a:focus-visible, .nr-programs-preview button:focus-visible { outline: 3px solid #176fe8; outline-offset: 4px; }
+        .nr-program-departure { display: flex; align-items: center; gap: 10px; margin-top: 16px; color: var(--nr-blue); }
+        .nr-program-departure > svg { width: 20px; height: 20px; flex: 0 0 20px; }
+        .nr-program-departure small { display: block; font-size: 11px; color: var(--nr-muted); margin-bottom: 3px; }
+        .nr-program-departure time, .nr-program-departure span { display: block; font-size: 13px; font-weight: 700; color: var(--nr-text); }
+        .nr-programs-retry { display: block; margin: 12px auto 0; padding: 10px 20px; border: 1px solid var(--nr-border); border-radius: 10px; background: var(--nr-card); color: var(--nr-blue); font: inherit; cursor: pointer; }
+
         .nr-programs-preview {
           position: relative;
           overflow: hidden;
@@ -1291,16 +1086,16 @@ export default function ProgramsPreview({
           max-width: 100%;
           overflow: hidden;
           color: var(--nr-text);
-          font-size: 10px;
-          font-weight: 900;
+          font-size: 12px;
+          font-weight: 800;
           text-overflow: ellipsis;
           white-space: nowrap;
         }
 
         .nr-program-features small {
           color: var(--nr-muted);
-          font-size: 9px;
-          font-weight: 800;
+          font-size: 11px;
+          font-weight: 700;
         }
 
         .nr-program-features svg {
@@ -1357,13 +1152,13 @@ export default function ProgramsPreview({
 
         .nr-program-details,
         .nr-program-primary {
-          min-height: 38px;
+          min-height: 46px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           border-radius: 12px;
-          font-size: 11px;
-          font-weight: 900;
+          font-size: 13px;
+          font-weight: 800;
           white-space: nowrap;
           text-decoration: none;
           transition:
@@ -1462,39 +1257,14 @@ export default function ProgramsPreview({
           }
 
           .nr-programs-grid {
-            display: flex;
-            gap: 14px;
-            overflow-x: auto;
-            margin-inline:
-              calc(
-                (100vw - 100%) /
-                  -2
-              );
-            padding-inline:
-              max(
-                13px,
-                calc(
-                  (100vw - 100%) /
-                    2
-                )
-              );
-            padding-bottom: 18px;
-            scroll-snap-type:
-              x mandatory;
-            scrollbar-width: none;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 22px;
+            max-width: 480px;
+            margin-inline: auto;
           }
 
-          .nr-programs-grid::-webkit-scrollbar {
-            display: none;
-          }
-
-          .nr-program-card {
-            flex: 0 0
-              min(87vw, 390px);
-            width: auto;
-            scroll-snap-align:
-              center;
-          }
+          .nr-program-card { width: 100%; }
 
           .nr-program-media {
             height: 245px;
@@ -1518,7 +1288,7 @@ export default function ProgramsPreview({
           .nr-program-actions {
             display: grid;
             grid-template-columns:
-              0.8fr 1.2fr;
+              1fr;
           }
 
           .nr-program-details,
