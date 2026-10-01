@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, LockKeyhole, ShieldCheck, UserRound, Users } from "lucide-react";
 
 import { useLanguage } from "../../src/core/i18n";
+import { WEBSITE_BOOKING_ENABLED, websiteBookingCopy } from "../../src/core/config/website-booking";
 import { createClient } from "../../src/lib/supabase/client";
 import { createProgramBooking, type BookingTravelerInput, type CreatedBooking } from "../../src/features/bookings/services/public-booking.service";
 import { buildBookingTravelers } from "../../src/features/bookings/utils/booking-travelers";
@@ -32,6 +33,10 @@ type AccountState = {
 const BOOKING_STORAGE_KEY = "nour_booking_selection";
 
 export default function ProgramBookingCheckout() {
+  return WEBSITE_BOOKING_ENABLED ? <EnabledProgramBookingCheckout /> : null;
+}
+
+function EnabledProgramBookingCheckout() {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const supabase = useMemo(() => createClient(), []);
@@ -111,7 +116,7 @@ export default function ProgramBookingCheckout() {
 
     setSubmitting(true);
     try {
-      const result = await createProgramBooking(supabase, {
+      const result = await createProgramBooking({
         programId: selection.programId,
         departureId: selection.departureId,
         priceTierId: selection.priceTierId,
@@ -127,6 +132,7 @@ export default function ProgramBookingCheckout() {
     } catch (bookingError) {
       const code = getErrorMessage(bookingError, "");
       const copy: Record<string, string> = {
+        website_booking_paused: websiteBookingCopy[language].title,
         authentication_required: isArabic ? "انتهت جلسة تسجيل الدخول. سجل الدخول مرة أخرى." : "Your session expired. Sign in again.",
         pilgrim_profile_required: isArabic ? "أكمل ملف المعتمر قبل الحجز." : "Complete the pilgrim profile before booking.",
         pilgrim_profile_incomplete: isArabic ? "بيانات المعتمر الرسمية غير مكتملة أو الجواز منتهي." : "The official pilgrim profile is incomplete or the passport is expired.",

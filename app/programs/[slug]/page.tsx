@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import WebsiteBookingNotice from "../../components/WebsiteBookingNotice";
+import { WEBSITE_BOOKING_ENABLED } from "../../../src/core/config/website-booking";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +17,7 @@ import {
   Clock3,
   ChevronDown,
   MapPin,
+  MessageCircle,
   Moon,
   Plane,
   PlaneLanding,
@@ -461,8 +464,8 @@ export default function PublicProgramDetailsPage() {
                 <ShieldCheck />
                 <span>
                   {isArabic
-                    ? "حجز آمن عبر التطبيق"
-                    : "Secure booking via the app"}
+                    ? "استعرض خدمات البرنامج"
+                    : "Explore program services"}
                 </span>
               </div>
 
@@ -479,8 +482,8 @@ export default function PublicProgramDetailsPage() {
                 <Smartphone />
                 <span>
                   {isArabic
-                    ? "إتمام الطلب من نور آب"
-                    : "Complete booking in NourApp"}
+                    ? "معلومات الرحلة في مكان واحد"
+                    : "Journey information in one place"}
                 </span>
               </div>
             </div>
@@ -1359,14 +1362,15 @@ export default function PublicProgramDetailsPage() {
 
           <p>
             {isArabic
-              ? "راجع تفاصيل البرنامج أولًا، ثم أكمل الحجز والدفع بأمان عبر تطبيق نور آب."
-              : "Review the program details first, then complete booking and payment securely in NourApp."}
+              ? "استعرض تفاصيل الإقامة والنقل والخدمات، وتواصل معنا إذا احتجت إلى معلومات إضافية."
+              : "Explore accommodation, transport, and services, and contact us if you need more information."}
           </p>
+          <WebsiteBookingNotice language={language} />
 
           <div className="nr-program-details-booking-trust">
             <span>
               <ShieldCheck size={15} />
-              {isArabic ? "دفع آمن" : "Secure payment"}
+              {isArabic ? "دعم واستفسارات" : "Help & enquiries"}
             </span>
             <span>
               <CheckCircle2 size={15} />
@@ -1375,19 +1379,19 @@ export default function PublicProgramDetailsPage() {
           </div>
 
           <a
-            href={appDeepLink}
+            href={WEBSITE_BOOKING_ENABLED ? appDeepLink : "/#contact"}
             className="nr-program-details-book"
           >
-            <Smartphone size={18} />
-            {isArabic
-              ? "احجز عبر تطبيق نور آب"
-              : "Book via NourApp"}
+            {WEBSITE_BOOKING_ENABLED ? <Smartphone size={18} /> : <MessageCircle size={18} />}
+            {WEBSITE_BOOKING_ENABLED
+              ? (isArabic ? "احجز عبر تطبيق نور آب" : "Book via NourApp")
+              : (isArabic ? "استفسر عن البرنامج" : "Ask about this program")}
           </a>
 
           <small className="nr-program-details-booking-hint">
-            {isArabic
-              ? "سيتم فتح البرنامج مباشرة داخل التطبيق."
-              : "The program will open directly in the app."}
+            {WEBSITE_BOOKING_ENABLED
+              ? (isArabic ? "سيتم فتح البرنامج مباشرة داخل التطبيق." : "The program will open directly in the app.")
+              : (isArabic ? "الاستفسار لا ينشئ حجزًا أو يطلب دفعًا." : "An enquiry does not create a booking or require payment.")}
           </small>
         </aside>
       </div>

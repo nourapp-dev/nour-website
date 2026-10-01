@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import ProgramSearch from "./ProgramSearch";
+import { WEBSITE_BOOKING_ENABLED } from "../../../src/core/config/website-booking";
 import {
   motion,
   useMotionValue,
@@ -132,7 +133,7 @@ export default function Hero({ t }: Props) {
           </motion.div>
 
           <ProgramSearch language={isArabic ? "ar" : "en"} />
-          <a className="nr-hero-how-link" href="#journey">{isArabic ? "كيف أحجز رحلتي؟" : "How do I book my trip?"}</a>
+          <a className="nr-hero-how-link" href="#journey">{isArabic ? "كيف تعمل نور آب؟" : "How does NourApp work?"}</a>
 
           <motion.div className="nr-premium-trust" variants={fadeItem}>
             <div>
@@ -146,8 +147,8 @@ export default function Hero({ t }: Props) {
             </div>
             <span className="nr-premium-trust-divider" />
             <div>
-              <strong>{isArabic ? "دفع آمن" : "Secure payments"}</strong>
-              <small>{isArabic ? "حماية وخصوصية" : "Protection & privacy"}</small>
+              <strong>{isArabic ? "تفاصيل واضحة" : "Clear information"}</strong>
+              <small>{isArabic ? "لتخطيط رحلتك" : "Plan your journey"}</small>
             </div>
             <span className="nr-premium-trust-divider" />
             <div>
@@ -253,7 +254,7 @@ export default function Hero({ t }: Props) {
             </motion.div>
           </motion.div>
 
-          <FloatingCard className="nr-floating-card nr-floating-card-booking" delay={0.55} icon={<CheckIcon />} title={isArabic ? "تم تأكيد الحجز" : "Booking confirmed"} subtitle={isArabic ? "البرنامج جاهز" : "Program ready"} />
+          <FloatingCard className="nr-floating-card nr-floating-card-booking" delay={0.55} icon={<CheckIcon />} title={WEBSITE_BOOKING_ENABLED ? (isArabic ? "تم تأكيد الحجز" : "Booking confirmed") : (isArabic ? "اكتشف برنامجك" : "Explore your program")} subtitle={isArabic ? "تفاصيل في مكان واحد" : "Details in one place"} />
           <FloatingCard className="nr-floating-card nr-floating-card-hotel" delay={0.72} icon={<HotelIcon />} title={isArabic ? "الفندق محجوز" : "Hotel reserved"} subtitle={isArabic ? "قريب من الحرم" : "Near the Haram"} />
           <FloatingCard className="nr-floating-card nr-floating-card-visa" delay={0.88} icon={<VisaIcon />} title={isArabic ? "تفاصيل رحلتك" : "Your trip details"} subtitle={isArabic ? "في مكان واحد" : "In one place"} />
         </motion.div>

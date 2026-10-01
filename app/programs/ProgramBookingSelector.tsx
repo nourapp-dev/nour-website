@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, CheckCircle2, Minus, Plus, Users, WalletCards } from "lucide-react";
 
 import { useLanguage } from "../../src/core/i18n";
+import { WEBSITE_BOOKING_ENABLED } from "../../src/core/config/website-booking";
 import { createClient } from "../../src/lib/supabase/client";
 import { getPublicProgramDepartures } from "../../src/features/programs/services/program-departures.service";
 import { getPublicDeparturePriceTiers } from "../../src/features/programs/services/program-departure-pricing.service";
@@ -24,6 +25,10 @@ type PreparedBookingSelection = {
 const BOOKING_STORAGE_KEY = "nour_booking_selection";
 
 export default function ProgramBookingSelector() {
+  return WEBSITE_BOOKING_ENABLED ? <EnabledProgramBookingSelector /> : null;
+}
+
+function EnabledProgramBookingSelector() {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const params = useParams<{ slug?: string }>();

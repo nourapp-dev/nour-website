@@ -2,27 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { CheckCircle2, Smartphone } from "lucide-react";
+import { CheckCircle2, MessageCircle, Smartphone } from "lucide-react";
+import { WEBSITE_BOOKING_ENABLED } from "../../src/core/config/website-booking";
+import { useLanguage } from "../../src/core/i18n";
 
 const SECTION_IDS = ["overview", "hotels", "flights", "transport", "visas"] as const;
 
 export default function ProgramDetailsExperience() {
+  const { language } = useLanguage();
+  const isArabic = language === "ar";
   const pathname = usePathname();
   const isDetailsRoute = /^\/programs\/[^/]+\/?$/.test(pathname);
   const [activeSection, setActiveSection] = useState<string>("overview");
   const [bookingHref, setBookingHref] = useState("");
   const [priceText, setPriceText] = useState("");
-  const [isArabic, setIsArabic] = useState(true);
 
   useEffect(() => {
     if (!isDetailsRoute) return;
 
     const syncDetails = () => {
-      const root = document.querySelector<HTMLElement>(".nr-program-details");
       const booking = document.querySelector<HTMLAnchorElement>(".nr-program-details-book");
       const price = document.querySelector<HTMLElement>(".nr-program-details-booking > strong");
 
-      if (root) setIsArabic(root.getAttribute("dir") !== "ltr");
       if (booking?.href) setBookingHref(booking.href);
       if (price?.textContent) setPriceText(price.textContent.replace(/\s+/g, " ").trim());
     };
@@ -30,7 +31,7 @@ export default function ProgramDetailsExperience() {
     syncDetails();
 
     const observer = new MutationObserver(syncDetails);
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, characterData: true, subtree: true });
 
     return () => observer.disconnect();
   }, [isDetailsRoute]);
@@ -83,18 +84,18 @@ export default function ProgramDetailsExperience() {
   return (
     <>
       {bookingHref ? (
-        <aside className="nr-program-mobile-booking" aria-label={isArabic ? "الحجز" : "Booking"}>
+        <aside className="nr-program-mobile-booking" aria-label={isArabic ? "معلومات البرنامج" : "Program information"}>
           <div>
             <span>
               <CheckCircle2 aria-hidden="true" />
-              {isArabic ? "الحجز متاح عبر التطبيق" : "Booking available in the app"}
+              {WEBSITE_BOOKING_ENABLED ? (isArabic ? "الحجز متاح عبر التطبيق" : "Booking available in the app") : (isArabic ? "الحجز متوقف مؤقتًا" : "Website booking paused")}
             </span>
             {priceText ? <strong>{priceText}</strong> : null}
           </div>
 
           <a href={bookingHref}>
-            <Smartphone aria-hidden="true" />
-            {isArabic ? "احجز الآن" : "Book now"}
+            {WEBSITE_BOOKING_ENABLED ? <Smartphone aria-hidden="true" /> : <MessageCircle aria-hidden="true" />}
+            {WEBSITE_BOOKING_ENABLED ? (isArabic ? "احجز الآن" : "Book now") : (isArabic ? "تواصل معنا" : "Contact us")}
           </a>
         </aside>
       ) : null}

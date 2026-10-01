@@ -464,8 +464,8 @@ export default function ProgramsPreview({
                           >
                             <span>
                               {isArabic
-                                ? "التفاصيل والحجز"
-                                : "Details & booking"}
+                                ? "تفاصيل البرنامج"
+                                : "Program details"}
                             </span>
 
                             <ArrowIcon

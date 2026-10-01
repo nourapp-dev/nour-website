@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import WebsiteBookingNotice from "../components/WebsiteBookingNotice";
 import Link from "next/link";
 import { Suspense, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -176,6 +177,7 @@ function PublicProgramsContent() {
               ? "قارن البرامج حسب الدولة والمدة والطيران والسعر، ثم افتح التفاصيل الكاملة واختر رحلتك بثقة."
               : "Compare programs by country, duration, flights, and price, then review the full details and choose with confidence."}
           </p>
+          <WebsiteBookingNotice language={language} />
         </div>
       </section>
 
@@ -550,8 +552,8 @@ function PublicProgramsContent() {
                             className="nr-all-programs-details"
                           >
                             {isArabic
-                              ? "التفاصيل والحجز"
-                              : "Details & booking"}
+                              ? "تفاصيل البرنامج"
+                              : "Program details"}
                           </Link>
                         </div>
                       </div>

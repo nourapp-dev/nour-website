@@ -129,7 +129,7 @@ export default function Header({
 
               <span>
                 <ShieldIcon />
-                {language === "ar" ? "دفع آمن" : "Secure payments"}
+                {language === "ar" ? "تفاصيل واضحة" : "Clear information"}
               </span>
 
               <span className="nr-v2-topbar-hide-mobile">

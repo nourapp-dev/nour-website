@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import type { HomeCopy, Language } from "../../data/home";
+import { WEBSITE_BOOKING_ENABLED } from "../../../src/core/config/website-booking";
 
 type Props = {
   t: HomeCopy;
@@ -78,9 +79,9 @@ export default function Journey({ t, language }: Props) {
             <i />
             <span>{isArabic ? "مقارنة" : "Compare"}</span>
             <i />
-            <span>{isArabic ? "تأكيد" : "Confirm"}</span>
+            <span>{WEBSITE_BOOKING_ENABLED ? (isArabic ? "تأكيد" : "Confirm") : (isArabic ? "اطّلاع" : "Review")}</span>
             <i />
-            <span>{isArabic ? "متابعة" : "Support"}</span>
+            <span>{WEBSITE_BOOKING_ENABLED ? (isArabic ? "متابعة" : "Support") : (isArabic ? "تواصل" : "Contact")}</span>
           </div>
         </motion.header>
 
