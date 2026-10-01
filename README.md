@@ -43,43 +43,22 @@ The build needs the public environment variables. CI runs these checks with plac
 
 ## Hostinger deployment
 
-Deploy this as a **Next.js Node.js Web App** from the GitHub repository. Supported managed plans currently include Business Web Hosting and Cloud plans; a VPS needs a separate process manager and reverse proxy configuration.
+The website runs on the existing **Hostinger VPS with AlmaLinux 8 and cPanel**, using a dedicated Node.js runtime, a systemd service and cPanel's Nginx reverse proxy. The public URL is [https://nourappglobal.com](https://nourappglobal.com).
 
 | Setting | Value |
 | --- | --- |
 | Repository | `nourapp-dev/nour-website` |
-| Branch for this review | `feat/website-browse-mode-hostinger` |
-| Framework | Next.js |
-| Project root | Repository root (`.`) |
-| Node.js | 24.x, at least 24.15.0 |
+| Initial deployed branch | `feat/website-browse-mode-hostinger` |
+| Initial deployed commit | `9ed4386452886783b10a0c8f83a8bae4c5e65171` |
+| Runtime | Dedicated Node.js 24.21.0 |
 | Install | `npm ci` |
-| Build | `npm run build` |
-| Start | `npm run start` |
-| Build directory, if requested | `.next` |
+| VPS build | `npm run build -- --webpack` |
+| Service | `nour-website.service` |
+| Internal listener | `127.0.0.1:3100` |
+| Website bookings | Paused; API responds with HTTP 503 and `website_booking_paused` |
 
-Use the reviewed deployment branch initially, or the default branch after the reviewed changes are merged. Do not use a static export: the application includes authentication, API routes and request handling that require Node.js.
+See the [Hostinger VPS runbook](docs/hostinger-vps.md) for the installed paths, environment, proxy configuration, health checks, isolated release updates and rollback.
 
-Add these values in Hostinger's environment variable settings before building:
+**The directory named `nour-website-staging` is now serving production. Build future releases in a separate directory.** Do not run `npm ci`, rebuild `.next`, or switch Git branches inside the running release.
 
-| Variable | Value / purpose |
-| --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | The full HTTPS staging URL during preview; `https://nourappglobal.com` for final deployment |
-| `NEXT_PUBLIC_SUPABASE_URL` | Existing Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Existing project's public publishable key |
-| `NEXT_PUBLIC_WEBSITE_BOOKING_ENABLED` | `false` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-only, if administrator user-management endpoints are required; enter privately in Hostinger |
-
-Do not upload local environment files or commit credentials. A Supabase database migration is not required for this website release; the existing database, storage and authentication remain in Supabase.
-
-### Domain cutover
-
-1. Deploy to a Hostinger preview/staging address and check the homepage, Arabic/English layouts, programs, images, account callbacks and admin sign-in.
-2. Confirm the booking pause message, absence of checkout, and HTTP 503 from `POST /api/bookings`.
-3. Add the exact new preview/final authentication callback URLs to the existing Supabase redirect allowlist. Keep the current production callback working during the transition.
-4. Connect `nourappglobal.com` and its `www` alias through the Hostinger dashboard. Use the DNS targets supplied for this specific deployment. Preserve existing mail (MX/TXT) records.
-5. Set the final `NEXT_PUBLIC_SITE_URL`, rebuild, verify HTTPS and canonical links, then switch traffic. Keep rollback available until the new deployment is verified.
-6. Retire the old website deployment after verification so its older booking interface is not used.
-
-The Hostinger account/plan and current DNS records must be inspected before switching the domain. No production deployment or DNS change is performed by these repository changes.
-
-Official guides: [Node.js migration](https://www.hostinger.com/support/how-to-migrate-a-node-js-application-to-hostinger/), [supported plans and deployment](https://www.hostinger.com/support/how-to-deploy-a-nodejs-website-in-hostinger/), [environment variables](https://www.hostinger.com/support/how-to-add-environment-variables-during-node-js-application-deployment/).
+This is a Node.js application, not a static export. Supabase still provides the existing database, storage and authentication; these were not migrated to the VPS. Keep environment files private and outside Git.
