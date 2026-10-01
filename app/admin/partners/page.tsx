@@ -74,7 +74,30 @@ const copy = {
   }
 } as const;
 
-function mapRow(row:any):PartnerApplication {
+type PartnerApplicationRow = {
+  id: PartnerApplication["id"];
+  company_name: PartnerApplication["companyName"];
+  contact_name: PartnerApplication["contactName"];
+  email: PartnerApplication["email"];
+  phone: PartnerApplication["phone"];
+  country: PartnerApplication["country"];
+  city: PartnerApplication["city"];
+  partner_type: PartnerApplication["partnerType"];
+  registration_number: PartnerApplication["registrationNumber"];
+  license_number: PartnerApplication["licenseNumber"];
+  website_url: PartnerApplication["websiteUrl"];
+  company_description: PartnerApplication["companyDescription"];
+  services_description: PartnerApplication["servicesDescription"];
+  served_countries: PartnerApplication["servedCountries"];
+  attachment_path: PartnerApplication["attachmentPath"];
+  notes: PartnerApplication["notes"];
+  status: PartnerApplication["status"];
+  internal_notes: PartnerApplication["internalNotes"];
+  last_contacted_at: PartnerApplication["lastContactedAt"];
+  created_at: PartnerApplication["createdAt"];
+};
+
+function mapRow(row: PartnerApplicationRow):PartnerApplication {
   return {
     id:row.id,companyName:row.company_name,contactName:row.contact_name,email:row.email,phone:row.phone,country:row.country,city:row.city,
     partnerType:row.partner_type,registrationNumber:row.registration_number,licenseNumber:row.license_number,websiteUrl:row.website_url,

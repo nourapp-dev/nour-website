@@ -14,7 +14,32 @@ function getSupabase(client?: SupabaseClient) {
   return client ?? createClient();
 }
 
-function mapRow(row: any): JobApplication {
+type JobApplicationRow = {
+  id: JobApplication["id"];
+  full_name: JobApplication["fullName"];
+  email: JobApplication["email"];
+  phone: JobApplication["phone"];
+  country: JobApplication["country"];
+  city: JobApplication["city"];
+  specialization: JobApplication["specialization"];
+  current_job_title: JobApplication["currentJobTitle"];
+  years_of_experience: JobApplication["yearsOfExperience"];
+  employment_type: JobApplication["employmentType"];
+  linkedin_url: JobApplication["linkedinUrl"];
+  cv_path: JobApplication["cvPath"];
+  message: JobApplication["message"];
+  status: JobApplication["status"];
+  assigned_to: JobApplication["assignedTo"];
+  internal_notes: JobApplication["internalNotes"];
+  last_contacted_at: JobApplication["lastContactedAt"];
+  privacy_accepted: JobApplication["privacyAccepted"];
+  source: JobApplication["source"];
+  created_at: JobApplication["createdAt"];
+  updated_at: JobApplication["updatedAt"];
+  deleted_at: JobApplication["deletedAt"];
+};
+
+function mapRow(row: JobApplicationRow): JobApplication {
   return {
     id: row.id,
     fullName: row.full_name,

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import Image from "next/image";
 import { motion, type Variants } from "framer-motion";
 import { useMemo } from "react";
@@ -390,7 +392,7 @@ export default function ProgramsPreview({
               </p>
             </div>
 
-            <a
+            <Link
               className="nr-programs-all-link"
               href="/programs"
             >
@@ -403,7 +405,7 @@ export default function ProgramsPreview({
               <ArrowIcon
                 language={language}
               />
-            </a>
+            </Link>
           </div>
         </motion.div>
 

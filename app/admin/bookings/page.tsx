@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarCheck2, Search, Users } from "lucide-react";
 
@@ -29,16 +30,18 @@ type BookingRow = {
 const statusOptions: (BookingStatus | "all")[] = ["all", "pending_payment", "confirmed", "cancelled", "expired", "refunded"];
 
 export default function AdminBookingsPage() {
+  return <Suspense fallback={null}><AdminBookingsContent /></Suspense>;
+}
+
+function AdminBookingsContent() {
   const { language } = useLanguage();
   const isArabic = language === "ar";
   const supabase = useMemo(() => createClient(), []);
-  const [status, setStatus] = useState<BookingStatus | "all">("all");
+  const params = useSearchParams();
+  const [statusOverride, setStatus] = useState<BookingStatus | "all" | null>(null);
+  const requestedStatus = params.get("status") as BookingStatus | null;
+  const status = statusOverride ?? (requestedStatus && statusOptions.includes(requestedStatus) ? requestedStatus : "all");
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    const value = new URLSearchParams(window.location.search).get("status") as BookingStatus | null;
-    if (value && statusOptions.includes(value)) setStatus(value);
-  }, []);
 
   const query = useQuery({
     queryKey: ["admin", "bookings", status],

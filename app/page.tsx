@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import usePersistentState from "../src/core/hooks/usePersistentState";
 import { useLanguage } from "../src/core/i18n";
 import SiteEnhancements from "./components/SiteEnhancements";
 import PublicHeader from "./components/layout/PublicHeader";
@@ -21,7 +22,10 @@ import { appScreens, copy, sectionIds, type SectionId, type Theme } from "./data
 
 export default function Home() {
   const { language, toggleLanguage } = useLanguage();
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = usePersistentState<Theme>("nour-theme", "light", {
+    serialize: (value) => value,
+    deserialize: (value) => value === "dark" ? "dark" : "light",
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("home");
   const [activeScreen, setActiveScreen] = useState(0);
@@ -40,13 +44,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("nour-theme");
-    setTheme(savedTheme === "dark" ? "dark" : "light");
-  }, []);
-
-  useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("nour-theme", theme);
   }, [theme]);
 
   useEffect(() => {

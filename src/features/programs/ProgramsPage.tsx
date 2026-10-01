@@ -506,22 +506,12 @@ export default function ProgramsPage() {
       currentPage * PROGRAMS_PER_PAGE,
     );
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [
-    searchValue,
-    statusFilter,
-    countryFilter,
-    sortBy,
-  ]);
-
-  useEffect(() => {
-    if (currentPage <= totalPages) {
-      return;
-    }
-
-    setCurrentPage(totalPages);
-  }, [currentPage, totalPages]);
+  const filterKey = JSON.stringify([searchValue, statusFilter, countryFilter, sortBy]);
+  const [previousFilterKey, setPreviousFilterKey] = useState(filterKey);
+  if (filterKey !== previousFilterKey || currentPage > totalPages) {
+    setPreviousFilterKey(filterKey);
+    setCurrentPage(filterKey !== previousFilterKey ? 1 : totalPages);
+  }
 
   useEffect(() => {
     if (

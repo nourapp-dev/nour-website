@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { getErrorMessage } from "../../../src/core/utils/errors";
 import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, FileUp, LogOut, ShieldCheck, UserRound } from "lucide-react";
 import { createClient } from "../../../src/lib/supabase/client";
+import useCurrentTime from "../../../src/core/hooks/useCurrentTime";
 import { getCurrentPilgrimAccount, savePilgrimProfile, uploadPilgrimDocument, type PilgrimProfile } from "../../../src/features/pilgrims/services/pilgrim-account.service";
 
 const emptyProfile: Omit<PilgrimProfile, "userId"> = {
@@ -20,6 +22,7 @@ const emptyProfile: Omit<PilgrimProfile, "userId"> = {
 
 export default function PilgrimProfilePage() {
   const supabase = useMemo(() => createClient(), []);
+  const now = useCurrentTime(60_000);
   const [form, setForm] = useState(emptyProfile);
   const [email, setEmail] = useState("");
   const [hasPassport, setHasPassport] = useState(false);
@@ -29,28 +32,26 @@ export default function PilgrimProfilePage() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      const account = await getCurrentPilgrimAccount(supabase);
+  useEffect(() => {
+    let active = true;
+    getCurrentPilgrimAccount(supabase).then((account) => {
+      if (!active) return;
       if (!account.user) {
         window.location.replace("/account/login?next=/account/profile");
         return;
       }
       setEmail(account.user.email ?? "");
       if (account.profile) {
-        const { userId: _userId, ...profile } = account.profile;
-        setForm(profile);
+        setForm(account.profile);
       }
       setHasPassport(account.documents.some((doc) => doc.documentType === "passport"));
-    } catch (loadError: any) {
-      setError(String(loadError?.message ?? "تعذر تحميل البيانات."));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { void load(); }, []);
+    }).catch((loadError: unknown) => {
+      if (active) setError(getErrorMessage(loadError, "تعذر تحميل البيانات."));
+    }).finally(() => {
+      if (active) setLoading(false);
+    });
+    return () => { active = false; };
+  }, [supabase]);
 
   const set = (key: keyof typeof form, value: string) => setForm((current) => ({ ...current, [key]: value }));
 
@@ -70,8 +71,8 @@ export default function PilgrimProfilePage() {
     try {
       await savePilgrimProfile(supabase, form);
       setMessage("تم حفظ بيانات المعتمر بنجاح.");
-    } catch (saveError: any) {
-      setError(String(saveError?.message ?? "تعذر حفظ البيانات."));
+    } catch (saveError) {
+      setError(getErrorMessage(saveError, "تعذر حفظ البيانات."));
     } finally {
       setSaving(false);
     }
@@ -86,8 +87,8 @@ export default function PilgrimProfilePage() {
       await uploadPilgrimDocument(supabase, type, file);
       if (type === "passport") setHasPassport(true);
       setMessage(type === "passport" ? "تم رفع جواز السفر بنجاح." : "تم رفع مستند الإقامة بنجاح.");
-    } catch (uploadError: any) {
-      const text = String(uploadError?.message ?? "");
+    } catch (uploadError) {
+      const text = getErrorMessage(uploadError, "");
       setError(text === "file_too_large" ? "حجم الملف يجب ألا يتجاوز 10 ميجابايت." : text === "invalid_file_type" ? "الملفات المسموحة: JPG أو PNG أو PDF." : text || "تعذر رفع الملف.");
     } finally {
       setUploading(null);
@@ -101,7 +102,7 @@ export default function PilgrimProfilePage() {
 
   if (loading) return <main className="pap-loading" dir="rtl">جارٍ تحميل حساب المعتمر...</main>;
 
-  const ready = Boolean(form.fullName.trim() && form.dateOfBirth && form.nationalityCode.trim() && form.passportNumber.trim() && form.passportExpiry && new Date(form.passportExpiry).getTime() > Date.now() && hasPassport);
+  const ready = Boolean(form.fullName.trim() && form.dateOfBirth && form.nationalityCode.trim() && form.passportNumber.trim() && form.passportExpiry && new Date(form.passportExpiry).getTime() > now && hasPassport);
 
   return (
     <main className="pap-page" dir="rtl">

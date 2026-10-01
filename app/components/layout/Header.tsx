@@ -92,12 +92,6 @@ export default function Header({
     return () => window.removeEventListener("resize", closeMenuOnDesktop);
   }, [menuOpen, onMenuClose]);
 
-  useEffect(() => {
-    if (menuOpen) {
-      setIsHeaderHidden(false);
-    }
-  }, [menuOpen]);
-
   const navClass = (id: SectionId) =>
     activeSection === id ? "is-active" : undefined;
 
@@ -109,7 +103,7 @@ export default function Header({
     <>
       <header
         className={`nr-v2-header ${isScrolled ? "is-scrolled" : ""} ${
-          isHeaderHidden ? "is-hidden" : ""
+          isHeaderHidden && !menuOpen ? "is-hidden" : ""
         }`}
       >
         <div className="nr-v2-topbar">

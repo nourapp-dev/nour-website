@@ -34,9 +34,11 @@ export default function MediaUploader({
     label ??
     (isArabic ? "رفع صورة" : "Upload Image");
 
-  useEffect(() => {
+  const [previousInitialUrl, setPreviousInitialUrl] = useState(initialPreviewUrl);
+  if (initialPreviewUrl !== previousInitialUrl) {
+    setPreviousInitialUrl(initialPreviewUrl);
     setPreviewUrl(initialPreviewUrl);
-  }, [initialPreviewUrl]);
+  }
 
   useEffect(() => {
     return () => {

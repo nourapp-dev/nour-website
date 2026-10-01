@@ -1,6 +1,6 @@
 "use client";
 
-import CountryForm from "../forms/CountryForm";
+import CountryForm, { type CountryFormValues } from "../forms/CountryForm";
 import type { Country } from "../types";
 
 type CountryDialogProps = {
@@ -9,7 +9,7 @@ type CountryDialogProps = {
   country?: Country;
   isSubmitting?: boolean;
   onClose: () => void;
-  onSubmit: (values: any) => Promise<void>;
+  onSubmit: (values: CountryFormValues) => Promise<void>;
 };
 
 export default function CountryDialog({

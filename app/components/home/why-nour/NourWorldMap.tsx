@@ -146,7 +146,7 @@ export default function NourWorldMap({ language }: Props) {
   const isArabic = language === "ar";
   const shouldReduceMotion = useReducedMotion();
   const supabase = useMemo(() => createClient(), []);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [requestedActiveId, setActiveId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
@@ -158,7 +158,7 @@ export default function NourWorldMap({ language }: Props) {
     refetchOnWindowFocus: false,
   });
 
-  const countries = countriesQuery.data ?? [];
+  const countries = useMemo(() => countriesQuery.data ?? [], [countriesQuery.data]);
   const countriesWithPositions = useMemo(
     () => countries.map((country) => ({
       ...country,
@@ -172,17 +172,10 @@ export default function NourWorldMap({ language }: Props) {
     [],
   );
 
-  useEffect(() => {
-    if (!countriesWithPositions.length) {
-      setActiveId(null);
-      return;
-    }
-    if (countriesWithPositions.some((country) => country.id === activeId)) return;
-    const firstWithPrograms = countriesWithPositions.find(
-      (country) => country.iso2 !== SAUDI_ISO2 && country.hasPublishedPrograms,
-    );
-    setActiveId(firstWithPrograms?.id ?? countriesWithPositions[0].id);
-  }, [countriesWithPositions, activeId]);
+  const activeId = countriesWithPositions.some((country) => country.id === requestedActiveId)
+    ? requestedActiveId
+    : (countriesWithPositions.find((country) => country.iso2 !== SAUDI_ISO2 && country.hasPublishedPrograms)
+      ?? countriesWithPositions[0])?.id ?? null;
 
   const activeCountry = useMemo(
     () => countriesWithPositions.find((country) => country.id === activeId)
@@ -198,16 +191,10 @@ export default function NourWorldMap({ language }: Props) {
     [countriesWithPositions, selectedId],
   );
 
-  useEffect(() => {
-    if (selectedId && !countriesWithPositions.some((country) => country.id === selectedId)) {
-      setSelectedId(null);
-      setSelectedProgramId(null);
-    }
-  }, [countriesWithPositions, selectedId]);
-
-  useEffect(() => {
+  if (selectedId && !countriesWithPositions.some((country) => country.id === selectedId)) {
+    setSelectedId(null);
     setSelectedProgramId(null);
-  }, [selectedId]);
+  }
 
   const programsQuery = useQuery({
     queryKey: ["public", "map-country-programs", selectedCountry?.id],
@@ -240,14 +227,14 @@ export default function NourWorldMap({ language }: Props) {
 
     const timer = window.setInterval(() => {
       setActiveId((currentId) => {
-        const currentIndex = availableCountries.findIndex((country) => country.id === currentId);
+        const currentIndex = availableCountries.findIndex((country) => country.id === (currentId ?? activeId));
         const nextIndex = currentIndex < 0 ? 0 : (currentIndex + 1) % availableCountries.length;
         return availableCountries[nextIndex].id;
       });
     }, 6000);
 
     return () => window.clearInterval(timer);
-  }, [paused, selectedId, shouldReduceMotion, countriesWithPositions]);
+  }, [paused, selectedId, shouldReduceMotion, countriesWithPositions, activeId]);
 
   const ctaCountry = selectedCountry ?? activeCountry;
   const journeyCountry = selectedCountry ?? activeCountry;

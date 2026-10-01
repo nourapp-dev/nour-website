@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { getErrorMessage } from "../../src/core/utils/errors";
 import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, LockKeyhole, ShieldCheck, UserRound, Users } from "lucide-react";
 
 import { useLanguage } from "../../src/core/i18n";
 import { createClient } from "../../src/lib/supabase/client";
 import { createProgramBooking, type BookingTravelerInput, type CreatedBooking } from "../../src/features/bookings/services/public-booking.service";
+import { buildBookingTravelers } from "../../src/features/bookings/utils/booking-travelers";
 import { getCurrentPilgrimAccount, type PilgrimProfile } from "../../src/features/pilgrims/services/pilgrim-account.service";
 
 type PreparedBookingSelection = {
@@ -28,7 +30,6 @@ type AccountState = {
 };
 
 const BOOKING_STORAGE_KEY = "nour_booking_selection";
-const emptyTraveler = (): BookingTravelerInput => ({ firstName: "", lastName: "", dateOfBirth: "", nationalityCode: "", passportNumber: "" });
 
 export default function ProgramBookingCheckout() {
   const { language } = useLanguage();
@@ -39,7 +40,7 @@ export default function ProgramBookingCheckout() {
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
-  const [travelers, setTravelers] = useState<BookingTravelerInput[]>([]);
+  const [travelerEdits, setTravelerEdits] = useState<Record<number, Partial<BookingTravelerInput>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [created, setCreated] = useState<CreatedBooking | null>(null);
@@ -63,7 +64,7 @@ export default function ProgramBookingCheckout() {
         const parsed = JSON.parse(raw) as PreparedBookingSelection;
         if (!parsed?.programId || !parsed?.departureId || !parsed?.priceTierId || !parsed?.travelers) return;
         setSelection(parsed);
-        setTravelers(Array.from({ length: parsed.travelers }, emptyTraveler));
+        setTravelerEdits({});
       } catch {}
     };
     readStored();
@@ -73,30 +74,19 @@ export default function ProgramBookingCheckout() {
       setSelection(next);
       setCreated(null);
       setError("");
-      setTravelers(Array.from({ length: next.travelers }, emptyTraveler));
+      setTravelerEdits({});
       setTimeout(() => document.getElementById("booking-checkout")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     };
     window.addEventListener("nour:booking-prepared", onPrepared as EventListener);
     return () => window.removeEventListener("nour:booking-prepared", onPrepared as EventListener);
   }, []);
 
-  useEffect(() => {
-    if (!account.profile || travelers.length === 0) return;
-    const parts = account.profile.fullName.trim().split(/\s+/);
-    setTravelers((current) => current.map((traveler, index) => index === 0 ? {
-      ...traveler,
-      firstName: traveler.firstName || parts[0] || "",
-      lastName: traveler.lastName || parts.slice(1).join(" ") || parts[0] || "",
-      dateOfBirth: traveler.dateOfBirth || account.profile!.dateOfBirth,
-      nationalityCode: traveler.nationalityCode || account.profile!.nationalityCode,
-      passportNumber: traveler.passportNumber || account.profile!.passportNumber,
-    } : traveler));
-  }, [account.profile, selection?.travelers]);
-
   if (!selection) return null;
 
+  const travelers = buildBookingTravelers(selection.travelers, account.profile, travelerEdits);
+
   const updateTraveler = (index: number, key: keyof BookingTravelerInput, value: string) => {
-    setTravelers((current) => current.map((traveler, i) => (i === index ? { ...traveler, [key]: value } : traveler)));
+    setTravelerEdits((current) => ({ ...current, [index]: { ...current[index], [key]: value } }));
   };
 
   const submit = async (event: React.FormEvent) => {
@@ -134,8 +124,8 @@ export default function ProgramBookingCheckout() {
       });
       setCreated(result);
       sessionStorage.removeItem(BOOKING_STORAGE_KEY);
-    } catch (bookingError: any) {
-      const code = String(bookingError?.message ?? "");
+    } catch (bookingError) {
+      const code = getErrorMessage(bookingError, "");
       const copy: Record<string, string> = {
         authentication_required: isArabic ? "انتهت جلسة تسجيل الدخول. سجل الدخول مرة أخرى." : "Your session expired. Sign in again.",
         pilgrim_profile_required: isArabic ? "أكمل ملف المعتمر قبل الحجز." : "Complete the pilgrim profile before booking.",

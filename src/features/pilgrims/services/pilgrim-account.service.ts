@@ -23,7 +23,20 @@ export type PilgrimDocument = {
   isVerified: boolean;
 };
 
-const mapProfile = (row: any): PilgrimProfile => ({
+type PilgrimProfileRow = {
+  user_id: string;
+  full_name: string | null;
+  phone: string | null;
+  country_code: string | null;
+  nationality_code: string | null;
+  date_of_birth: string | null;
+  passport_number: string | null;
+  passport_expiry: string | null;
+  residence_country_code: string | null;
+  preferred_language: string | null;
+};
+
+const mapProfile = (row: PilgrimProfileRow): PilgrimProfile => ({
   userId: row.user_id,
   fullName: row.full_name ?? "",
   phone: row.phone ?? "",
@@ -50,7 +63,7 @@ export async function getCurrentPilgrimAccount(supabase: SupabaseClient) {
   if (documentsResult.error) throw documentsResult.error;
 
   const profile = profileResult.data ? mapProfile(profileResult.data) : null;
-  const documents = (documentsResult.data ?? []).map((row: any) => ({
+  const documents = (documentsResult.data ?? []).map((row) => ({
     id: row.id,
     documentType: row.document_type,
     path: row.path,
