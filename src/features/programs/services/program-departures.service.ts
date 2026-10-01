@@ -76,6 +76,28 @@ export async function getPublicProgramDepartures(supabase: SupabaseClient, progr
   return ((data ?? []) as DepartureRow[]).map(mapRow);
 }
 
+export async function getNextPublicDepartures(supabase: SupabaseClient, programIds: string[]) {
+  const nextDates: Record<string, string> = {};
+  if (!programIds.length) return nextDates;
+  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("program_departures")
+    .select("program_id,start_at")
+    .in("program_id", programIds)
+    .eq("is_active", true)
+    .eq("status", "open")
+    .gt("seats_available", 0)
+    .is("deleted_at", null)
+    .gte("start_at", now)
+    .or(`booking_deadline.is.null,booking_deadline.gte.${now}`)
+    .order("start_at", { ascending: true });
+  if (error) throw error;
+  for (const row of (data ?? []) as Pick<DepartureRow, "program_id" | "start_at">[]) {
+    nextDates[row.program_id] ??= row.start_at;
+  }
+  return nextDates;
+}
+
 export async function createProgramDeparture(supabase: SupabaseClient, programId: string, payload: Record<string, unknown>) {
   const { data, error } = await supabase
     .from("program_departures")

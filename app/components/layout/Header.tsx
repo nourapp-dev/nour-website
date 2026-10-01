@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   HomeCopy,
   Language,
@@ -18,6 +18,8 @@ type Props = {
   menuOpen: boolean;
   activeSection: SectionId;
   navItems: { id: SectionId; label: string }[];
+  accountHref: string;
+  accountLabel: string;
   onLanguageChange: () => void;
   onThemeChange: () => void;
   onMenuToggle: () => void;
@@ -31,11 +33,14 @@ export default function Header({
   menuOpen,
   activeSection,
   navItems,
+  accountHref,
+  accountLabel,
   onLanguageChange,
   onThemeChange,
   onMenuToggle,
   onMenuClose,
 }: Props) {
+  const menuButton = useRef<HTMLButtonElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
@@ -83,7 +88,7 @@ export default function Header({
 
   useEffect(() => {
     const closeMenuOnDesktop = () => {
-      if (window.innerWidth > 980 && menuOpen) {
+      if (window.innerWidth > 1180 && menuOpen) {
         onMenuClose();
       }
     };
@@ -95,9 +100,17 @@ export default function Header({
   const navClass = (id: SectionId) =>
     activeSection === id ? "is-active" : undefined;
 
-  const startLabel = language === "ar" ? "ابدأ رحلتك" : "Start your journey";
-  const partnerLabel = language === "ar" ? "كن شريك نور" : "Partner with Nour";
-  const joinLabel = language === "ar" ? "انضم الينا" : "Join us";
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onMenuClose();
+        menuButton.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen, onMenuClose]);
 
   return (
     <>
@@ -162,20 +175,13 @@ export default function Header({
                   href={`#${item.id}`}
                   className={navClass(item.id)}
                   aria-current={
-                    activeSection === item.id ? "page" : undefined
+                    activeSection === item.id ? "location" : undefined
                   }
                 >
                   {item.label}
                 </a>
               ))}
 
-              <Link href="/become-a-partner" className="nr-v2-route-link">
-                {partnerLabel}
-              </Link>
-
-              <Link href="/join-us" className="nr-v2-route-link">
-                {joinLabel}
-              </Link>
             </nav>
 
             <div className="nr-v2-actions">
@@ -206,19 +212,20 @@ export default function Header({
                 {theme === "light" ? <MoonIcon /> : <SunIcon />}
               </button>
 
-              <a className="nr-v2-primary-action" href="#contact">
-                <span>{startLabel}</span>
+              <Link className="nr-v2-primary-action" href={accountHref}>
+                <span>{accountLabel}</span>
                 <ArrowIcon language={language} />
-              </a>
+              </Link>
 
               <button
                 type="button"
+                ref={menuButton}
                 className={`nr-v2-menu-button ${
                   menuOpen ? "is-open" : ""
                 }`}
                 onClick={onMenuToggle}
                 aria-label={
-                  language === "ar" ? "فتح القائمة" : "Open navigation"
+                  language === "ar" ? (menuOpen ? "إغلاق القائمة" : "فتح القائمة") : (menuOpen ? "Close navigation" : "Open navigation")
                 }
                 aria-expanded={menuOpen}
                 aria-controls="nr-v2-mobile-menu"
@@ -253,7 +260,7 @@ export default function Header({
                     href={`#${item.id}`}
                     className={navClass(item.id)}
                     aria-current={
-                      activeSection === item.id ? "page" : undefined
+                      activeSection === item.id ? "location" : undefined
                     }
                     onClick={onMenuClose}
                   >
@@ -261,24 +268,6 @@ export default function Header({
                     <ArrowIcon language={language} />
                   </a>
                 ))}
-
-                <Link
-                  href="/become-a-partner"
-                  className="nr-v2-mobile-route-link"
-                  onClick={onMenuClose}
-                >
-                  <span>{partnerLabel}</span>
-                  <ArrowIcon language={language} />
-                </Link>
-
-                <Link
-                  href="/join-us"
-                  className="nr-v2-mobile-route-link"
-                  onClick={onMenuClose}
-                >
-                  <span>{joinLabel}</span>
-                  <ArrowIcon language={language} />
-                </Link>
 
                 <div className="nr-v2-mobile-controls">
                   <button type="button" onClick={onLanguageChange}>
@@ -298,14 +287,14 @@ export default function Header({
                   </button>
                 </div>
 
-                <a
+                <Link
                   className="nr-v2-mobile-cta"
-                  href="#contact"
+                  href={accountHref}
                   onClick={onMenuClose}
                 >
-                  <span>{startLabel}</span>
+                  <span>{accountLabel}</span>
                   <ArrowIcon language={language} />
-                </a>
+                </Link>
               </nav>
             </motion.div>
           )}
@@ -313,6 +302,9 @@ export default function Header({
       </header>
 
       <style jsx global>{`
+        .nr-v2-header a:focus-visible, .nr-v2-header button:focus-visible { outline: 3px solid #176fe8; outline-offset: 4px; }
+        .nr-v2-mobile-shell { max-height: calc(100dvh - 100px); overflow-y: auto !important; }
+
         .nr-v2-header {
           position: sticky;
           top: 0;

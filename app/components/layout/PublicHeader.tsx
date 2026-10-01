@@ -40,28 +40,10 @@ export default function PublicHeader(props: Props) {
     };
   }, [supabase]);
 
-  useEffect(() => {
-    const accountHref = signedIn ? "/account/profile" : "/account/login";
-    const accountLabel = signedIn
-      ? props.language === "ar" ? "حسابي" : "My account"
-      : props.language === "ar" ? "تسجيل الدخول" : "Sign in";
+  const accountHref = signedIn ? "/account/profile" : "/account/login";
+  const accountLabel = signedIn
+    ? props.language === "ar" ? "حسابي" : "My account"
+    : props.language === "ar" ? "تسجيل الدخول" : "Sign in";
 
-    const syncAccountAction = () => {
-      document
-        .querySelectorAll<HTMLAnchorElement>(
-          ".nr-v2-primary-action, .nr-v2-mobile-cta",
-        )
-        .forEach((link) => {
-          link.href = accountHref;
-          const label = link.querySelector("span");
-          if (label) label.textContent = accountLabel;
-        });
-    };
-
-    syncAccountAction();
-    const timer = window.setTimeout(syncAccountAction, 0);
-    return () => window.clearTimeout(timer);
-  }, [signedIn, props.language, props.menuOpen]);
-
-  return <Header {...props} />;
+  return <Header {...props} accountHref={accountHref} accountLabel={accountLabel} />;
 }

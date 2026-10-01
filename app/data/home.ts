@@ -2,13 +2,13 @@ import type { Variants } from "framer-motion";
 
 export type Language = "ar" | "en";
 export type Theme = "light" | "dark";
-export type SectionId = "home" | "about" | "features" | "journey" | "payments" | "contact";
+export type SectionId = "home" | "programs" | "journey" | "about" | "contact";
 
-export const sectionIds: SectionId[] = ["home", "about", "features", "journey", "payments", "contact"];
+export const sectionIds: SectionId[] = ["home", "programs", "journey", "about", "contact"];
 
 export const copy = {
   ar: {
-    nav: ["الرئيسية", "عن  نور آب", "المزايا", "كيف يعمل", "وسائل الدفع", "تواصل معنا"],
+    nav: ["الرئيسية", "برامج العمرة", "كيف تحجز", "عن نور", "تواصل معنا"],
     heroEyebrow: "تطبيق  نور آب للعمرة",
     heroTitle: "رحلتك إلى العمرة تبدأ من  نور آب",
     heroText: "اكتشف برامج عمرة متنوعة، قارن بين الباقات والخدمات، وأكمل حجزك بسهولة ضمن تجربة رقمية واضحة وآمنة.",
@@ -39,7 +39,7 @@ export const copy = {
     lang: "English",
   },
   en: {
-    nav: ["Home", "About", "Features", "How It Works", "Payments", "Contact"],
+    nav: ["Home", "Umrah programs", "How to book", "About Nour", "Contact"],
     heroEyebrow: "NourApp Umrah App",
     heroTitle: "Your Umrah journey begins with NourApp",
     heroText: "Discover diverse Umrah programs, compare packages and services, and complete your booking through a clear and secure digital experience.",

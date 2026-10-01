@@ -14,7 +14,7 @@ export default function CTA({ t, language }: Props) {
   return (
     <section
       className="nr-cta-premium"
-      id="contact"
+      id="download-app"
       dir={isArabic ? "rtl" : "ltr"}
       aria-labelledby="nr-cta-title"
     >
