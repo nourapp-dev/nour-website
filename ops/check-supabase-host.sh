@@ -30,11 +30,29 @@ if command -v rpm >/dev/null 2>&1; then
 fi
 if command -v docker >/dev/null 2>&1; then
   printf 'DOCKER_EXECUTABLE=%s\n' "$(command -v docker)"
-  timeout 10 docker --version || true
-  timeout 10 docker compose version || true
-  timeout 10 docker info --format 'DOCKER_SERVER={{.ServerVersion}} CGROUP={{.CgroupDriver}}' || true
+  nour_docker_version=$(timeout 10 docker --version 2>&1 || true)
+  printf '%s\n' "$nour_docker_version"
+  case "$nour_docker_version" in
+    *[Pp]odman*)
+      printf 'CONTAINER_ENGINE=podman\nDOCKER_SERVER_CHECK=not-applicable\n'
+      if command -v podman-compose >/dev/null 2>&1; then
+        timeout 10 podman-compose --version || true
+      else
+        printf 'PODMAN_COMPOSE=not-installed\n'
+      fi
+      ;;
+    *Docker*)
+      printf 'CONTAINER_ENGINE=docker\n'
+      timeout 10 docker compose version || true
+      timeout 10 docker info --format 'DOCKER_SERVER={{.ServerVersion}} CGROUP={{.CgroupDriver}}' || true
+      ;;
+    *) printf 'CONTAINER_ENGINE=unconfirmed\n' ;;
+  esac
 else
   printf 'DOCKER_EXECUTABLE=not-installed\n'
+  if command -v podman >/dev/null 2>&1; then
+    timeout 10 podman --version || true
+  fi
 fi
 if command -v getenforce >/dev/null 2>&1; then
   printf 'SELINUX='

@@ -1,6 +1,6 @@
 # Supabase migration readiness
 
-Status: source inventory completed on 2026-10-01 UTC; destination is not prepared and the website still uses the managed project. No source data, credentials, DNS records or server packages were changed during the inventory.
+Status: source inventory and operator-run host preflight completed on 2026-10-01 UTC. The destination is not prepared and the website still uses the managed project. No source data, credentials, DNS records or server packages were changed during the inventory.
 
 ## Destination decision
 
@@ -9,6 +9,10 @@ The existing website VPS runs AlmaLinux 8 with cPanel 138 and several other appl
 Run `bash ops/check-supabase-host.sh` on the proposed destination and review its output before installing anything. The script reads OS, CPU, memory, disk, selected installed package versions, listening ports and service status. It does not read credentials or change the host.
 
 Prefer a dedicated Hostinger VPS without cPanel for the self-hosted stack if the compatibility conflict applies. Selecting or purchasing that destination is a separate operator decision. Do not remove cPanel packages, replace the OS, stop existing applications or force package dependency resolution to make Docker install.
+
+The supplied host output confirms that `ea-podman` is installed, `/usr/bin/docker` invokes Podman 4.9.4, and no Compose provider was found. The website service was active. The `ServerVersion` template error came from this diagnostic attempting a Docker-specific query against Podman; it is not evidence of a website or database failure. The diagnostic now identifies the wrapper before selecting engine-specific checks.
+
+Using the existing Podman installation is a possible alternative that needs a separate compatibility trial. Supabase's current Auth keys guide explicitly requires `podman-compose >= 1.6.0` for its nested environment-variable expressions. This does not establish that the whole stack works with the installed Podman release or the current shared host. Before choosing this route, verify the pinned stack, Compose provider, networks, volume permissions, resource limits and startup recovery using an empty private deployment. Review the selected Compose file for Docker-socket dependencies and exposed ports. Do not import production data or switch the website until the trial succeeds.
 
 Supabase currently documents a minimum of 4 GB RAM, 2 CPU cores and 40 GB SSD for the complete stack, with 8 GB RAM, 4 cores and 80 GB SSD recommended. Those requirements are additional to other workloads sharing a host; they are not a guarantee of capacity.
 
@@ -43,6 +47,7 @@ Before retiring the managed project, configure scheduled database and object bac
 
 - [cPanel Docker compatibility](https://support.cpanel.net/hc/en-us/articles/360062418794-Can-I-run-docker-on-a-cPanel-server)
 - [Supabase Docker deployment](https://supabase.com/docs/guides/self-hosting/docker)
+- [Supabase Auth keys and Podman Compose compatibility](https://supabase.com/docs/guides/self-hosting/self-hosted-auth-keys)
 - [Restore a managed project](https://supabase.com/docs/guides/self-hosting/restore-from-platform)
 - [Copy Storage objects](https://supabase.com/docs/guides/self-hosting/copy-from-platform-s3)
 - [Supabase changelog](https://supabase.com/changelog)
