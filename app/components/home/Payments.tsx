@@ -13,6 +13,7 @@ import {
 
 import type { Language } from "../../data/home";
 import { paymentMethods } from "../../data/home";
+import { WEBSITE_BOOKING_ENABLED, websiteBookingCopy } from "../../../src/core/config/website-booking";
 
 const containerVariants: Variants = {
   hidden: {},
@@ -80,22 +81,33 @@ export default function Payments({
           <span className="nr-payments-kicker">
             <CreditCard />
             {isArabic
-              ? "دفع آمن ومرن"
-              : "Secure & flexible payments"}
+              ? "وسائل الدفع"
+              : "Payment options"}
           </span>
 
           <h2 id="nr-payments-title">
             {isArabic
-              ? "اختر طريقة الدفع التي تناسب رحلتك"
-              : "Choose the payment method that fits your journey"}
+              ? "خيارات الدفع لرحلتك"
+              : "Payment options for your journey"}
           </h2>
 
           <p>
             {isArabic
-              ? "وسائل دفع موثوقة وخيارات دفع مرن ضمن تجربة واضحة وآمنة من اختيار البرنامج حتى إتمام الحجز."
-              : "Trusted payment methods and flexible payment options in one clear, secure experience from program selection to checkout."}
+              ? "تعرّف على وسائل الدفع. تتحدد الخيارات المتاحة عند تفعيل الحجز حسب الدولة ومزوّد الدفع."
+              : "Explore payment methods. Available options will depend on the country and payment provider when booking opens."}
           </p>
         </motion.header>
+
+        {!WEBSITE_BOOKING_ENABLED ? (
+          <p className="nr-payments-availability" role="note">
+            <strong>{websiteBookingCopy[language].title}</strong>
+            <span>
+              {isArabic
+                ? "وسائل الدفع المعروضة للتعريف فقط؛ الدفع الإلكتروني غير متاح حاليًا عبر الموقع."
+                : "Payment methods are shown for information only; online payment is currently unavailable on this website."}
+            </span>
+          </p>
+        ) : null}
 
         <div className="nr-payments-layout">
           <motion.div
@@ -113,8 +125,8 @@ export default function Payments({
                   </span>
                   <small>
                     {isArabic
-                      ? "وسائل الدفع المتاحة"
-                      : "Available payment methods"}
+                      ? "البطاقات والمحافظ الرقمية"
+                      : "Cards and digital wallets"}
                   </small>
                 </div>
 
@@ -261,8 +273,8 @@ export default function Payments({
 
             <p>
               {isArabic
-                ? "تعرف على السعر وطريقة الدفع قبل إتمام الحجز، مع معالجة المدفوعات عبر مزودي الدفع المعتمدين."
-                : "Review pricing and payment options before checkout, with payments processed through approved providers."}
+                ? "عند تفعيل الحجز، راجع السعر النهائي ووسائل الدفع المتاحة قبل التأكيد. عرض الشعارات هنا لا يعني تفعيل جميع الوسائل."
+                : "When booking opens, review the final price and available payment methods before confirming. Displayed logos do not mean all methods are enabled."}
             </p>
 
             <div className="nr-payments-trust-list">
@@ -270,12 +282,12 @@ export default function Payments({
                 <span><ShieldCheck /></span>
                 <div>
                   <strong>
-                    {isArabic ? "دفع آمن" : "Secure payment"}
+                    {isArabic ? "مزوّد الدفع" : "Payment provider"}
                   </strong>
                   <small>
                     {isArabic
-                      ? "معالجة موثوقة للمدفوعات"
-                      : "Trusted payment processing"}
+                      ? "التوافر حسب الدولة والمزوّد"
+                      : "Availability varies by country and provider"}
                   </small>
                 </div>
               </div>
@@ -302,8 +314,8 @@ export default function Payments({
                   </strong>
                   <small>
                     {isArabic
-                      ? "تابي وتمارا حسب الأهلية"
-                      : "Tabby and Tamara subject to eligibility"}
+                      ? "حسب التفعيل والأهلية والشروط"
+                      : "Subject to activation, eligibility and terms"}
                   </small>
                 </div>
               </div>
@@ -313,8 +325,8 @@ export default function Payments({
               <Check />
               <span>
                 {isArabic
-                  ? "إتمام الحجز والدفع يتم من خلال تجربة نور آب الآمنة."
-                  : "Booking and payment are completed through the secure NourApp experience."}
+                  ? "تحقّق من الوسائل المتاحة وشروط مزوّد الدفع عند إتمام الحجز."
+                  : "Check available methods and provider terms at checkout."}
               </span>
             </div>
           </motion.aside>
@@ -322,6 +334,20 @@ export default function Payments({
       </div>
 
       <style jsx global>{`
+        .nr-payments-availability {
+          display: grid;
+          gap: 6px;
+          margin: 0 0 24px;
+          padding: 16px 20px;
+          border: 1px solid var(--nr-border);
+          border-inline-start: 4px solid #ffc313;
+          border-radius: 14px;
+          background: var(--nr-card);
+          color: var(--nr-text);
+          font-size: 14px;
+          line-height: 1.7;
+        }
+
         .nr-payments-premium {
           position: relative;
           overflow: hidden;
