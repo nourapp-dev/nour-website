@@ -290,8 +290,8 @@ async function getPlatformSettings(
     throw new Error(error.message);
   }
 
-  return (data ??
-    []) as PlatformSettingRow[];
+  // The dedicated editor handles the structured presentation and private draft.
+  return ((data ?? []) as PlatformSettingRow[]).filter(row => !row.setting_key.startsWith("website.home_presentation"));
 }
 
 async function savePlatformSetting(
