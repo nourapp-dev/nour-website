@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import HeroPhones from "./HeroPhones";
 import ProgramSearch from "./ProgramSearch";
 import type { HomeCopy } from "../../data/home";
 import type { Presentation } from "../../../src/features/website/presentation";
@@ -15,6 +16,7 @@ export default function Hero({
 }) {
   const language = t.lang === "English" ? "ar" : "en";
   const { hero } = usePresentation(presentation);
+  if (hero.mode === "phones") return <div className={styles.root}><HeroPhones t={t} hero={hero} /></div>;
   return (
     <div className={styles.root}>
       <section

@@ -12,6 +12,11 @@ export type AppScreen = {
 };
 export type Presentation = {
   hero: {
+    mode: "phones" | "photo";
+    frontImage: string;
+    backImage: string;
+    frontAlt: Bilingual;
+    backAlt: Bilingual;
     title: Bilingual;
     description: Bilingual;
     eyebrow: Bilingual;
@@ -39,6 +44,11 @@ export type Presentation = {
 };
 export const defaultPresentation: Presentation = {
   hero: {
+    mode: "phones",
+    frontImage: "/images/site/front-view.png",
+    backImage: "/images/site/rotated-right.png",
+    frontAlt: { ar: "واجهة تطبيق نور آب", en: "NourApp app interface" },
+    backAlt: { ar: "معاينة تطبيق نور آب", en: "NourApp preview" },
     title: {
       ar: "رحلتك إلى العمرة تبدأ بطمأنينة",
       en: "Your Umrah journey starts with peace of mind",
@@ -230,6 +240,11 @@ export function normalizePresentation(value: unknown): Presentation {
   });
   return {
     hero: {
+      mode: h.mode === "photo" ? "photo" : "phones",
+      frontImage: safeImage(h.frontImage) || defaults.hero.frontImage,
+      backImage: safeImage(h.backImage) || defaults.hero.backImage,
+      frontAlt: pair(h.frontAlt, defaults.hero.frontAlt),
+      backAlt: pair(h.backAlt, defaults.hero.backAlt),
       title: pair(h.title, defaults.hero.title),
       description: pair(h.description, defaults.hero.description),
       eyebrow: pair(h.eyebrow, defaults.hero.eyebrow),
@@ -260,6 +275,9 @@ export function validatePresentation(value: Presentation): string | null {
   for (const section of [value.hero, value.showcase, value.download])
     if (!section.title.ar.trim() || !section.title.en.trim())
       return "أدخل العناوين بالعربية والإنجليزية / Enter Arabic and English titles.";
+  for (const image of [value.hero.frontImage, value.hero.backImage])
+    if (!safeImage(image))
+      return "ارفع صور الجوالين من مكتبة الموقع / Upload phone images through this editor.";
   if (value.hero.image && !safeImage(value.hero.image))
     return "ارفع صورة الواجهة من مكتبة الموقع / Upload the hero image through this editor.";
   for (const section of [value.hero, value.showcase])
