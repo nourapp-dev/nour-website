@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MotionConfig } from "framer-motion";
 import usePersistentState from "../src/core/hooks/usePersistentState";
 import { useLanguage } from "../src/core/i18n";
+import SiteIntro from "./components/SiteIntro";
 import SiteEnhancements from "./components/SiteEnhancements";
 import PublicHeader from "./components/layout/PublicHeader";
 import Footer from "./components/layout/Footer";
@@ -66,6 +67,7 @@ export default function Home() {
   return (
     <MotionConfig reducedMotion="user">
     <main className="nour-redesign">
+      <SiteIntro language={language} />
       <SiteEnhancements />
       <PublicHeader
         t={t}
