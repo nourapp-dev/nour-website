@@ -1,0 +1,152 @@
+.page {
+  max-width: 1160px;
+  margin: auto;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+.muted {
+  color: var(--nr-muted, #6e819b);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.actions button,
+.image button,
+.screen button {
+  border: 1px solid #8b9fb644;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: var(--nr-card, #fff);
+  color: var(--nr-text, #102e50);
+  cursor: pointer;
+  min-height: 42px;
+}
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.actions .primary {
+  background: #146ded;
+  color: white;
+  border-color: #146ded;
+}
+.section {
+  border: 1px solid #8b9fb633;
+  padding: 24px;
+  margin: 20px 0;
+  border-radius: 20px;
+  background: var(--nr-card, #fff);
+}
+.section h2 {
+  margin: 0 0 20px;
+  font-size: 21px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 16px 0;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  border: 1px solid #8b9fb655;
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--nr-bg, #f7f9fc);
+  color: var(--nr-text, #102e50);
+  font: inherit;
+}
+.field textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.image {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin: 18px 0;
+}
+.image img {
+  object-fit: contain;
+  border-radius: 10px;
+  background: #edf1f6;
+}
+.screen {
+  border: 1px solid #8b9fb633;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 18px 0;
+}
+.screenHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin: 14px 0;
+}
+.check input {
+  width: 18px;
+  height: 18px;
+}
+.feedback {
+  border: 1px solid #3682e355;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 16px 0;
+  white-space: pre-wrap;
+}
+.preview {
+  margin: 24px auto;
+  max-width: 100%;
+  border: 1px solid #8b9fb644;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .section {
+    padding: 16px;
+  }
+  .screenHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

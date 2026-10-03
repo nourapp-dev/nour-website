@@ -20,7 +20,7 @@ import ArticlesPreview from "./components/home/ArticlesPreview";
 import Payments from "./components/home/Payments";
 import { WEBSITE_BOOKING_ENABLED } from "../src/core/config/website-booking";
 import CTA from "./components/home/CTA";
-import { appScreens, copy, sectionIds, type SectionId, type Theme } from "./data/home";
+import { copy, sectionIds, type SectionId, type Theme } from "./data/home";
 
 export default function Home() {
   const { language, toggleLanguage } = useLanguage();
@@ -30,20 +30,11 @@ export default function Home() {
   });
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("home");
-  const [activeScreen, setActiveScreen] = useState(0);
   const t = copy[language];
   const navItems = useMemo(
     () => sectionIds.map((id, index) => ({ id, label: t.nav[index] })),
     [t],
   );
-
-  useEffect(() => {
-    const timer = window.setInterval(
-      () => setActiveScreen((current) => (current + 1) % appScreens.length),
-      3500,
-    );
-    return () => window.clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -99,8 +90,6 @@ export default function Home() {
       <Showcase
         t={t}
         language={language}
-        activeScreen={activeScreen}
-        onScreenChange={setActiveScreen}
       />
       <div id="about">
         <WhyNour language={language} />

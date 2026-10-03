@@ -87,11 +87,3 @@ export const paymentMethods = [
   { nameAr: "تابي", nameEn: "Tabby", image: "/images/payments/tabby.png", type: "installment" },
   { nameAr: "تمارا", nameEn: "Tamara", image: "/images/payments/tamara.png", type: "installment" },
 ] as const;
-
-export const appScreens = [
-  { src: "/images/app-screens/home.png", altAr: "الصفحة الرئيسية في تطبيق  نور آب", altEn: "NourApp app home screen" },
-  { src: "/images/app-screens/packages.png", altAr: "صفحة برامج العمرة", altEn: "Umrah packages screen" },
-  { src: "/images/app-screens/package-details.png", altAr: "تفاصيل برنامج العمرة", altEn: "Umrah package details screen" },
-  { src: "/images/app-screens/booking.png", altAr: "صفحة حجز برنامج العمرة", altEn: "Umrah booking screen" },
-  { src: "/images/app-screens/trip.png", altAr: "صفحة متابعة الرحلة", altEn: "Journey tracking screen" },
-] as const;

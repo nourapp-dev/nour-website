@@ -27,6 +27,7 @@ export default function Sidebar(){
   {label:language==="ar"?"المحتوى القانوني":"Legal Content",href:"/admin/legal",icon:Scale},
   {label:t.sidebar.users,href:"/admin/users",icon:Users},
   {label:language==="ar"?"التحليلات":"Analytics",href:"/admin/analytics",icon:BarChart3},
+  {label:language==="ar"?"واجهة الموقع والتطبيق":"Website & App Showcase",href:"/admin/website",icon:Images},
   {label:language==="ar"?"الإعدادات":"Settings",href:"/admin/settings",icon:Settings},
  ];
  return <aside className="nr-admin-sidebar"><div className="nr-admin-sidebar-brand"><div className="nr-admin-sidebar-brand-logo"><Image src="/images/site/v-logo.png" alt="NourApp" width={42} height={42} priority/></div><div className="nr-admin-sidebar-brand-text"><strong>NourApp Platform</strong><small>{language==="ar"?"لوحة الإدارة":"Admin Panel"}</small></div></div><nav className="nr-admin-sidebar-nav" aria-label={language==="ar"?"التنقل في لوحة التحكم":"Admin navigation"}>{navigationItems.map(item=>{const Icon=item.icon;return <Link key={item.href} href={item.href} className="nr-admin-sidebar-link" title={item.label}><span className="nr-admin-sidebar-link-icon" aria-hidden={true}><Icon size={20} strokeWidth={1.9}/></span><span className="nr-admin-sidebar-link-label">{item.label}</span></Link>})}</nav><div className="nr-admin-sidebar-footer"><div className="nr-admin-sidebar-status"><span className="nr-admin-sidebar-status-dot" aria-hidden={true}/><div><strong>{language==="ar"?"النظام متصل":"System Online"}</strong><small>Supabase Production</small></div></div></div></aside>;
