@@ -410,6 +410,9 @@ export default function Services({
 
         .nr-service-card {
           position: relative;
+          display: flex;
+          flex-direction: column;
+          height: auto;
           min-height: 292px;
           overflow: hidden;
           padding: 25px;
@@ -606,14 +609,11 @@ export default function Services({
         .nr-service-card > p {
           position: relative;
           z-index: 2;
-          margin: 0;
-          overflow: hidden;
+          margin: 0 0 20px;
           color: var(--nr-muted);
           font-size: 12px;
           line-height: 1.78;
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
+          overflow-wrap: anywhere;
         }
 
         .nr-payment-methods {
@@ -622,8 +622,7 @@ export default function Services({
           display: flex;
           flex-wrap: wrap;
           gap: 6px;
-          margin-top: 13px;
-          padding-bottom: 58px;
+          margin: 0 0 20px;
         }
 
         .nr-payment-methods span {
@@ -640,16 +639,22 @@ export default function Services({
         }
 
         .nr-service-link {
-          position: absolute;
-          inset-inline-start: 25px;
-          bottom: 22px;
+          position: relative;
+          inset: auto;
+          align-self: flex-start;
+          flex-shrink: 0;
+          max-width: 100%;
+          margin-top: auto;
           z-index: 2;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
-          min-height: 40px;
-          padding-inline: 15px;
+          min-height: 44px;
+          padding: 10px 15px;
+          box-sizing: border-box;
+          white-space: normal;
+          overflow-wrap: anywhere;
           border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
           border-radius: 13px;
           color: currentColor;
@@ -770,7 +775,6 @@ export default function Services({
             margin-bottom: 24px;
           }
 
-          .nr-service-link,
           .nr-service-line {
             inset-inline-start: 23px;
           }
