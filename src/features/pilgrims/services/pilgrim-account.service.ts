@@ -1,5 +1,7 @@
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 
+import { getPilgrimUser } from "../../auth/services/account-access";
+
 export type PilgrimProfile = {
   userId: string;
   fullName: string;
@@ -50,14 +52,28 @@ const mapProfile = (row: PilgrimProfileRow): PilgrimProfile => ({
 });
 
 export async function getCurrentPilgrimAccount(supabase: SupabaseClient) {
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError) throw authError;
-  const user = authData.user;
-  if (!user) return { user: null as User | null, profile: null as PilgrimProfile | null, documents: [] as PilgrimDocument[], complete: false };
+  const user = await getPilgrimUser(supabase);
+  if (!user)
+    return {
+      user: null as User | null,
+      profile: null as PilgrimProfile | null,
+      documents: [] as PilgrimDocument[],
+      complete: false,
+    };
 
   const [profileResult, documentsResult] = await Promise.all([
-    supabase.from("pilgrim_profiles").select("*").eq("user_id", user.id).maybeSingle(),
-    supabase.from("pilgrim_documents").select("id,document_type,path,original_name,mime_type,file_size,is_verified").eq("user_id", user.id).is("deleted_at", null),
+    supabase
+      .from("pilgrim_profiles")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("pilgrim_documents")
+      .select(
+        "id,document_type,path,original_name,mime_type,file_size,is_verified",
+      )
+      .eq("user_id", user.id)
+      .is("deleted_at", null),
   ]);
   if (profileResult.error) throw profileResult.error;
   if (documentsResult.error) throw documentsResult.error;
@@ -73,50 +89,91 @@ export async function getCurrentPilgrimAccount(supabase: SupabaseClient) {
     isVerified: Boolean(row.is_verified),
   })) as PilgrimDocument[];
   const hasPassport = documents.some((doc) => doc.documentType === "passport");
-  const complete = Boolean(profile && profile.fullName.trim().length >= 2 && profile.dateOfBirth && profile.nationalityCode && profile.passportNumber && profile.passportExpiry && new Date(profile.passportExpiry).getTime() > Date.now() && hasPassport);
+  const complete = Boolean(
+    profile &&
+      profile.fullName.trim().length >= 2 &&
+      profile.dateOfBirth &&
+      profile.nationalityCode &&
+      profile.passportNumber &&
+      profile.passportExpiry &&
+      new Date(profile.passportExpiry).getTime() > Date.now() &&
+      hasPassport,
+  );
   return { user, profile, documents, complete };
 }
 
-export async function savePilgrimProfile(supabase: SupabaseClient, input: Omit<PilgrimProfile, "userId">) {
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError) throw authError;
-  if (!authData.user) throw new Error("authentication_required");
-  const { error } = await supabase.from("pilgrim_profiles").upsert({
-    user_id: authData.user.id,
-    full_name: input.fullName.trim(),
-    phone: input.phone.trim() || null,
-    country_code: input.countryCode.trim() || null,
-    nationality_code: input.nationalityCode.trim().toUpperCase() || null,
-    date_of_birth: input.dateOfBirth || null,
-    passport_number: input.passportNumber.trim() || null,
-    passport_expiry: input.passportExpiry || null,
-    residence_country_code: input.residenceCountryCode.trim().toUpperCase() || null,
-    preferred_language: input.preferredLanguage,
-  }, { onConflict: "user_id" });
+export async function savePilgrimProfile(
+  supabase: SupabaseClient,
+  input: Omit<PilgrimProfile, "userId">,
+) {
+  const user = await getPilgrimUser(supabase);
+  if (!user) throw new Error("authentication_required");
+  const { error } = await supabase.from("pilgrim_profiles").upsert(
+    {
+      user_id: user.id,
+      full_name: input.fullName.trim(),
+      phone: input.phone.trim() || null,
+      country_code: input.countryCode.trim() || null,
+      nationality_code: input.nationalityCode.trim().toUpperCase() || null,
+      date_of_birth: input.dateOfBirth || null,
+      passport_number: input.passportNumber.trim() || null,
+      passport_expiry: input.passportExpiry || null,
+      residence_country_code:
+        input.residenceCountryCode.trim().toUpperCase() || null,
+      preferred_language: input.preferredLanguage,
+    },
+    { onConflict: "user_id" },
+  );
   if (error) throw error;
 }
 
-export async function uploadPilgrimDocument(supabase: SupabaseClient, documentType: PilgrimDocument["documentType"], file: File) {
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError) throw authError;
-  const user = authData.user;
+export async function uploadPilgrimDocument(
+  supabase: SupabaseClient,
+  documentType: PilgrimDocument["documentType"],
+  file: File,
+) {
+  const user = await getPilgrimUser(supabase);
   if (!user) throw new Error("authentication_required");
   if (file.size > 10 * 1024 * 1024) throw new Error("file_too_large");
-  if (!["image/jpeg", "image/png", "application/pdf"].includes(file.type)) throw new Error("invalid_file_type");
+  if (!["image/jpeg", "image/png", "application/pdf"].includes(file.type))
+    throw new Error("invalid_file_type");
 
   const ext = file.name.split(".").pop()?.toLowerCase() || "bin";
   const path = `${user.id}/${documentType}.${ext}`;
-  const { error: uploadError } = await supabase.storage.from("pilgrim-documents").upload(path, file, { upsert: true, contentType: file.type });
+  const { error: uploadError } = await supabase.storage
+    .from("pilgrim-documents")
+    .upload(path, file, { upsert: true, contentType: file.type });
   if (uploadError) throw uploadError;
 
-  const { data: existing, error: readError } = await supabase.from("pilgrim_documents").select("id").eq("user_id", user.id).eq("document_type", documentType).is("deleted_at", null).maybeSingle();
+  const { data: existing, error: readError } = await supabase
+    .from("pilgrim_documents")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("document_type", documentType)
+    .is("deleted_at", null)
+    .maybeSingle();
   if (readError) throw readError;
-  const payload = { path, original_name: file.name, mime_type: file.type, file_size: file.size };
+  const payload = {
+    path,
+    original_name: file.name,
+    mime_type: file.type,
+    file_size: file.size,
+  };
   if (existing?.id) {
-    const { error } = await supabase.from("pilgrim_documents").update(payload).eq("id", existing.id);
+    const { error } = await supabase
+      .from("pilgrim_documents")
+      .update(payload)
+      .eq("id", existing.id);
     if (error) throw error;
   } else {
-    const { error } = await supabase.from("pilgrim_documents").insert({ user_id: user.id, document_type: documentType, bucket: "pilgrim-documents", ...payload });
+    const { error } = await supabase
+      .from("pilgrim_documents")
+      .insert({
+        user_id: user.id,
+        document_type: documentType,
+        bucket: "pilgrim-documents",
+        ...payload,
+      });
     if (error) throw error;
   }
 }

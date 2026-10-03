@@ -1,4 +1,5 @@
 export type MapAnalyticsEventName =
+  | "map_city_selected"
   | "map_country_selected"
   | "map_program_clicked"
   | "map_view_all_clicked"
@@ -7,6 +8,7 @@ export type MapAnalyticsEventName =
 
 export type MapAnalyticsPayload = {
   countryId?: string;
+  cityId?: string;
   countryIso2?: string;
   programId?: string;
   programSlug?: string;
@@ -41,7 +43,9 @@ export function trackMapEvent(
   analyticsWindow.gtag?.("event", name, payload);
 
   try {
-    const current = JSON.parse(sessionStorage.getItem(SESSION_KEY) ?? "[]") as unknown[];
+    const current = JSON.parse(
+      sessionStorage.getItem(SESSION_KEY) ?? "[]",
+    ) as unknown[];
     const next = [...current, event].slice(-MAX_SESSION_EVENTS);
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(next));
   } catch {

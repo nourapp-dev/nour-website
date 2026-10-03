@@ -10,13 +10,10 @@ type InviteUserBody = {
 };
 
 function getSiteUrl() {
-  const configuredUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
   if (!configuredUrl) {
-    throw new Error(
-      "NEXT_PUBLIC_SITE_URL is missing.",
-    );
+    throw new Error("NEXT_PUBLIC_SITE_URL is missing.");
   }
 
   return configuredUrl.replace(/\/+$/, "");
@@ -42,10 +39,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const {
-      data: canManageUsers,
-      error: permissionError,
-    } = await supabase.rpc(
+    const { data: canManageUsers, error: permissionError } = await supabase.rpc(
       "current_user_has_permission",
       {
         permission_code: "users.manage",
@@ -66,8 +60,7 @@ export async function POST(request: Request) {
     if (!canManageUsers) {
       return NextResponse.json(
         {
-          message:
-            "ليس لديك صلاحية دعوة المستخدمين.",
+          message: "ليس لديك صلاحية دعوة المستخدمين.",
         },
         {
           status: 403,
@@ -75,20 +68,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const body =
-      (await request.json()) as InviteUserBody;
+    const body = (await request.json()) as InviteUserBody;
 
-    const email =
-      body.email?.trim().toLowerCase();
+    const email = body.email?.trim().toLowerCase();
 
-    const roleId =
-      body.roleId?.trim();
+    const roleId = body.roleId?.trim();
 
     if (!email || !roleId) {
       return NextResponse.json(
         {
-          message:
-            "البريد الإلكتروني والدور مطلوبان.",
+          message: "البريد الإلكتروني والدور مطلوبان.",
         },
         {
           status: 400,
@@ -96,14 +85,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const emailPattern =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailPattern.test(email)) {
       return NextResponse.json(
         {
-          message:
-            "البريد الإلكتروني غير صالح.",
+          message: "البريد الإلكتروني غير صالح.",
         },
         {
           status: 400,
@@ -112,24 +99,20 @@ export async function POST(request: Request) {
     }
 
     const fullName =
-      body.fullName?.trim() ||
-      email.split("@")[0]?.trim() ||
-      "Admin User";
+      body.fullName?.trim() || email.split("@")[0]?.trim() || "Admin User";
 
-    const adminClient =
-      createAdminClient();
+    const adminClient = createAdminClient();
 
-    const {
-      data: role,
-      error: roleError,
-    } = await adminClient
+    const { data: role, error: roleError } = await adminClient
       .from("roles")
-      .select(`
+      .select(
+        `
         id,
         key,
         name_ar,
         name_en
-      `)
+      `,
+      )
       .eq("id", roleId)
       .eq("is_active", true)
       .is("deleted_at", null)
@@ -149,8 +132,7 @@ export async function POST(request: Request) {
     if (!role) {
       return NextResponse.json(
         {
-          message:
-            "الدور المحدد غير موجود أو غير نشط.",
+          message: "الدور المحدد غير موجود أو غير نشط.",
         },
         {
           status: 400,
@@ -159,22 +141,17 @@ export async function POST(request: Request) {
     }
 
     const siteUrl = getSiteUrl();
-    const inviteRedirectUrl =
-      `${siteUrl}/admin/invite`;
+    const inviteRedirectUrl = `${siteUrl}/admin/login/invite`;
 
-    const {
-      data: invitation,
-      error: inviteError,
-    } =
-      await adminClient.auth.admin
-        .inviteUserByEmail(email, {
-          redirectTo: inviteRedirectUrl,
-          data: {
-            full_name: fullName,
-            admin_role_id: role.id,
-            admin_role_key: role.key,
-          },
-        });
+    const { data: invitation, error: inviteError } =
+      await adminClient.auth.admin.inviteUserByEmail(email, {
+        redirectTo: inviteRedirectUrl,
+        data: {
+          full_name: fullName,
+          admin_role_id: role.id,
+          admin_role_key: role.key,
+        },
+      });
 
     if (inviteError) {
       return NextResponse.json(
@@ -187,14 +164,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const invitedUser =
-      invitation.user;
+    const invitedUser = invitation.user;
 
     if (!invitedUser) {
       return NextResponse.json(
         {
-          message:
-            "تم إرسال الدعوة ولكن لم يتم إنشاء المستخدم.",
+          message: "تم إرسال الدعوة ولكن لم يتم إنشاء المستخدم.",
         },
         {
           status: 500,
@@ -202,12 +177,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const now =
-      new Date().toISOString();
+    const now = new Date().toISOString();
 
-    const {
-      error: profileError,
-    } = await adminClient
+    const { error: profileError } = await adminClient
       .from("admin_profiles")
       .upsert(
         {
@@ -223,9 +195,7 @@ export async function POST(request: Request) {
       );
 
     if (profileError) {
-      await adminClient.auth.admin.deleteUser(
-        invitedUser.id,
-      );
+      await adminClient.auth.admin.deleteUser(invitedUser.id);
 
       return NextResponse.json(
         {
@@ -237,9 +207,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const {
-      error: clearRolesError,
-    } = await adminClient
+    const { error: clearRolesError } = await adminClient
       .from("admin_user_roles")
       .update({
         deleted_at: now,
@@ -254,9 +222,7 @@ export async function POST(request: Request) {
         .delete()
         .eq("id", invitedUser.id);
 
-      await adminClient.auth.admin.deleteUser(
-        invitedUser.id,
-      );
+      await adminClient.auth.admin.deleteUser(invitedUser.id);
 
       return NextResponse.json(
         {
@@ -268,9 +234,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const {
-      error: assignmentError,
-    } = await adminClient
+    const { error: assignmentError } = await adminClient
       .from("admin_user_roles")
       .upsert(
         {
@@ -281,8 +245,7 @@ export async function POST(request: Request) {
           updated_at: now,
         },
         {
-          onConflict:
-            "user_id,role_id",
+          onConflict: "user_id,role_id",
         },
       );
 
@@ -292,9 +255,7 @@ export async function POST(request: Request) {
         .delete()
         .eq("id", invitedUser.id);
 
-      await adminClient.auth.admin.deleteUser(
-        invitedUser.id,
-      );
+      await adminClient.auth.admin.deleteUser(invitedUser.id);
 
       return NextResponse.json(
         {
@@ -308,8 +269,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        message:
-          "تم إرسال الدعوة وربط الدور بنجاح.",
+        message: "تم إرسال الدعوة وربط الدور بنجاح.",
         user: {
           id: invitedUser.id,
           email,
@@ -327,10 +287,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json(
       {
-        message:
-          error instanceof Error
-            ? error.message
-            : "حدث خطأ غير متوقع.",
+        message: error instanceof Error ? error.message : "حدث خطأ غير متوقع.",
       },
       {
         status: 500,

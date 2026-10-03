@@ -48,11 +48,6 @@ type MediaRow = {
   path: string;
 };
 
-type Coordinates = {
-  latitude: number;
-  longitude: number;
-};
-
 const publicCountryColumns = `
   id,
   name_ar,
@@ -65,125 +60,48 @@ const publicCountryColumns = `
   sort_order
 `;
 
-/**
- * Visual centers used only by the public world-map experience.
- *
- * The production countries table keeps its original geographic coordinates.
- * These overrides compensate for country shape / map projection so markers sit
- * visually near the center of each country on the equirectangular SVG map.
- *
- * Some legacy country rows currently contain non-standard ISO2 values, so the
- * lookup also supports normalized English/Arabic names until those records are
- * reconciled separately.
- */
-const VISUAL_MAP_CENTERS: Record<string, Coordinates> = {
-  "sa": { latitude: 23.8859, longitude: 45.0792 },
-  "saudi arabia": { latitude: 23.8859, longitude: 45.0792 },
-  "السعودية": { latitude: 23.8859, longitude: 45.0792 },
-
-  "sd": { latitude: 15.6, longitude: 30.4 },
-  "su": { latitude: 15.6, longitude: 30.4 },
-  "sudan": { latitude: 15.6, longitude: 30.4 },
-  "sudan n": { latitude: 15.6, longitude: 30.4 },
-  "السودان": { latitude: 15.6, longitude: 30.4 },
-
-  "jo": { latitude: 31.24, longitude: 36.51 },
-  "ju": { latitude: 31.24, longitude: 36.51 },
-  "jordan": { latitude: 31.24, longitude: 36.51 },
-  "jurdan": { latitude: 31.24, longitude: 36.51 },
-  "الاردن": { latitude: 31.24, longitude: 36.51 },
-  "الأردن": { latitude: 31.24, longitude: 36.51 },
-
-  "es": { latitude: 40.25, longitude: -3.72 },
-  "ss": { latitude: 40.25, longitude: -3.72 },
-  "spain": { latitude: 40.25, longitude: -3.72 },
-  "sbain": { latitude: 40.25, longitude: -3.72 },
-  "اسبانيا": { latitude: 40.25, longitude: -3.72 },
-  "إسبانيا": { latitude: 40.25, longitude: -3.72 },
-
-  "ca": { latitude: 56.13, longitude: -106.35 },
-  "canada": { latitude: 56.13, longitude: -106.35 },
-  "كندا": { latitude: 56.13, longitude: -106.35 },
-
-  "ng": { latitude: 9.08, longitude: 8.68 },
-  "nj": { latitude: 9.08, longitude: 8.68 },
-  "nigeria": { latitude: 9.08, longitude: 8.68 },
-  "نيجيريا": { latitude: 9.08, longitude: 8.68 },
-};
-
 const STANDARD_FLAG_CODES: Record<string, string> = {
-  "sa": "SA",
+  sa: "SA",
   "saudi arabia": "SA",
-  "السعودية": "SA",
-  "sd": "SD",
-  "su": "SD",
-  "sudan": "SD",
+  السعودية: "SA",
+  sd: "SD",
+  su: "SD",
+  sudan: "SD",
   "sudan n": "SD",
-  "السودان": "SD",
-  "jo": "JO",
-  "ju": "JO",
-  "jordan": "JO",
-  "jurdan": "JO",
-  "الاردن": "JO",
-  "الأردن": "JO",
-  "es": "ES",
-  "ss": "ES",
-  "spain": "ES",
-  "sbain": "ES",
-  "اسبانيا": "ES",
-  "إسبانيا": "ES",
-  "ca": "CA",
-  "canada": "CA",
-  "كندا": "CA",
-  "ng": "NG",
-  "nj": "NG",
-  "nigeria": "NG",
-  "نيجيريا": "NG",
+  السودان: "SD",
+  jo: "JO",
+  ju: "JO",
+  jordan: "JO",
+  jurdan: "JO",
+  الاردن: "JO",
+  الأردن: "JO",
+  es: "ES",
+  ss: "ES",
+  spain: "ES",
+  sbain: "ES",
+  اسبانيا: "ES",
+  إسبانيا: "ES",
+  ca: "CA",
+  canada: "CA",
+  كندا: "CA",
+  ng: "NG",
+  nj: "NG",
+  nigeria: "NG",
+  نيجيريا: "NG",
 };
 
-function normalizeCoordinate(
-  value: number | string | null,
-): number | null {
-  if (
-    value === null ||
-    value === undefined ||
-    value === ""
-  ) {
+function normalizeCoordinate(value: number | string | null): number | null {
+  if (value === null || value === undefined || value === "") {
     return null;
   }
 
   const parsedValue = Number(value);
 
-  return Number.isFinite(parsedValue)
-    ? parsedValue
-    : null;
+  return Number.isFinite(parsedValue) ? parsedValue : null;
 }
 
 function normalizeMapLookup(value: string | null | undefined): string {
-  return (value ?? "")
-    .trim()
-    .toLocaleLowerCase("en-US");
-}
-
-function getVisualMapCoordinates(
-  country: PublicCountryRow,
-  latitude: number,
-  longitude: number,
-): Coordinates {
-  const lookupKeys = [
-    country.iso2,
-    country.name_en,
-    country.name_ar,
-  ]
-    .map(normalizeMapLookup)
-    .filter(Boolean);
-
-  for (const key of lookupKeys) {
-    const override = VISUAL_MAP_CENTERS[key];
-    if (override) return override;
-  }
-
-  return { latitude, longitude };
+  return (value ?? "").trim().toLocaleLowerCase("en-US");
 }
 
 function getCountryFlagCode(country: PublicCountryRow): string | undefined {
@@ -223,9 +141,7 @@ function getPublicMediaUrl(
     return undefined;
   }
 
-  const { data } = supabase.storage
-    .from(media.bucket)
-    .getPublicUrl(media.path);
+  const { data } = supabase.storage.from(media.bucket).getPublicUrl(media.path);
 
   return data.publicUrl || undefined;
 }
@@ -240,9 +156,7 @@ async function getCountryFlagsMap(
     return mediaMap;
   }
 
-  const uniqueMediaIds = [
-    ...new Set(mediaIds),
-  ];
+  const uniqueMediaIds = [...new Set(mediaIds)];
 
   const { data, error } = await supabase
     .from("media")
@@ -251,14 +165,10 @@ async function getCountryFlagsMap(
     .is("deleted_at", null);
 
   if (error) {
-    throw new Error(
-      `Failed to load public country flags: ${error.message}`,
-    );
+    throw new Error(`Failed to load public country flags: ${error.message}`);
   }
 
-  (
-    (data ?? []) as MediaRow[]
-  ).forEach((media) => {
+  ((data ?? []) as MediaRow[]).forEach((media) => {
     mediaMap.set(media.id, media);
   });
 
@@ -284,17 +194,12 @@ async function getPublishedProgramCounts(
 
   const counts = new Map<string, number>();
 
-  (
-    (data ?? []) as ProgramCountryRow[]
-  ).forEach((program) => {
+  ((data ?? []) as ProgramCountryRow[]).forEach((program) => {
     if (!program.country_id) {
       return;
     }
 
-    counts.set(
-      program.country_id,
-      (counts.get(program.country_id) ?? 0) + 1,
-    );
+    counts.set(program.country_id, (counts.get(program.country_id) ?? 0) + 1);
   });
 
   return counts;
@@ -318,135 +223,82 @@ export async function getPublicCountries(
     });
 
   if (error) {
-    throw new Error(
-      `Failed to load public countries: ${error.message}`,
-    );
+    throw new Error(`Failed to load public countries: ${error.message}`);
   }
 
-  const countryRows =
-    (data ?? []) as PublicCountryRow[];
+  const countryRows = (data ?? []) as PublicCountryRow[];
 
-  const validCountryRows = countryRows.filter(
-    (country) => {
-      const latitude = normalizeCoordinate(
-        country.latitude,
-      );
+  const validCountryRows = countryRows.filter((country) => {
+    const latitude = normalizeCoordinate(country.latitude);
 
-      const longitude = normalizeCoordinate(
-        country.longitude,
-      );
+    const longitude = normalizeCoordinate(country.longitude);
 
-      return (
-        latitude !== null &&
-        longitude !== null &&
-        latitude >= -90 &&
-        latitude <= 90 &&
-        longitude >= -180 &&
-        longitude <= 180
-      );
-    },
-  );
+    return (
+      latitude !== null &&
+      longitude !== null &&
+      latitude >= -90 &&
+      latitude <= 90 &&
+      longitude >= -180 &&
+      longitude <= 180
+    );
+  });
 
   const mediaIds = validCountryRows
-    .map(
-      (country) =>
-        country.flag_media_id,
-    )
-    .filter(
-      (mediaId): mediaId is string =>
-        typeof mediaId === "string",
-    );
+    .map((country) => country.flag_media_id)
+    .filter((mediaId): mediaId is string => typeof mediaId === "string");
 
-  const [
-    mediaMap,
-    programCounts,
-  ] = await Promise.all([
-    getCountryFlagsMap(
-      supabase,
-      mediaIds,
-    ),
+  const [mediaMap, programCounts] = await Promise.all([
+    getCountryFlagsMap(supabase, mediaIds),
 
-    getPublishedProgramCounts(
-      supabase,
-    ),
+    getPublishedProgramCounts(supabase),
   ]);
 
-  return validCountryRows.map(
-    (country) => {
-      const sourceLatitude =
-        normalizeCoordinate(
-          country.latitude,
-        ) as number;
+  return validCountryRows.map((country) => {
+    const sourceLatitude = normalizeCoordinate(country.latitude) as number;
 
-      const sourceLongitude =
-        normalizeCoordinate(
-          country.longitude,
-        ) as number;
+    const sourceLongitude = normalizeCoordinate(country.longitude) as number;
 
-      const { latitude, longitude } =
-        getVisualMapCoordinates(
-          country,
-          sourceLatitude,
-          sourceLongitude,
-        );
+    const latitude = sourceLatitude;
+    const longitude = sourceLongitude;
 
-      const programCount =
-        programCounts.get(country.id) ??
-        0;
+    const programCount = programCounts.get(country.id) ?? 0;
 
-      const media =
-        country.flag_media_id
-          ? mediaMap.get(
-              country.flag_media_id,
-            )
-          : undefined;
+    const media = country.flag_media_id
+      ? mediaMap.get(country.flag_media_id)
+      : undefined;
 
-      const storedFlagUrl = getPublicMediaUrl(
-        supabase,
-        media,
-      );
+    const storedFlagUrl = getPublicMediaUrl(supabase, media);
 
-      return {
-        id: country.id,
+    return {
+      id: country.id,
 
-        nameAr: country.name_ar,
-        nameEn: country.name_en,
+      nameAr: country.name_ar,
+      nameEn: country.name_en,
 
-        iso2: country.iso2,
-        iso3: country.iso3,
+      iso2: country.iso2,
+      iso3: country.iso3,
 
-        latitude,
-        longitude,
+      latitude,
+      longitude,
 
-        flagMediaId:
-          country.flag_media_id,
+      flagMediaId: country.flag_media_id,
 
-        flagUrl: storedFlagUrl ?? getFallbackFlagDataUrl(country),
+      flagUrl: storedFlagUrl ?? getFallbackFlagDataUrl(country),
 
-        publishedProgramsCount:
-          programCount,
+      publishedProgramsCount: programCount,
 
-        hasPublishedPrograms:
-          programCount > 0,
+      hasPublishedPrograms: programCount > 0,
 
-        sortOrder:
-          country.sort_order,
-      };
-    },
-  );
+      sortOrder: country.sort_order,
+    };
+  });
 }
 
 export async function getPublicCountryById(
   supabase: SupabaseClient,
   countryId: string,
 ): Promise<PublicCountry | null> {
-  const countries =
-    await getPublicCountries(supabase);
+  const countries = await getPublicCountries(supabase);
 
-  return (
-    countries.find(
-      (country) =>
-        country.id === countryId,
-    ) ?? null
-  );
+  return countries.find((country) => country.id === countryId) ?? null;
 }

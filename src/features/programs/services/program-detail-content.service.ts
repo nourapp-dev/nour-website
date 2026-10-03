@@ -44,6 +44,8 @@ export type ProgramCancellationRule = {
 };
 
 export type ProgramMeetingPoint = {
+  cityId: string | null;
+  departureId: string | null;
   id: string;
   nameAr: string;
   nameEn: string;
@@ -98,16 +100,57 @@ export async function getProgramDetailContent(
   supabase: SupabaseClient,
   programId: string,
 ): Promise<ProgramDetailContent> {
-  const [itinerary, inclusions, cancellation, meetingPoints, priceTiers, faqs] = await Promise.all([
-    supabase.from("program_itinerary_days").select("*").eq("program_id", programId).is("deleted_at", null).order("sort_order").order("day_number"),
-    supabase.from("program_inclusion_items").select("*").eq("program_id", programId).is("deleted_at", null).order("inclusion_type").order("sort_order"),
-    supabase.from("program_cancellation_rules").select("*").eq("program_id", programId).is("deleted_at", null).order("sort_order"),
-    supabase.from("program_meeting_points").select("*").eq("program_id", programId).is("deleted_at", null).order("sort_order"),
-    supabase.from("program_price_tiers").select("*").eq("program_id", programId).is("departure_id", null).is("deleted_at", null).order("sort_order"),
-    supabase.from("program_faqs").select("*").eq("program_id", programId).is("deleted_at", null).order("sort_order"),
-  ]);
+  const [itinerary, inclusions, cancellation, meetingPoints, priceTiers, faqs] =
+    await Promise.all([
+      supabase
+        .from("program_itinerary_days")
+        .select("*")
+        .eq("program_id", programId)
+        .is("deleted_at", null)
+        .order("sort_order")
+        .order("day_number"),
+      supabase
+        .from("program_inclusion_items")
+        .select("*")
+        .eq("program_id", programId)
+        .is("deleted_at", null)
+        .order("inclusion_type")
+        .order("sort_order"),
+      supabase
+        .from("program_cancellation_rules")
+        .select("*")
+        .eq("program_id", programId)
+        .is("deleted_at", null)
+        .order("sort_order"),
+      supabase
+        .from("program_meeting_points")
+        .select("*")
+        .eq("program_id", programId)
+        .is("deleted_at", null)
+        .order("sort_order"),
+      supabase
+        .from("program_price_tiers")
+        .select("*")
+        .eq("program_id", programId)
+        .is("departure_id", null)
+        .is("deleted_at", null)
+        .order("sort_order"),
+      supabase
+        .from("program_faqs")
+        .select("*")
+        .eq("program_id", programId)
+        .is("deleted_at", null)
+        .order("sort_order"),
+    ]);
 
-  const error = [itinerary, inclusions, cancellation, meetingPoints, priceTiers, faqs].find((r) => r.error)?.error;
+  const error = [
+    itinerary,
+    inclusions,
+    cancellation,
+    meetingPoints,
+    priceTiers,
+    faqs,
+  ].find((r) => r.error)?.error;
   if (error) throw new Error(`تعذر تحميل تفاصيل البرنامج: ${error.message}`);
 
   return {
@@ -144,6 +187,8 @@ export async function getProgramDetailContent(
       sortOrder: row.sort_order,
     })),
     meetingPoints: (meetingPoints.data ?? []).map((row) => ({
+      cityId: row.city_id,
+      departureId: row.departure_id,
       id: row.id,
       nameAr: row.name_ar,
       nameEn: row.name_en,
@@ -207,7 +252,10 @@ export async function updateProgramDetailItem(
   id: string,
   payload: Record<string, unknown>,
 ) {
-  const { error } = await supabase.from(TABLES[section]).update(payload).eq("id", id);
+  const { error } = await supabase
+    .from(TABLES[section])
+    .update(payload)
+    .eq("id", id);
   if (error) throw new Error(error.message);
 }
 
@@ -216,6 +264,9 @@ export async function archiveProgramDetailItem(
   section: ProgramDetailSection,
   id: string,
 ) {
-  const { error } = await supabase.from(TABLES[section]).update({ deleted_at: new Date().toISOString() }).eq("id", id);
+  const { error } = await supabase
+    .from(TABLES[section])
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id);
   if (error) throw new Error(error.message);
 }

@@ -1,1285 +1,178 @@
 .panel {
-  display: grid;
-  gap: 22px;
-  margin: 0 0 20px;
-  color: var(--nr-text, #15233b);
+  width: min(1200px, calc(100% - 40px));
+  margin: 64px auto;
+  padding: 28px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #09233f, #103654);
+  color: #f2f7ff;
+  box-sizing: border-box;
 }
-
-.sectionIntro {
-  width: min(880px, 100%);
-  margin-inline: auto;
-  text-align: center;
-}
-
-.eyebrow {
-  display: inline-flex;
-  min-height: 32px;
+.header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding-inline: 12px;
-  border: 1px solid rgba(23, 111, 232, 0.14);
-  border-radius: 999px;
-  color: #176fe8;
-  background: rgba(23, 111, 232, 0.055);
-  font-size: 10px;
-  font-weight: 900;
+  gap: 22px;
+  flex-wrap: wrap;
 }
-
-.sectionIntro h3 {
-  margin: 15px auto 10px;
-  color: var(--nr-text, #15233b);
-  font-size: clamp(34px, 4vw, 54px);
-  line-height: 1.12;
-  text-wrap: balance;
+.header h2 {
+  margin: 10px 0;
+  font-size: clamp(24px, 3vw, 34px);
 }
-
-.sectionIntro p {
-  max-width: 740px;
-  margin: 0 auto;
-  color: var(--nr-muted, #6d7b91);
-  font-size: 14px;
+.header p {
+  color: #b9cee2;
+  margin: 0;
   line-height: 1.8;
 }
-
-:global(html[data-theme="dark"]) .sectionIntro h3,
-:global(html.dark) .sectionIntro h3,
-:global(body.dark) .sectionIntro h3,
-:global(.nr-dark) .sectionIntro h3 {
-  color: #f1f5f9;
-}
-
-:global(html[data-theme="dark"]) .sectionIntro p,
-:global(html.dark) .sectionIntro p,
-:global(body.dark) .sectionIntro p,
-:global(.nr-dark) .sectionIntro p {
-  color: #a9b6c9;
-}
-
-:global(html[data-theme="dark"]) .eyebrow,
-:global(html.dark) .eyebrow,
-:global(body.dark) .eyebrow,
-:global(.nr-dark) .eyebrow {
-  color: #79b8ff;
-  border-color: rgba(121, 184, 255, 0.22);
-  background: rgba(75, 145, 241, 0.08);
-}
-
-/* =========================================================
-   MAP EXPERIENCE
-========================================================= */
-
-.mapExperience {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  padding: 14px;
-  overflow: hidden;
-  border: 1px solid rgba(23, 111, 232, 0.09);
-  border-radius: 32px;
-  background:
-    radial-gradient(circle at 82% 16%, rgba(42,169,233,.12), transparent 30%),
-    linear-gradient(145deg, #07182d 0%, #0a2748 54%, #0c315b 100%);
-  box-shadow: 0 30px 80px rgba(7, 28, 54, 0.2);
-}
-
-.mapHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 4px 4px 10px;
-  color: #fff;
-}
-
-.mapHeader small,
-.mapHeader strong {
-  display: block;
-}
-
-.mapHeader small {
-  color: rgba(255,255,255,.48);
-  font-size: 9px;
-}
-
-.mapHeader strong {
-  margin-top: 3px;
+.eyebrow {
+  color: #ffd34f;
   font-size: 13px;
 }
-
-.live {
-  display: inline-flex;
-  min-height: 29px;
-  align-items: center;
-  gap: 8px;
-  padding-inline: 10px;
-  border: 1px solid rgba(38,215,149,.22);
-  border-radius: 999px;
-  color: #8bf0c7;
-  background: rgba(38,215,149,.09);
-  font-size: 9px;
-  font-weight: 900;
-}
-
-.live i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #26d795;
-  box-shadow: 0 0 0 5px rgba(38,215,149,.1);
-}
-
-.map {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 2.05 / 1;
-  overflow: hidden;
-  border-radius: 25px;
-  background: #06192e;
-  isolation: isolate;
-  overscroll-behavior: auto;
-  touch-action: pan-y;
-}
-
-.map::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 61% 55%, rgba(255,195,19,.075), transparent 18%),
-    linear-gradient(180deg, rgba(2,12,26,.02), rgba(2,12,26,.17));
-}
-
-.mapStage {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.realisticMap {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  opacity: .94;
-  pointer-events: none;
-  user-select: none;
-  filter: contrast(1.08) brightness(1.035);
-}
-
-/* =========================================================
-   ROUTES — NOUR BLUE → GOLD
-========================================================= */
-
-.routes {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.routeBase,
-.routeBaseActive,
-.routeTraveler,
-.routeTravelerActive {
-  fill: none;
-  vector-effect: non-scaling-stroke;
-}
-
-.routeBase {
-  stroke: url(#nourRouteGradient);
-  stroke-width: 1.05;
-  opacity: .34;
-}
-
-.routeBaseActive {
-  stroke: url(#nourRouteGradient);
-  stroke-width: 1.7;
-  opacity: .95;
-  filter: url(#nourRouteGlow);
-}
-
-.routeTraveler {
-  stroke: #7cc6ff;
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  filter: url(#nourRouteGlow);
-}
-
-.routeTravelerActive {
-  stroke: #ffc313;
-  stroke-width: 2.05;
-  stroke-linecap: round;
-  filter: url(#nourRouteGlow);
-}
-
-/* =========================================================
-   MAKKAH — VISUAL DESTINATION
-========================================================= */
-
-.makkahMarker {
-  position: absolute;
-  z-index: 10;
-  width: 32px;
-  height: 32px;
-  transform: translate(-50%, -50%);
-}
-
-.makkahPulse {
-  position: absolute;
-  inset: -12px;
-  border: 1px solid rgba(255,195,19,.68);
-  border-radius: 50%;
-  animation: makkahPulse 2.2s ease-out infinite;
-}
-
-.makkahCore {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  color: #102f55;
-  background: #ffc313;
-  box-shadow:
-    0 0 0 9px rgba(255,195,19,.14),
-    0 0 42px rgba(255,195,19,.72);
-}
-
-.makkahCore svg {
-  width: 15px;
-  height: 15px;
-}
-
-.makkahMarker strong {
-  position: absolute;
-  top: 50%;
-  inset-inline-start: 40px;
-  width: max-content;
-  transform: translateY(-50%);
-  padding: 5px 8px;
-  border: 1px solid rgba(255,195,19,.34);
-  border-radius: 9px;
-  color: #ffc313;
-  background: rgba(4,20,39,.82);
-  backdrop-filter: blur(10px);
-  font-size: 9px;
-}
-
-/* =========================================================
-   COUNTRY POINTS
-========================================================= */
-
-.point {
-  position: absolute;
-  z-index: 7;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  transform: translate(-50%, -50%);
-  border: 0;
-  border-radius: 50%;
-  background: #479eff;
-  box-shadow:
-    0 0 0 6px rgba(71,158,255,.09),
-    0 0 24px rgba(71,158,255,.42);
-  cursor: pointer;
-  transition:
-    transform .2s ease,
-    box-shadow .2s ease,
-    opacity .2s ease;
-}
-
-.point::before {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border: 1px solid rgba(92,174,255,.44);
-  border-radius: 50%;
-  animation: countryPulse 2.7s ease-out infinite;
-}
-
-.point > span {
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  background: #fff;
-}
-
-.point > small {
-  position: absolute;
-  top: 50%;
-  inset-inline-start: 25px;
-  width: max-content;
-  transform: translateY(-50%);
-  padding: 4px 7px;
-  border: 1px solid rgba(255,255,255,.13);
-  border-radius: 8px;
-  color: #fff;
-  background: rgba(4,20,39,.78);
-  backdrop-filter: blur(8px);
-  font-size: 8px;
-  line-height: 1;
-  opacity: .74;
-  pointer-events: none;
-}
-
-.point:hover,
-.activePoint {
-  z-index: 11;
-  transform: translate(-50%, -50%) scale(1.22);
-  box-shadow:
-    0 0 0 9px rgba(71,158,255,.15),
-    0 0 32px rgba(71,158,255,.68);
-}
-
-.point:hover > small,
-.activePoint > small {
-  opacity: 1;
-}
-
-.inactivePoint {
-  opacity: .44;
-  filter: saturate(.55);
-}
-
-.inactivePoint::before {
-  animation: none;
-}
-
-/* =========================================================
-   FLOATING INFO PANEL
-========================================================= */
-
-.floatingPanel {
-  position: relative;
-  z-index: 14;
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(220px, .95fr) minmax(330px, 1.2fr) auto;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 18px;
-  color: #fff;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(5, 26, 48, .90),
-      rgba(9, 45, 82, .72)
-    );
-  box-shadow: 0 16px 36px rgba(0,0,0,.16);
-  backdrop-filter: blur(16px);
-}
-
-.panelKicker {
-  display: inline-flex;
-  padding: 5px 8px;
-  border: 1px solid rgba(71,158,255,.2);
-  border-radius: 999px;
-  color: #95c8ff;
-  background: rgba(71,158,255,.08);
-  font-size: 8px;
-  font-weight: 900;
-}
-
-.floatingPanel h4 {
-  margin: 6px 0 3px;
-  color: #fff;
-  font-size: clamp(18px, 1.55vw, 24px);
-  line-height: 1.18;
-}
-
-.floatingPanel > p {
-  margin: 0;
-  color: rgba(255,255,255,.60);
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(84px, 1fr));
-  gap: 6px;
-  margin-top: 0;
-  min-width: 330px;
-}
-
-.metrics div {
-  display: grid;
-  min-height: 48px;
-  place-items: center;
-  align-content: center;
-  gap: 2px;
-  padding: 6px 7px;
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 11px;
-  background: rgba(255,255,255,.04);
-  text-align: center;
-}
-
-.metrics strong {
-  color: #ffc313;
-  font-size: 17px;
-}
-
-.metrics span {
-  color: rgba(255,255,255,.54);
-  font-size: 7px;
-}
-
-.cta {
-  display: inline-flex;
-  width: auto;
-  min-width: 165px;
-  min-height: 44px;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  margin-top: 0;
-  padding-inline: 14px;
+.tabs {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  background: #183c5a;
   border-radius: 13px;
-  color: #13365e;
-  background: #ffc313;
-  box-shadow: 0 15px 34px rgba(255,195,19,.2);
-  font-size: 10px;
-  font-weight: 900;
-  text-decoration: none;
-  transition:
-    transform .2s ease,
-    box-shadow .2s ease;
+  flex-wrap: wrap;
 }
-
-.cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 42px rgba(255,195,19,.28);
+.tabs button,
+.locations button,
+.details button {
+  font: inherit;
+  border: 1px solid #496882;
+  background: #14334f;
+  color: #eef6ff;
+  border-radius: 10px;
+  padding: 11px 16px;
+  cursor: pointer;
 }
-
-.cta svg {
-  width: 16px;
-  height: 16px;
+.tabs button[aria-pressed="true"] {
+  background: #ffd044;
+  color: #112b45;
+  border-color: #ffd044;
 }
-
-/* =========================================================
-   COUNTRY CARD
-========================================================= */
-
-.countryCard {
-  position: absolute;
-  z-index: 18;
-  top: 18px;
-  inset-inline-start: 18px;
-  width: min(245px, 28%);
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(250px, 1fr);
+  gap: 20px;
+  margin-top: 24px;
+}
+.map {
+  height: 420px;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  direction: ltr;
+}
+.details {
+  border-radius: 18px;
+  background: #0a233d;
+  padding: 23px;
+  max-height: 420px;
+  overflow: auto;
+}
+.details > span {
+  color: #a8c8e4;
+  font-size: 13px;
+}
+.details h3 {
+  font-size: 25px;
+  margin: 12px 0;
+}
+.details p {
+  line-height: 1.8;
+  color: #c1d4e5;
+}
+.details a {
+  color: #ffcf44;
+}
+.program {
+  display: grid;
+  gap: 9px;
+  border-top: 1px solid #36516c;
+  padding: 14px 0;
+}
+.program small {
+  color: #bdd0e1;
+}
+.locations {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 12px;
-  border: 1px solid rgba(255,255,255,.22);
-  border-radius: 15px;
-  color: #16365d;
-  background: rgba(255,255,255,.96);
-  box-shadow: 0 16px 42px rgba(0,0,0,.18);
-  backdrop-filter: blur(16px);
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 18px;
 }
-
-.countryCard small,
-.countryCard strong {
-  display: block;
+.locations button {
+  display: grid;
+  gap: 5px;
+  text-align: start;
+  min-width: 110px;
 }
-
-.countryCard small {
-  color: #71869e;
-  font-size: 8px;
-}
-
-.countryCard strong {
-  margin-top: 2px;
-  color: #16365d;
+.locations small {
+  color: #b8cadd;
   font-size: 11px;
 }
-
-.pin {
+.locations button[aria-pressed="true"] {
+  background: #e4f0fb;
+  color: #102b45;
+}
+.locations button[aria-pressed="true"] small {
+  color: #39546d;
+}
+.pickups {
+  margin-top: 20px;
+  padding: 18px;
+  background: #0a233d;
+  border-radius: 15px;
+}
+.pickups label {
   display: grid;
-  flex: 0 0 34px;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border-radius: 10px;
-  color: #0f68d5;
-  background: #e9f3ff;
+  gap: 10px;
 }
-
-.pin svg {
-  width: 18px;
-  height: 18px;
-}
-
-.cardClose {
-  position: absolute;
-  top: 6px;
-  inset-inline-end: 6px;
-  display: grid;
-  width: 22px;
-  height: 22px;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  color: #71869e;
-  background: rgba(236,242,248,.9);
-  cursor: pointer;
-}
-
-/* =========================================================
-   COUNTRY TABS
-========================================================= */
-
-.locationTabs {
-  display: flex;
-  gap: 7px;
-  overflow-x: auto;
-  margin-top: 2px;
-  padding: 0 2px 2px;
-  scrollbar-width: none;
-}
-
-.locationTabs::-webkit-scrollbar {
-  display: none;
-}
-
-.locationTabs button {
-  display: inline-flex;
-  flex: 0 0 auto;
-  min-height: 34px;
-  align-items: center;
-  gap: 6px;
-  padding-inline: 12px;
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 999px;
-  color: rgba(255,255,255,.62);
-  background: rgba(255,255,255,.04);
-  font: inherit;
-  font-size: 9px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.locationTabs button > span {
-  display: inline-grid;
-  min-width: 18px;
-  height: 18px;
-  place-items: center;
-  padding-inline: 4px;
-  border-radius: 999px;
-  color: #ffc313;
-  background: rgba(255,195,19,.1);
-  font-size: 8px;
-}
-
-.locationTabs .activeTab {
-  border-color: rgba(255,195,19,.4);
-  color: #ffc313;
-  background: rgba(255,195,19,.08);
-}
-
-.mapHint {
-  margin: 2px 4px 0;
-  color: rgba(255,255,255,.46);
-  font-size: 8px;
-  line-height: 1.45;
-  text-align: center;
-}
-
-/* =========================================================
-   STATE
-========================================================= */
-
-.mapState {
-  position: absolute;
-  inset: 50% auto auto 50%;
-  z-index: 25;
-  transform: translate(-50%, -50%);
-  padding: 11px 14px;
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 11px;
-  color: rgba(255,255,255,.78);
-  background: rgba(4,20,39,.82);
-  backdrop-filter: blur(12px);
-  font-size: 10px;
-}
-
-/* =========================================================
-   ANIMATIONS
-========================================================= */
-
-@keyframes countryPulse {
-  0% {
-    transform: scale(.58);
-    opacity: .82;
-  }
-  100% {
-    transform: scale(1.7);
-    opacity: 0;
-  }
-}
-
-@keyframes makkahPulse {
-  0% {
-    transform: scale(.65);
-    opacity: .95;
-  }
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-}
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 1050px) {
-  .map {
-    aspect-ratio: 1.92 / 1;
-  }
-
-  .floatingPanel {
-    grid-template-columns: 1fr;
-    align-items: stretch;
-    padding: 14px;
-  }
-
-  .metrics {
-    min-width: 0;
-  }
-
-  .cta {
-    width: 100%;
-  }
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 760px) {
-  .panel {
-    gap: 16px;
-  }
-
-  .sectionIntro h3 {
-    font-size: clamp(29px, 9vw, 40px);
-  }
-
-  .mapExperience {
-    padding: 9px;
-    border-radius: 21px;
-  }
-
-  .mapHeader {
-    align-items: flex-start;
-  }
-
-  .mapHeader strong {
-    font-size: 11px;
-  }
-
-  .map {
-    aspect-ratio: 1.42 / 1;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .mapStage {
-    height: 100%;
-  }
-
-  .floatingPanel {
-    width: 100%;
-    padding: 14px;
-    border-radius: 17px;
-  }
-
-  .floatingPanel h4 {
-    font-size: 20px;
-  }
-
-  .metrics {
-    margin-top: 13px;
-  }
-
-  .metrics div {
-    min-height: 54px;
-  }
-
-  .metrics {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 5px;
-  }
-
-  .metrics strong {
-    font-size: 15px;
-  }
-
-  .metrics span {
-    font-size: 6.5px;
-  }
-
-  .locationTabs {
-    padding-bottom: 4px;
-  }
-
-  .mapHint {
-    font-size: 7px;
-  }
-
-  .countryCard {
-    top: 10px;
-    inset-inline-start: 10px;
-    width: min(210px, calc(100% - 20px));
-  }
-
-  .point {
-    width: 14px;
-    height: 14px;
-  }
-
-  .point > small,
-  .makkahMarker strong {
-    display: none;
-  }
-
-  .makkahMarker {
-    width: 25px;
-    height: 25px;
-  }
-
-}
-
-@media (max-width: 480px) {
-  .sectionIntro h3 {
-    font-size: clamp(28px, 9vw, 36px);
-  }
-
-  .sectionIntro p {
-    font-size: 12px;
-  }
-
-  .mapHeader {
-    gap: 8px;
-  }
-
-  .live {
-    min-height: 26px;
-    padding-inline: 8px;
-    font-size: 8px;
-  }
-
-  .map {
-    aspect-ratio: 1.25 / 1;
-  }
-
-  .floatingPanel h4 {
-    font-size: 19px;
-  }
-
-  .cta {
-    min-height: 43px;
-  }
-}
-
-/* =========================================================
-   REDUCED MOTION
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-  .point::before,
-  .makkahPulse {
-    animation: none;
-  }
-
-  .cta,
-  .point {
-    transition: none;
-  }
-
-  .routeTraveler,
-  .routeTravelerActive {
-    display: none;
-  }
-}
-
-/* Prevent accidental horizontal overflow */
-.panel,
-.mapExperience,
-.map,
-.mapStage,
-.floatingPanel,
-.locationTabs {
-  min-width: 0;
+.pickups select {
   max-width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  color: #122e48;
+  background: #fff;
+  font: inherit;
 }
-
-/* Tablet / small laptop */
-@media (max-width: 1050px) {
-  .mapExperience {
-    gap: 10px;
-    padding: 12px;
-    border-radius: 26px;
-  }
-
-  .map {
-    /* Keep the map visually wide instead of tall */
-    aspect-ratio: 1.78 / 1;
-  }
-
-  .floatingPanel {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
-    padding: 13px;
-  }
-
-  .metrics {
-    min-width: 0;
-    width: 100%;
-  }
-
-  .cta {
-    width: 100%;
-  }
+.pickups li {
+  margin: 10px 0;
+  line-height: 1.8;
 }
-
-/* Mobile */
+.footer {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: #b5c8da;
+  font-size: 12px;
+  line-height: 1.8;
+  margin-top: 19px;
+}
 @media (max-width: 760px) {
   .panel {
-    gap: 14px;
-    margin-bottom: 12px;
+    width: calc(100% - 24px);
+    padding: 18px;
+    margin: 40px auto;
   }
-
-  .sectionIntro {
-    width: 100%;
-    padding-inline: 2px;
-  }
-
-  .sectionIntro h3 {
-    margin-top: 12px;
-    font-size: clamp(27px, 8vw, 36px);
-    line-height: 1.16;
-  }
-
-  .sectionIntro p {
-    max-width: 34rem;
-    font-size: 12px;
-    line-height: 1.7;
-  }
-
-  .mapExperience {
-    gap: 9px;
-    padding: 9px;
-    border-radius: 21px;
-  }
-
-  .mapHeader {
-    align-items: center;
-    gap: 8px;
-    margin: 2px 3px 6px;
-  }
-
-  .mapHeader small {
-    font-size: 8px;
-  }
-
-  .mapHeader strong {
-    margin-top: 2px;
-    font-size: 10px;
-    line-height: 1.35;
-  }
-
-  .live {
-    flex: 0 0 auto;
-    min-height: 26px;
-    gap: 6px;
-    padding-inline: 8px;
-    font-size: 8px;
-  }
-
-  .live i {
-    width: 6px;
-    height: 6px;
-    box-shadow: 0 0 0 4px rgba(38, 215, 149, .1);
-  }
-
-  /* Main fix:
-     old mobile ratio 1.42/1 and 1.25/1 made the map too tall.
-     Use a fixed responsive height so it stays cinematic. */
-  .map {
-    aspect-ratio: auto !important;
-    height: clamp(235px, 56vw, 320px);
-    min-height: 235px;
-    border-radius: 18px;
-  }
-
-  .mapStage,
-  .realisticMap {
-    width: 100%;
-    height: 100%;
-  }
-
-  .realisticMap {
-    object-fit: fill;
-  }
-
-  /* Smaller country markers on phone */
-  .point {
-    width: 12px;
-    height: 12px;
-  }
-
-  .point::before {
-    inset: -5px;
-  }
-
-  .point > span {
-    inset: 3px;
-  }
-
-  .point > small,
-  .makkahMarker strong {
-    display: none;
-  }
-
-  .makkahMarker {
-    width: 23px;
-    height: 23px;
-  }
-
-  .makkahPulse {
-    inset: -9px;
-  }
-
-  .makkahCore svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  /* Country pop-up card */
-  .countryCard {
-    top: 8px;
-    inset-inline-start: 8px;
-    width: min(190px, calc(100% - 16px));
-    gap: 8px;
-    padding: 9px 10px;
-    border-radius: 13px;
-  }
-
-  .countryCard small {
-    font-size: 7px;
-  }
-
-  .countryCard strong {
-    font-size: 10px;
-  }
-
-  .pin {
-    flex-basis: 30px;
-    width: 30px;
-    height: 30px;
-    border-radius: 9px;
-  }
-
-  .pin svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .cardClose {
-    top: 5px;
-    inset-inline-end: 5px;
-    width: 20px;
-    height: 20px;
-  }
-
-  /* Compact information card below the map */
-  .floatingPanel {
-    display: grid;
+  .layout {
     grid-template-columns: 1fr;
-    gap: 9px;
-    width: 100%;
-    padding: 11px;
-    border-radius: 15px;
   }
-
-  .panelKicker {
-    width: fit-content;
-    padding: 4px 7px;
-    font-size: 7px;
-  }
-
-  .floatingPanel h4 {
-    margin: 5px 0 2px;
-    font-size: 18px;
-    line-height: 1.2;
-  }
-
-  .floatingPanel > p {
-    font-size: 10px;
-    line-height: 1.45;
-  }
-
-  .metrics {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 5px;
-    width: 100%;
-    margin-top: 2px;
-  }
-
-  .metrics div {
-    min-height: 48px;
-    gap: 1px;
-    padding: 5px 4px;
-    border-radius: 10px;
-  }
-
-  .metrics strong {
-    font-size: 14px;
-  }
-
-  .metrics span {
-    font-size: 6.3px;
-    line-height: 1.25;
-  }
-
-  .cta {
-    width: 100%;
-    min-width: 0;
-    min-height: 42px;
-    gap: 7px;
-    padding-inline: 12px;
-    border-radius: 11px;
-    font-size: 9px;
-  }
-
-  .cta svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  /* Country tabs: one-line swipeable rail */
-  .locationTabs {
-    width: 100%;
-    gap: 6px;
-    margin-top: 0;
-    padding: 2px 1px 4px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x proximity;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .locationTabs button {
-    min-height: 31px;
-    gap: 5px;
-    padding-inline: 10px;
-    font-size: 8px;
-    scroll-snap-align: start;
-  }
-
-  .locationTabs button > span {
-    min-width: 16px;
-    height: 16px;
-    font-size: 7px;
-  }
-
-  .mapHint {
-    margin-top: 0;
-    font-size: 7px;
-  }
-}
-
-/* Small phones */
-@media (max-width: 480px) {
-  .sectionIntro h3 {
-    font-size: clamp(26px, 8.4vw, 33px);
-  }
-
-  .sectionIntro p {
-    font-size: 11px;
-  }
-
-  .mapExperience {
-    padding: 8px;
-    border-radius: 18px;
-  }
-
-  .mapHeader {
-    margin-bottom: 4px;
-  }
-
-  .mapHeader strong {
-    font-size: 9.5px;
-  }
-
-  .live {
-    min-height: 24px;
-    padding-inline: 7px;
-    font-size: 7.5px;
-  }
-
   .map {
-    height: clamp(215px, 57vw, 270px);
-    min-height: 215px;
-    border-radius: 16px;
+    height: 300px;
   }
-
-  .countryCard {
-    width: min(170px, calc(100% - 14px));
-    padding: 8px 9px;
+  .details {
+    max-height: none;
+    padding: 18px;
   }
-
-  .pin {
-    flex-basis: 28px;
-    width: 28px;
-    height: 28px;
+  .tabs {
+    width: 100%;
   }
-
-  .floatingPanel {
-    gap: 8px;
-    padding: 10px;
-    border-radius: 14px;
+  .tabs button {
+    flex: 1;
   }
-
-  .floatingPanel h4 {
-    font-size: 17px;
-  }
-
-  .floatingPanel > p {
-    font-size: 9.5px;
-  }
-
-  .metrics div {
-    min-height: 45px;
-  }
-
-  .metrics strong {
-    font-size: 13px;
-  }
-
-  .metrics span {
-    font-size: 6px;
-  }
-
-  .cta {
-    min-height: 40px;
-    font-size: 8.5px;
-  }
-
-  .locationTabs button {
-    min-height: 29px;
-    padding-inline: 9px;
-    font-size: 7.5px;
-  }
-}
-
-/* Very narrow phones */
-@media (max-width: 360px) {
-  .map {
-    height: 205px;
-    min-height: 205px;
-  }
-
-  .mapHeader strong {
-    max-width: 190px;
-  }
-
-  .metrics {
-    gap: 4px;
-  }
-
-  .metrics strong {
-    font-size: 12px;
-  }
-
-  .metrics span {
-    font-size: 5.7px;
-  }
-}
-
-/* iPhone safe area:
-   keep floating browser / system UI from covering the last controls */
-@supports (padding: max(0px)) {
-  @media (max-width: 760px) {
-    .locationTabs {
-      padding-inline-start: max(1px, env(safe-area-inset-left));
-      padding-inline-end: max(1px, env(safe-area-inset-right));
-    }
-  }
-}
-
-/* =========================================================
-   JOURNEY TRAVELER — SAFARI / IOS STABILITY
-========================================================= */
-
-.panel[dir="ltr"] :global(.nr-map-focus-line i) {
-  inset-inline-start: auto !important;
-  left: 0 !important;
-  right: auto !important;
-  z-index: 3;
-  animation: nrJourneyTravelerLtrFix 2.6s linear infinite !important;
-}
-
-.panel[dir="rtl"] :global(.nr-map-focus-line i) {
-  inset-inline-start: auto !important;
-  right: 0 !important;
-  left: auto !important;
-  z-index: 3;
-  animation: nrJourneyTravelerRtlFix 2.6s linear infinite !important;
-}
-
-@keyframes nrJourneyTravelerLtrFix {
-  from { left: 0; }
-  to { left: calc(100% - 10px); }
-}
-
-@keyframes nrJourneyTravelerRtlFix {
-  from { right: 0; }
-  to { right: calc(100% - 10px); }
-}
-
-@media (max-width: 760px) {
-  .panel :global(.nr-map-focus-line) {
-    height: 3px;
-  }
-
-  .panel :global(.nr-map-focus-line i) {
-    width: 10px !important;
-    height: 10px !important;
-    box-shadow:
-      0 0 0 3px rgba(255,195,19,.18),
-      0 0 18px rgba(255,195,19,.92) !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .panel[dir="ltr"] :global(.nr-map-focus-line i) {
-    animation: none !important;
-    left: calc(100% - 10px) !important;
-    right: auto !important;
-  }
-
-  .panel[dir="rtl"] :global(.nr-map-focus-line i) {
-    animation: none !important;
-    right: calc(100% - 10px) !important;
-    left: auto !important;
+  .footer {
+    display: block;
   }
 }

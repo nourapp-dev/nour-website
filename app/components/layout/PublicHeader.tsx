@@ -6,6 +6,8 @@ import Header from "./Header";
 import type { HomeCopy, Language, SectionId, Theme } from "../../data/home";
 import { createClient } from "../../../src/lib/supabase/client";
 
+import { getPilgrimUser } from "../../../src/features/auth/services/account-access";
+
 type Props = {
   t: HomeCopy;
   language: Language;
@@ -20,18 +22,28 @@ type Props = {
 };
 
 export default function PublicHeader(props: Props) {
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = useMemo(() => createClient("pilgrim"), []);
   const [signedIn, setSignedIn] = useState(false);
 
   useEffect(() => {
     let mounted = true;
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (mounted) setSignedIn(Boolean(data.session));
-    });
-
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSignedIn(Boolean(session));
+    let version = 0;
+    const refresh = async () => {
+      const current = ++version;
+      try {
+        const user = await getPilgrimUser(supabase);
+        if (mounted && current === version) setSignedIn(Boolean(user));
+      } catch {
+        if (mounted && current === version) setSignedIn(false);
+      }
+    };
+    void refresh();
+    const { data } = supabase.auth.onAuthStateChange(() => {
+      // Do not call Auth methods inside its state-change lock.
+      window.setTimeout(() => {
+        if (mounted) void refresh();
+      }, 0);
     });
 
     return () => {
@@ -42,8 +54,14 @@ export default function PublicHeader(props: Props) {
 
   const accountHref = signedIn ? "/account/profile" : "/account/login";
   const accountLabel = signedIn
-    ? props.language === "ar" ? "حسابي" : "My account"
-    : props.language === "ar" ? "تسجيل الدخول" : "Sign in";
+    ? props.language === "ar"
+      ? "حسابي"
+      : "My account"
+    : props.language === "ar"
+      ? "تسجيل الدخول"
+      : "Sign in";
 
-  return <Header {...props} accountHref={accountHref} accountLabel={accountLabel} />;
+  return (
+    <Header {...props} accountHref={accountHref} accountLabel={accountLabel} />
+  );
 }

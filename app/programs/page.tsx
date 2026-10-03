@@ -18,66 +18,103 @@ import {
 } from "lucide-react";
 
 import { useLanguage } from "../../src/core/i18n";
+import { useQuery } from "@tanstack/react-query";
+import { createClient } from "../../src/lib/supabase/client";
+import { getJourneyCatalog } from "../../src/features/journeys/journey.service";
 import usePublicProgramCatalog from "../../src/features/programs/hooks/usePublicProgramCatalog";
-import { getProgramCountries, matchesProgramDuration, parseProgramDuration } from "../../src/features/programs/utils/program-discovery";
+import {
+  getProgramCountries,
+  matchesProgramDuration,
+  parseProgramDuration,
+} from "../../src/features/programs/utils/program-discovery";
 
-function formatPrice(
-  value: number,
-  language: "ar" | "en",
-) {
-  return new Intl.NumberFormat(
-    language === "ar" ? "ar-SA" : "en-US",
-    {
-      maximumFractionDigits: 0,
-    },
-  ).format(value);
+function formatPrice(value: number, language: "ar" | "en") {
+  return new Intl.NumberFormat(language === "ar" ? "ar-SA" : "en-US", {
+    maximumFractionDigits: 0,
+  }).format(value);
 }
 
 export default function PublicProgramsPage() {
   const { language } = useLanguage();
-  return <Suspense fallback={<main className="nr-all-programs" dir={language === "ar" ? "rtl" : "ltr"} aria-busy="true"><p>{language === "ar" ? "جارٍ تحميل البرامج..." : "Loading programs..."}</p></main>}><PublicProgramsContent /></Suspense>;
+  return (
+    <Suspense
+      fallback={
+        <main
+          className="nr-all-programs"
+          dir={language === "ar" ? "rtl" : "ltr"}
+          aria-busy="true"
+        >
+          <p>
+            {language === "ar"
+              ? "جارٍ تحميل البرامج..."
+              : "Loading programs..."}
+          </p>
+        </main>
+      }
+    >
+      <PublicProgramsContent />
+    </Suspense>
+  );
 }
 
 function PublicProgramsContent() {
   const { language } = useLanguage();
   const isArabic = language === "ar";
 
-  const [searchValue, setSearchValue] =
-    useState("");
+  const [searchValue, setSearchValue] = useState("");
   const params = useSearchParams();
   const router = useRouter();
   const countryFilter = params.get("country") || "all";
+  const cityFilter = params.get("city");
+  const client = useMemo(() => createClient("pilgrim"), []);
+  const journey = useQuery({
+    queryKey: ["public", "journey-map"],
+    queryFn: () => getJourneyCatalog(client),
+    enabled: Boolean(cityFilter),
+    staleTime: 60_000,
+  });
+  const cityProgramIds = useMemo(
+    () =>
+      new Set(
+        journey.data?.departures
+          .filter((d) => d.origin_city_id === cityFilter)
+          .map((d) => d.program_id) ?? [],
+      ),
+    [journey.data, cityFilter],
+  );
   const durationFilter = parseProgramDuration(params.get("duration"));
-  const updateDiscoveryFilter = (key: "country" | "duration", value: string) => {
+  const updateDiscoveryFilter = (
+    key: "country" | "duration",
+    value: string,
+  ) => {
     const next = new URLSearchParams(params.toString());
+    if (key === "country") next.delete("city");
     if (value === "all") next.delete(key);
     else next.set(key, value);
-    router.replace(`/programs${next.size ? `?${next}` : ""}`, { scroll: false });
+    router.replace(`/programs${next.size ? `?${next}` : ""}`, {
+      scroll: false,
+    });
   };
-  const [flightFilter, setFlightFilter] =
-    useState("all");
-  const [sortBy, setSortBy] =
-    useState("featured");
+  const [flightFilter, setFlightFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("featured");
 
-  const { data: programs = [], isLoading, isError, error } = usePublicProgramCatalog();
+  const {
+    data: programs = [],
+    isLoading,
+    isError,
+    error,
+  } = usePublicProgramCatalog();
   const countries = getProgramCountries(programs, language);
 
   const visiblePrograms = useMemo(() => {
-    const search =
-      searchValue.trim().toLowerCase();
+    const search = searchValue.trim().toLowerCase();
 
     const filtered = programs.filter((program) => {
-      const title = isArabic
-        ? program.titleAr
-        : program.titleEn;
+      const title = isArabic ? program.titleAr : program.titleEn;
 
-      const summary = isArabic
-        ? program.summaryAr
-        : program.summaryEn;
+      const summary = isArabic ? program.summaryAr : program.summaryEn;
 
-      const country = isArabic
-        ? program.countryNameAr
-        : program.countryNameEn;
+      const country = isArabic ? program.countryNameAr : program.countryNameEn;
 
       const matchesSearch =
         !search ||
@@ -86,16 +123,18 @@ function PublicProgramsContent() {
         country.toLowerCase().includes(search);
 
       const matchesCountry =
-        countryFilter === "all" ||
-        program.countryId === countryFilter;
+        countryFilter === "all" || program.countryId === countryFilter;
 
-      const matchesDuration = matchesProgramDuration(program.durationDays, durationFilter);
+      const matchesDuration = matchesProgramDuration(
+        program.durationDays,
+        durationFilter,
+      );
 
       const matchesFlight =
-        flightFilter === "all" ||
-        program.flightInclusion === flightFilter;
+        flightFilter === "all" || program.flightInclusion === flightFilter;
 
       return (
+        (!cityFilter || cityProgramIds.has(program.id)) &&
         matchesSearch &&
         matchesCountry &&
         matchesDuration &&
@@ -128,6 +167,8 @@ function PublicProgramsContent() {
     });
   }, [
     programs,
+    cityFilter,
+    cityProgramIds,
     searchValue,
     countryFilter,
     durationFilter,
@@ -143,27 +184,36 @@ function PublicProgramsContent() {
     setSortBy("featured");
   };
   return (
-    <main
-      className="nr-all-programs"
-      dir={isArabic ? "rtl" : "ltr"}
-    >
+    <main className="nr-all-programs" dir={isArabic ? "rtl" : "ltr"}>
+      {cityFilter ? (
+        <p role="status">
+          {journey.isPending
+            ? isArabic
+              ? "جارٍ تحميل رحلات المدينة…"
+              : "Loading city journeys…"
+            : journey.isError
+              ? isArabic
+                ? "تعذر تحميل رحلات المدينة."
+                : "Could not load city journeys."
+              : (isArabic ? "مدينة الانطلاق: " : "Departure city: ") +
+                (journey.data?.cities.find((c) => c.id === cityFilter)?.[
+                  isArabic ? "name_ar" : "name_en"
+                ] ?? "—")}{" "}
+          <button type="button" onClick={clearFilters}>
+            {isArabic ? "إلغاء فلتر المدينة" : "Clear city filter"}
+          </button>
+        </p>
+      ) : null}
       <section className="nr-all-programs-hero">
         <div className="nr-all-programs-container">
-          <Link
-            href="/"
-            className="nr-all-programs-back"
-          >
+          <Link href="/" className="nr-all-programs-back">
             <ArrowLeft size={17} />
-            {isArabic
-              ? "العودة للرئيسية"
-              : "Back Home"}
+            {isArabic ? "العودة للرئيسية" : "Back Home"}
           </Link>
 
           <span className="nr-all-programs-kicker">
             <Sparkles size={15} />
-            {isArabic
-              ? "برامج نور آب"
-              : "NourApp Programs"}
+            {isArabic ? "برامج نور آب" : "NourApp Programs"}
           </span>
 
           <h1>
@@ -191,11 +241,7 @@ function PublicProgramsContent() {
                 <input
                   type="search"
                   value={searchValue}
-                  onChange={(event) =>
-                    setSearchValue(
-                      event.target.value,
-                    )
-                  }
+                  onChange={(event) => setSearchValue(event.target.value)}
                   placeholder={
                     isArabic
                       ? "ابحث عن برنامج أو دولة..."
@@ -227,16 +273,11 @@ function PublicProgramsContent() {
                   }
                 >
                   <option value="all">
-                    {isArabic
-                      ? "جميع الدول"
-                      : "All Countries"}
+                    {isArabic ? "جميع الدول" : "All Countries"}
                   </option>
 
                   {countries.map((country) => (
-                    <option
-                      key={country.id}
-                      value={country.id}
-                    >
+                    <option key={country.id} value={country.id}>
                       {country.name}
                     </option>
                   ))}
@@ -282,11 +323,7 @@ function PublicProgramsContent() {
 
                 <select
                   value={flightFilter}
-                  onChange={(event) =>
-                    setFlightFilter(
-                      event.target.value,
-                    )
-                  }
+                  onChange={(event) => setFlightFilter(event.target.value)}
                 >
                   <option value="all">
                     {isArabic ? "كل الخيارات" : "Any option"}
@@ -313,11 +350,7 @@ function PublicProgramsContent() {
 
                 <select
                   value={sortBy}
-                  onChange={(event) =>
-                    setSortBy(
-                      event.target.value,
-                    )
-                  }
+                  onChange={(event) => setSortBy(event.target.value)}
                 >
                   <option value="featured">
                     {isArabic ? "المميز أولًا" : "Featured first"}
@@ -366,37 +399,37 @@ function PublicProgramsContent() {
             <div className="nr-all-programs-state">
               <div className="nr-all-programs-loader" />
               <strong>
-                {isArabic
-                  ? "جارٍ تحميل البرامج..."
-                  : "Loading programs..."}
+                {isArabic ? "جارٍ تحميل البرامج..." : "Loading programs..."}
               </strong>
             </div>
           ) : isError ? (
             <div className="nr-all-programs-state is-error">
               <strong>
-                {isArabic
-                  ? "تعذر تحميل البرامج"
-                  : "Unable to load programs"}
+                {isArabic ? "تعذر تحميل البرامج" : "Unable to load programs"}
               </strong>
 
-              <p>
-                {error instanceof Error
-                  ? error.message
-                  : ""}
-              </p>
+              <p>{error instanceof Error ? error.message : ""}</p>
             </div>
           ) : visiblePrograms.length === 0 ? (
             <div className="nr-all-programs-state">
               <strong>
                 {programs.length === 0
-                  ? (isArabic ? "لا توجد برامج متاحة حاليًا" : "No programs are available right now")
-                  : (isArabic ? "لا توجد برامج مطابقة" : "No matching programs")}
+                  ? isArabic
+                    ? "لا توجد برامج متاحة حاليًا"
+                    : "No programs are available right now"
+                  : isArabic
+                    ? "لا توجد برامج مطابقة"
+                    : "No matching programs"}
               </strong>
 
               <p>
                 {programs.length === 0
-                  ? (isArabic ? "يسعد فريق نور آب بالإجابة عن استفساراتك حول البرامج والخدمات." : "The NourApp team is here to answer your questions about programs and services.")
-                  : (isArabic ? "جرّب تغيير كلمات البحث أو اختيار دولة أخرى." : "Try another search or country.")}
+                  ? isArabic
+                    ? "يسعد فريق نور آب بالإجابة عن استفساراتك حول البرامج والخدمات."
+                    : "The NourApp team is here to answer your questions about programs and services."
+                  : isArabic
+                    ? "جرّب تغيير كلمات البحث أو اختيار دولة أخرى."
+                    : "Try another search or country."}
               </p>
               {programs.length === 0 ? (
                 <Link href="/#contact" className="nr-all-programs-details">
@@ -406,166 +439,130 @@ function PublicProgramsContent() {
             </div>
           ) : (
             <div className="nr-all-programs-grid">
-              {visiblePrograms.map(
-                (program) => {
-                  const title = isArabic
-                    ? program.titleAr
-                    : program.titleEn;
+              {visiblePrograms.map((program) => {
+                const title = isArabic ? program.titleAr : program.titleEn;
 
-                  const summary = isArabic
-                    ? program.summaryAr
-                    : program.summaryEn;
+                const summary = isArabic
+                  ? program.summaryAr
+                  : program.summaryEn;
 
-                  const country = isArabic
-                    ? program.countryNameAr
-                    : program.countryNameEn;
+                const country = isArabic
+                  ? program.countryNameAr
+                  : program.countryNameEn;
 
-                  const flightLabel =
-                    program.flightInclusion ===
-                    "included"
+                const flightLabel =
+                  program.flightInclusion === "included"
+                    ? isArabic
+                      ? "الطيران مشمول"
+                      : "Flights included"
+                    : program.flightInclusion === "excluded"
                       ? isArabic
-                        ? "الطيران مشمول"
-                        : "Flights included"
-                      : program.flightInclusion ===
-                          "excluded"
-                        ? isArabic
-                          ? "الطيران غير مشمول"
-                          : "Flights excluded"
-                        : isArabic
-                          ? "سعر الطيران ديناميكي"
-                          : "Dynamic flight price";
+                        ? "الطيران غير مشمول"
+                        : "Flights excluded"
+                      : isArabic
+                        ? "سعر الطيران ديناميكي"
+                        : "Dynamic flight price";
 
-                  return (
-                    <article
-                      key={program.id}
-                      className="nr-all-programs-card"
+                return (
+                  <article key={program.id} className="nr-all-programs-card">
+                    <Link
+                      href={`/programs/${program.slug}`}
+                      className="nr-all-programs-image"
                     >
-                      <Link
-                        href={`/programs/${program.slug}`}
-                        className="nr-all-programs-image"
-                      >
-                        {program.coverUrl ? (
-                          <Image
-                            src={program.coverUrl}
-                            alt={title}
-                            fill
-                            unoptimized
-                          />
-                        ) : (
-                          <div className="nr-all-programs-placeholder">
-                            <Sparkles />
-                          </div>
-                        )}
-
-                        <span
-                          className="nr-all-programs-image-overlay"
-                          aria-hidden="true"
+                      {program.coverUrl ? (
+                        <Image
+                          src={program.coverUrl}
+                          alt={title}
+                          fill
+                          unoptimized
                         />
-
-                        <div className="nr-all-programs-image-meta">
-                          <span>
-                            <MapPin size={13} />
-                            {country ||
-                              (isArabic
-                                ? "برنامج عمرة"
-                                : "Umrah program")}
-                          </span>
-
-                          <span>
-                            <CalendarDays size={13} />
-                            {program.durationDays}{" "}
-                            {isArabic ? "أيام" : "days"}
-                          </span>
+                      ) : (
+                        <div className="nr-all-programs-placeholder">
+                          <Sparkles />
                         </div>
+                      )}
 
-                        {program.isFeatured ? (
-                          <span className="nr-all-programs-featured">
-                            <Sparkles size={13} />
-                            {isArabic
-                              ? "مختار"
-                              : "Selected"}
-                          </span>
-                        ) : null}
-                      </Link>
+                      <span
+                        className="nr-all-programs-image-overlay"
+                        aria-hidden="true"
+                      />
 
-                      <div className="nr-all-programs-card-body">
-                        {country ? (
-                          <span className="nr-all-programs-country">
-                            <MapPin size={14} />
-                            {country}
-                          </span>
-                        ) : null}
+                      <div className="nr-all-programs-image-meta">
+                        <span>
+                          <MapPin size={13} />
+                          {country ||
+                            (isArabic ? "برنامج عمرة" : "Umrah program")}
+                        </span>
 
-                        <h2>
-                          <Link
-                            href={`/programs/${program.slug}`}
-                          >
-                            {title}
-                          </Link>
-                        </h2>
-
-                        {summary ? (
-                          <p>{summary}</p>
-                        ) : null}
-
-                        <div className="nr-all-programs-meta">
-                          <span>
-                            <CalendarDays />
-                            {program.durationDays}{" "}
-                            {isArabic
-                              ? "أيام"
-                              : "days"}
-                          </span>
-
-                          <span>
-                            <Moon />
-                            {program.durationNights}{" "}
-                            {isArabic
-                              ? "ليالٍ"
-                              : "nights"}
-                          </span>
-
-                          <span>
-                            <Plane />
-                            {flightLabel}
-                          </span>
-                        </div>
-
-                        <div className="nr-all-programs-card-footer">
-                          <div>
-                            <small>
-                              {isArabic
-                                ? "يبدأ من"
-                                : "Starting from"}
-                            </small>
-
-                            <strong>
-                              {formatPrice(
-                                program.basePrice,
-                                language,
-                              )}{" "}
-                              <span>
-                                {
-                                  program.currencyCode
-                                }
-                              </span>
-                            </strong>
-                          </div>
-
-                          <Link
-                            href={`/programs/${program.slug}`}
-                            className="nr-all-programs-details"
-                          >
-                            {isArabic
-                              ? "تفاصيل البرنامج"
-                              : "Program details"}
-                          </Link>
-                        </div>
+                        <span>
+                          <CalendarDays size={13} />
+                          {program.durationDays} {isArabic ? "أيام" : "days"}
+                        </span>
                       </div>
-                    </article>
-                  );
-                },
-              )}
+
+                      {program.isFeatured ? (
+                        <span className="nr-all-programs-featured">
+                          <Sparkles size={13} />
+                          {isArabic ? "مختار" : "Selected"}
+                        </span>
+                      ) : null}
+                    </Link>
+
+                    <div className="nr-all-programs-card-body">
+                      {country ? (
+                        <span className="nr-all-programs-country">
+                          <MapPin size={14} />
+                          {country}
+                        </span>
+                      ) : null}
+
+                      <h2>
+                        <Link href={`/programs/${program.slug}`}>{title}</Link>
+                      </h2>
+
+                      {summary ? <p>{summary}</p> : null}
+
+                      <div className="nr-all-programs-meta">
+                        <span>
+                          <CalendarDays />
+                          {program.durationDays} {isArabic ? "أيام" : "days"}
+                        </span>
+
+                        <span>
+                          <Moon />
+                          {program.durationNights}{" "}
+                          {isArabic ? "ليالٍ" : "nights"}
+                        </span>
+
+                        <span>
+                          <Plane />
+                          {flightLabel}
+                        </span>
+                      </div>
+
+                      <div className="nr-all-programs-card-footer">
+                        <div>
+                          <small>
+                            {isArabic ? "يبدأ من" : "Starting from"}
+                          </small>
+
+                          <strong>
+                            {formatPrice(program.basePrice, language)}{" "}
+                            <span>{program.currencyCode}</span>
+                          </strong>
+                        </div>
+
+                        <Link
+                          href={`/programs/${program.slug}`}
+                          className="nr-all-programs-details"
+                        >
+                          {isArabic ? "تفاصيل البرنامج" : "Program details"}
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
         </div>
@@ -695,8 +692,7 @@ function PublicProgramsContent() {
 
         .nr-all-programs-filters {
           display: grid;
-          grid-template-columns:
-            repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 10px;
         }
 
@@ -829,8 +825,7 @@ function PublicProgramsContent() {
           transition: transform 320ms ease;
         }
 
-        .nr-all-programs-card:hover
-          .nr-all-programs-image img {
+        .nr-all-programs-card:hover .nr-all-programs-image img {
           transform: scale(1.035);
         }
 
@@ -850,13 +845,12 @@ function PublicProgramsContent() {
         .nr-all-programs-image-overlay {
           position: absolute;
           inset: 0;
-          background:
-            linear-gradient(
-              180deg,
-              rgba(5, 18, 35, 0.03) 0%,
-              rgba(5, 18, 35, 0.05) 44%,
-              rgba(5, 18, 35, 0.7) 100%
-            );
+          background: linear-gradient(
+            180deg,
+            rgba(5, 18, 35, 0.03) 0%,
+            rgba(5, 18, 35, 0.05) 44%,
+            rgba(5, 18, 35, 0.7) 100%
+          );
           pointer-events: none;
         }
 
@@ -878,9 +872,9 @@ function PublicProgramsContent() {
           align-items: center;
           gap: 5px;
           padding: 6px 9px;
-          border: 1px solid rgba(255,255,255,.18);
+          border: 1px solid rgba(255, 255, 255, 0.18);
           border-radius: 999px;
-          background: rgba(8, 27, 51, .42);
+          background: rgba(8, 27, 51, 0.42);
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
           font-size: 9px;
@@ -1050,7 +1044,6 @@ function PublicProgramsContent() {
           }
         }
 
-
         html[data-theme="dark"] .nr-all-programs {
           color: #f4f8ff;
           background: #07182c;
@@ -1062,16 +1055,16 @@ function PublicProgramsContent() {
 
         html[data-theme="dark"] .nr-all-programs-marketbar,
         html[data-theme="dark"] .nr-all-programs-card {
-          border-color: rgba(255,255,255,.1);
+          border-color: rgba(255, 255, 255, 0.1);
           background: #0c223d;
-          box-shadow: 0 18px 48px rgba(0,0,0,.22);
+          box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
         }
 
         html[data-theme="dark"] .nr-all-programs-search,
         html[data-theme="dark"] .nr-all-programs-select,
         html[data-theme="dark"] .nr-all-programs-meta span {
-          border-color: rgba(255,255,255,.08);
-          background: rgba(255,255,255,.04);
+          border-color: rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.04);
         }
 
         html[data-theme="dark"] .nr-all-programs-search input,
@@ -1091,7 +1084,7 @@ function PublicProgramsContent() {
         }
 
         html[data-theme="dark"] .nr-all-programs-card-footer {
-          border-top-color: rgba(255,255,255,.08);
+          border-top-color: rgba(255, 255, 255, 0.08);
         }
 
         @media (min-width: 1500px) {
