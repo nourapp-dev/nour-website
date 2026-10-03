@@ -158,3 +158,16 @@ export async function archiveProgramDeparture(
     .eq("id", id);
   if (error) throw error;
 }
+
+/** One INSERT statement: either every new departure is saved or none is. */
+export async function createProgramDepartures(
+  supabase: SupabaseClient,
+  programId: string,
+  payloads: Record<string, unknown>[],
+) {
+  if (!payloads.length) return;
+  const { error } = await supabase.from("program_departures").insert(
+    payloads.map((payload) => ({ ...payload, program_id: programId })),
+  );
+  if (error) throw new Error(`تعذر حفظ مواعيد الرحلات: ${error.message}`);
+}

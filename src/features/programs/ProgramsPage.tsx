@@ -36,6 +36,8 @@ import type {
 } from "../visas/types/visa";
 
 import ProgramForm from "./forms/ProgramForm";
+import { departurePayloads, type DepartureDraft } from "./departure-drafts";
+import { createProgramDepartures } from "./services/program-departures.service";
 import {
   createProgram,
   deleteProgram,
@@ -58,6 +60,7 @@ type ProgramFormSubmitValues =
   ProgramFormValues & {
     transports: ProgramTransportFormValue[];
     visas: ProgramVisaFormValue[];
+    departures: DepartureDraft[];
   };
 
 type ProgramCountryOption = {
@@ -759,11 +762,13 @@ export default function ProgramsPage() {
 
     const wasEditing =
       editingProgram !== null;
+    let persistedProgram: Program | null = null;
 
     try {
       const {
         transports: programTransports,
         visas: programVisas,
+        departures,
         ...programValues
       } = values;
 
@@ -786,6 +791,7 @@ export default function ProgramsPage() {
           await createProgram(
             supabase,
             programValues,
+            (program) => { persistedProgram = program; },
           );
 
         savedProgramId =
@@ -804,6 +810,10 @@ export default function ProgramsPage() {
           programVisas,
         ),
       ]);
+
+      if (!wasEditing && departures.length) {
+        await createProgramDepartures(supabase, savedProgramId, departurePayloads(departures));
+      }
 
       await refetchPrograms();
 
@@ -836,6 +846,19 @@ export default function ProgramsPage() {
             ? "تعذر حفظ البرنامج."
             : "Unable to save the program.";
 
+      // Once the parent exists, never leave the create form available to submit again.
+      if (persistedProgram) {
+        const saved = persistedProgram as Program;
+        setIsCreateOpen(false);
+        void refetchPrograms();
+        showToast({
+          title: isArabic ? "حُفظ البرنامج ولم تكتمل بعض التفاصيل" : "Program saved; some details could not be saved",
+          description: (isArabic ? "راجع البرنامج ومواعيده قبل النشر. " : "Review the program and departures before publishing. ") + message,
+          variant: "error",
+        });
+        router.push(`/admin/programs/${saved.id}/departures`);
+        return;
+      }
       setFormError(message);
 
       showToast({
@@ -1744,6 +1767,7 @@ export default function ProgramsPage() {
             ) : null}
 
             <ProgramForm
+              isCreating={!editingProgram}
               visas={activeVisas.map(
                 (visa: ProgramVisaOption) => ({
                   id: visa.id,

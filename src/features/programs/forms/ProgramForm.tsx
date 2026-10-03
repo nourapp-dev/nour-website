@@ -1,6 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { createClient } from "../../../lib/supabase/client";
+import { getCities } from "../../journeys/journey.service";
+import DepartureFields from "./DepartureFields";
+import { validateDepartureDrafts, type DepartureDraft } from "../departure-drafts";
 
 import Button from "../../../components/ui/Button";
 import MediaUploader from "../../../components/ui/media/MediaUploader";
@@ -72,10 +77,12 @@ type VisaOption = {
 type ProgramFormSubmitValues = ProgramFormValues & {
   transports: ProgramTransportFormValue[];
   visas: ProgramVisaFormValue[];
+  departures: DepartureDraft[];
 };
 
 type ProgramFormProps = {
   initialValues?: Partial<ProgramFormSubmitValues>;
+  isCreating?: boolean;
   countries?: CountryOption[];
   hotels?: HotelOption[];
   transports?: TransportOption[];
@@ -85,6 +92,7 @@ type ProgramFormProps = {
 };
 
 const defaultValues: ProgramFormSubmitValues = {
+  departures: [],
   titleAr: "",
   titleEn: "",
   slug: "",
@@ -195,6 +203,7 @@ export default function ProgramForm({
   transports = [],
   visas = [],
   onSubmit,
+  isCreating = false,
   isSubmitting = false,
 }: ProgramFormProps) {
   const { language } = useLanguage();
@@ -218,6 +227,12 @@ export default function ProgramForm({
 
     visas:
       initialValues?.visas ?? [],
+  });
+
+  const citiesQuery = useQuery({
+    queryKey: ["admin", "cities", "active"],
+    queryFn: () => getCities(createClient("admin")),
+    enabled: isCreating,
   });
 
   function updateValue<K extends keyof ProgramFormSubmitValues>(
@@ -551,6 +566,11 @@ function updateFlight<
       return;
     }
 
+    if (isCreating) {
+      const error = validateDepartureDrafts(values.departures, values.countryId, citiesQuery.data ?? [], isArabic);
+      if (error) { window.alert(error); return; }
+    }
+
     await onSubmit({
       ...values,
       titleAr: values.titleAr.trim(),
@@ -847,10 +867,8 @@ function updateFlight<
               className="nr-input"
               value={values.countryId}
               onChange={(event) =>
-                updateValue(
-                  "countryId",
-                  event.target.value,
-                )
+                setValues((current) => ({ ...current, countryId: event.target.value,
+                  departures: current.departures.map((row) => ({ ...row, originCityId: "" })) }))
               }
               required
             >
@@ -966,6 +984,18 @@ function updateFlight<
           </label>
         </div>
       </section>
+
+      {isCreating && <DepartureFields
+        countryId={values.countryId}
+        cities={citiesQuery.data ?? []}
+        loading={citiesQuery.isLoading}
+        failed={citiesQuery.isError}
+        onRetry={() => void citiesQuery.refetch()}
+        rows={values.departures}
+        onChange={(rows) => updateValue("departures", rows)}
+        disabled={isSubmitting}
+        isArabic={isArabic}
+      />}
 
       <section className="nr-country-form-section">
         <div className="nr-country-form-section-heading nr-program-hotel-heading">

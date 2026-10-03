@@ -59,6 +59,7 @@ async function assertPublishPermission(
 export async function createProgram(
   supabase: SupabaseClient,
   values: ProgramFormValues,
+  onPersisted?: (program: Program) => void,
 ): Promise<Program> {
   if (values.status === "published") {
     await assertPublishPermission(supabase);
@@ -87,6 +88,8 @@ export async function createProgram(
       values,
       coverMediaId,
     );
+
+  onPersisted?.(program);
 
   await replaceProgramHotels(
     supabase,
