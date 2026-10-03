@@ -1,5 +1,6 @@
 "use client";
 
+import CoordinatePicker from "../../../components/maps/CoordinatePicker";
 import { useState } from "react";
 
 import Button from "../../../components/ui/Button";
@@ -32,9 +33,7 @@ type CountryFormValues = {
 
 type CountryFormProps = {
   initialValues?: Partial<CountryFormValues>;
-  onSubmit: (
-    values: CountryFormValues,
-  ) => Promise<void>;
+  onSubmit: (values: CountryFormValues) => Promise<void>;
   isSubmitting?: boolean;
 };
 
@@ -63,10 +62,7 @@ const defaultValues: CountryFormValues = {
 };
 
 type CountryFormErrors = Partial<
-  Record<
-    keyof CountryFormValues | "form",
-    string
-  >
+  Record<keyof CountryFormValues | "form", string>
 >;
 
 const timezoneOptions = [
@@ -78,28 +74,21 @@ const timezoneOptions = [
   "Europe/London",
 ];
 
-function normalizeUppercaseCode(
-  value: string,
-  maxLength: number,
-) {
+function normalizeUppercaseCode(value: string, maxLength: number) {
   return value
     .toUpperCase()
     .replace(/[^A-Z]/g, "")
     .slice(0, maxLength);
 }
 
-function parseOptionalNumber(
-  value: string,
-): number | null {
+function parseOptionalNumber(value: string): number | null {
   if (value.trim() === "") {
     return null;
   }
 
   const parsedValue = Number(value);
 
-  return Number.isFinite(parsedValue)
-    ? parsedValue
-    : null;
+  return Number.isFinite(parsedValue) ? parsedValue : null;
 }
 
 export default function CountryForm({
@@ -111,28 +100,20 @@ export default function CountryForm({
 
   const isArabic = language === "ar";
 
-  const [values, setValues] =
-    useState<CountryFormValues>({
-      ...defaultValues,
-      ...providedInitialValues,
+  const [values, setValues] = useState<CountryFormValues>({
+    ...defaultValues,
+    ...providedInitialValues,
 
-      latitude:
-        providedInitialValues?.latitude ??
-        null,
+    latitude: providedInitialValues?.latitude ?? null,
 
-      longitude:
-        providedInitialValues?.longitude ??
-        null,
+    longitude: providedInitialValues?.longitude ?? null,
 
-      flagFile: null,
-    });
+    flagFile: null,
+  });
 
-  const [errors, setErrors] =
-    useState<CountryFormErrors>({});
+  const [errors, setErrors] = useState<CountryFormErrors>({});
 
-  function updateValue<
-    K extends keyof CountryFormValues,
-  >(
+  function updateValue<K extends keyof CountryFormValues>(
     key: K,
     value: CountryFormValues[K],
   ) {
@@ -149,8 +130,7 @@ export default function CountryForm({
   }
 
   function validateForm() {
-    const nextErrors: CountryFormErrors =
-      {};
+    const nextErrors: CountryFormErrors = {};
 
     if (!values.nameAr.trim()) {
       nextErrors.nameAr = isArabic
@@ -176,11 +156,7 @@ export default function CountryForm({
         : "ISO3 must contain exactly three English letters.";
     }
 
-    if (
-      !/^[A-Z]{3}$/.test(
-        values.currencyCode,
-      )
-    ) {
+    if (!/^[A-Z]{3}$/.test(values.currencyCode)) {
       nextErrors.currencyCode = isArabic
         ? "رمز العملة يجب أن يتكون من ثلاثة أحرف إنجليزية."
         : "Currency code must contain exactly three English letters.";
@@ -188,8 +164,7 @@ export default function CountryForm({
 
     if (
       values.latitude !== null &&
-      (values.latitude < -90 ||
-        values.latitude > 90)
+      (values.latitude < -90 || values.latitude > 90)
     ) {
       nextErrors.latitude = isArabic
         ? "خط العرض يجب أن يكون بين -90 و90."
@@ -198,8 +173,7 @@ export default function CountryForm({
 
     if (
       values.longitude !== null &&
-      (values.longitude < -180 ||
-        values.longitude > 180)
+      (values.longitude < -180 || values.longitude > 180)
     ) {
       nextErrors.longitude = isArabic
         ? "خط الطول يجب أن يكون بين -180 و180."
@@ -207,10 +181,8 @@ export default function CountryForm({
     }
 
     if (
-      (values.latitude === null &&
-        values.longitude !== null) ||
-      (values.latitude !== null &&
-        values.longitude === null)
+      (values.latitude === null && values.longitude !== null) ||
+      (values.latitude !== null && values.longitude === null)
     ) {
       const message = isArabic
         ? "يجب إدخال خط العرض وخط الطول معًا."
@@ -222,14 +194,10 @@ export default function CountryForm({
 
     setErrors(nextErrors);
 
-    return (
-      Object.keys(nextErrors).length === 0
-    );
+    return Object.keys(nextErrors).length === 0;
   }
 
-  async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>,
-  ) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!validateForm()) {
@@ -248,33 +216,23 @@ export default function CountryForm({
         iso2: values.iso2.trim(),
         iso3: values.iso3.trim(),
 
-        phoneCode:
-          values.phoneCode.trim(),
+        phoneCode: values.phoneCode.trim(),
 
-        currencyCode:
-          values.currencyCode.trim(),
+        currencyCode: values.currencyCode.trim(),
 
-        currencyNameAr:
-          values.currencyNameAr.trim(),
+        currencyNameAr: values.currencyNameAr.trim(),
 
-        currencyNameEn:
-          values.currencyNameEn.trim(),
+        currencyNameEn: values.currencyNameEn.trim(),
 
         timezone: values.timezone.trim(),
       });
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "";
+      const message = error instanceof Error ? error.message : "";
 
-      const lowerMessage =
-        message.toLowerCase();
+      const lowerMessage = message.toLowerCase();
 
       if (
-        lowerMessage.includes(
-          "uq_countries_iso2",
-        ) ||
+        lowerMessage.includes("uq_countries_iso2") ||
         lowerMessage.includes("iso2")
       ) {
         setErrors({
@@ -287,9 +245,7 @@ export default function CountryForm({
       }
 
       if (
-        lowerMessage.includes(
-          "uq_countries_iso3",
-        ) ||
+        lowerMessage.includes("uq_countries_iso3") ||
         lowerMessage.includes("iso3")
       ) {
         setErrors({
@@ -304,34 +260,21 @@ export default function CountryForm({
       setErrors({
         form:
           message ||
-          (isArabic
-            ? "تعذر حفظ الدولة."
-            : "Unable to save the country."),
+          (isArabic ? "تعذر حفظ الدولة." : "Unable to save the country."),
       });
     }
   }
 
   return (
-    <form
-      className="nr-country-form"
-      onSubmit={handleSubmit}
-      noValidate
-    >
+    <form className="nr-country-form" onSubmit={handleSubmit} noValidate>
       {errors.form ? (
-        <div
-          className="nr-form-error"
-          role="alert"
-        >
+        <div className="nr-form-error" role="alert">
           {errors.form}
         </div>
       ) : null}
 
       <MediaUploader
-        label={
-          isArabic
-            ? "علم الدولة"
-            : "Country Flag"
-        }
+        label={isArabic ? "علم الدولة" : "Country Flag"}
         onFileSelect={(file) => {
           updateValue("flagFile", file);
         }}
@@ -342,11 +285,7 @@ export default function CountryForm({
           <span>01</span>
 
           <div>
-            <h3>
-              {isArabic
-                ? "المعلومات الأساسية"
-                : "Basic Information"}
-            </h3>
+            <h3>{isArabic ? "المعلومات الأساسية" : "Basic Information"}</h3>
 
             <p>
               {isArabic
@@ -358,69 +297,39 @@ export default function CountryForm({
 
         <div className="nr-country-form-grid">
           <label>
-            <span>
-              {isArabic
-                ? "الاسم بالعربية"
-                : "Arabic Name"}
-            </span>
+            <span>{isArabic ? "الاسم بالعربية" : "Arabic Name"}</span>
 
             <input
               className="nr-input"
               value={values.nameAr}
-              onChange={(event) =>
-                updateValue(
-                  "nameAr",
-                  event.target.value,
-                )
-              }
-              aria-invalid={Boolean(
-                errors.nameAr,
-              )}
+              onChange={(event) => updateValue("nameAr", event.target.value)}
+              aria-invalid={Boolean(errors.nameAr)}
               required
             />
 
             {errors.nameAr ? (
-              <small className="nr-field-error">
-                {errors.nameAr}
-              </small>
+              <small className="nr-field-error">{errors.nameAr}</small>
             ) : null}
           </label>
 
           <label>
-            <span>
-              {isArabic
-                ? "الاسم بالإنجليزية"
-                : "English Name"}
-            </span>
+            <span>{isArabic ? "الاسم بالإنجليزية" : "English Name"}</span>
 
             <input
               className="nr-input"
               value={values.nameEn}
-              onChange={(event) =>
-                updateValue(
-                  "nameEn",
-                  event.target.value,
-                )
-              }
-              aria-invalid={Boolean(
-                errors.nameEn,
-              )}
+              onChange={(event) => updateValue("nameEn", event.target.value)}
+              aria-invalid={Boolean(errors.nameEn)}
               required
             />
 
             {errors.nameEn ? (
-              <small className="nr-field-error">
-                {errors.nameEn}
-              </small>
+              <small className="nr-field-error">{errors.nameEn}</small>
             ) : null}
           </label>
 
           <label>
-            <span>
-              {isArabic
-                ? "رمز ISO2"
-                : "ISO2 Code"}
-            </span>
+            <span>{isArabic ? "رمز ISO2" : "ISO2 Code"}</span>
 
             <input
               className="nr-input"
@@ -429,32 +338,21 @@ export default function CountryForm({
               onChange={(event) =>
                 updateValue(
                   "iso2",
-                  normalizeUppercaseCode(
-                    event.target.value,
-                    2,
-                  ),
+                  normalizeUppercaseCode(event.target.value, 2),
                 )
               }
               placeholder="SA"
-              aria-invalid={Boolean(
-                errors.iso2,
-              )}
+              aria-invalid={Boolean(errors.iso2)}
               required
             />
 
             {errors.iso2 ? (
-              <small className="nr-field-error">
-                {errors.iso2}
-              </small>
+              <small className="nr-field-error">{errors.iso2}</small>
             ) : null}
           </label>
 
           <label>
-            <span>
-              {isArabic
-                ? "رمز ISO3"
-                : "ISO3 Code"}
-            </span>
+            <span>{isArabic ? "رمز ISO3" : "ISO3 Code"}</span>
 
             <input
               className="nr-input"
@@ -463,23 +361,16 @@ export default function CountryForm({
               onChange={(event) =>
                 updateValue(
                   "iso3",
-                  normalizeUppercaseCode(
-                    event.target.value,
-                    3,
-                  ),
+                  normalizeUppercaseCode(event.target.value, 3),
                 )
               }
               placeholder="SAU"
-              aria-invalid={Boolean(
-                errors.iso3,
-              )}
+              aria-invalid={Boolean(errors.iso3)}
               required
             />
 
             {errors.iso3 ? (
-              <small className="nr-field-error">
-                {errors.iso3}
-              </small>
+              <small className="nr-field-error">{errors.iso3}</small>
             ) : null}
           </label>
         </div>
@@ -490,11 +381,7 @@ export default function CountryForm({
           <span>02</span>
 
           <div>
-            <h3>
-              {isArabic
-                ? "الاتصال والعملة"
-                : "Contact and Currency"}
-            </h3>
+            <h3>{isArabic ? "الاتصال والعملة" : "Contact and Currency"}</h3>
 
             <p>
               {isArabic
@@ -506,32 +393,19 @@ export default function CountryForm({
 
         <div className="nr-country-form-grid">
           <label>
-            <span>
-              {isArabic
-                ? "مفتاح الاتصال"
-                : "Calling Code"}
-            </span>
+            <span>{isArabic ? "مفتاح الاتصال" : "Calling Code"}</span>
 
             <input
               className="nr-input"
               value={values.phoneCode}
-              onChange={(event) =>
-                updateValue(
-                  "phoneCode",
-                  event.target.value,
-                )
-              }
+              onChange={(event) => updateValue("phoneCode", event.target.value)}
               placeholder="+966"
               required
             />
           </label>
 
           <label>
-            <span>
-              {isArabic
-                ? "رمز العملة"
-                : "Currency Code"}
-            </span>
+            <span>{isArabic ? "رمز العملة" : "Currency Code"}</span>
 
             <input
               className="nr-input"
@@ -540,43 +414,29 @@ export default function CountryForm({
               onChange={(event) =>
                 updateValue(
                   "currencyCode",
-                  normalizeUppercaseCode(
-                    event.target.value,
-                    3,
-                  ),
+                  normalizeUppercaseCode(event.target.value, 3),
                 )
               }
               placeholder="SAR"
-              aria-invalid={Boolean(
-                errors.currencyCode,
-              )}
+              aria-invalid={Boolean(errors.currencyCode)}
               required
             />
 
             {errors.currencyCode ? (
-              <small className="nr-field-error">
-                {errors.currencyCode}
-              </small>
+              <small className="nr-field-error">{errors.currencyCode}</small>
             ) : null}
           </label>
 
           <label>
             <span>
-              {isArabic
-                ? "اسم العملة بالعربية"
-                : "Arabic Currency Name"}
+              {isArabic ? "اسم العملة بالعربية" : "Arabic Currency Name"}
             </span>
 
             <input
               className="nr-input"
-              value={
-                values.currencyNameAr
-              }
+              value={values.currencyNameAr}
               onChange={(event) =>
-                updateValue(
-                  "currencyNameAr",
-                  event.target.value,
-                )
+                updateValue("currencyNameAr", event.target.value)
               }
               required
             />
@@ -584,21 +444,14 @@ export default function CountryForm({
 
           <label>
             <span>
-              {isArabic
-                ? "اسم العملة بالإنجليزية"
-                : "English Currency Name"}
+              {isArabic ? "اسم العملة بالإنجليزية" : "English Currency Name"}
             </span>
 
             <input
               className="nr-input"
-              value={
-                values.currencyNameEn
-              }
+              value={values.currencyNameEn}
               onChange={(event) =>
-                updateValue(
-                  "currencyNameEn",
-                  event.target.value,
-                )
+                updateValue("currencyNameEn", event.target.value)
               }
               required
             />
@@ -611,11 +464,7 @@ export default function CountryForm({
           <span>03</span>
 
           <div>
-            <h3>
-              {isArabic
-                ? "الموقع الجغرافي"
-                : "Geographic Location"}
-            </h3>
+            <h3>{isArabic ? "الموقع الجغرافي" : "Geographic Location"}</h3>
 
             <p>
               {isArabic
@@ -627,11 +476,7 @@ export default function CountryForm({
 
         <div className="nr-country-form-grid">
           <label>
-            <span>
-              {isArabic
-                ? "خط العرض"
-                : "Latitude"}
-            </span>
+            <span>{isArabic ? "خط العرض" : "Latitude"}</span>
 
             <input
               className="nr-input"
@@ -639,37 +484,22 @@ export default function CountryForm({
               min={-90}
               max={90}
               step="0.000001"
-              value={
-                values.latitude ?? ""
-              }
+              value={values.latitude ?? ""}
               onChange={(event) =>
-                updateValue(
-                  "latitude",
-                  parseOptionalNumber(
-                    event.target.value,
-                  ),
-                )
+                updateValue("latitude", parseOptionalNumber(event.target.value))
               }
               placeholder="23.885900"
               dir="ltr"
-              aria-invalid={Boolean(
-                errors.latitude,
-              )}
+              aria-invalid={Boolean(errors.latitude)}
             />
 
             {errors.latitude ? (
-              <small className="nr-field-error">
-                {errors.latitude}
-              </small>
+              <small className="nr-field-error">{errors.latitude}</small>
             ) : null}
           </label>
 
           <label>
-            <span>
-              {isArabic
-                ? "خط الطول"
-                : "Longitude"}
-            </span>
+            <span>{isArabic ? "خط الطول" : "Longitude"}</span>
 
             <input
               className="nr-input"
@@ -677,28 +507,20 @@ export default function CountryForm({
               min={-180}
               max={180}
               step="0.000001"
-              value={
-                values.longitude ?? ""
-              }
+              value={values.longitude ?? ""}
               onChange={(event) =>
                 updateValue(
                   "longitude",
-                  parseOptionalNumber(
-                    event.target.value,
-                  ),
+                  parseOptionalNumber(event.target.value),
                 )
               }
               placeholder="45.079200"
               dir="ltr"
-              aria-invalid={Boolean(
-                errors.longitude,
-              )}
+              aria-invalid={Boolean(errors.longitude)}
             />
 
             {errors.longitude ? (
-              <small className="nr-field-error">
-                {errors.longitude}
-              </small>
+              <small className="nr-field-error">{errors.longitude}</small>
             ) : null}
           </label>
         </div>
@@ -715,11 +537,7 @@ export default function CountryForm({
           <span>04</span>
 
           <div>
-            <h3>
-              {isArabic
-                ? "إعدادات العرض"
-                : "Display Settings"}
-            </h3>
+            <h3>{isArabic ? "إعدادات العرض" : "Display Settings"}</h3>
 
             <p>
               {isArabic
@@ -731,48 +549,28 @@ export default function CountryForm({
 
         <div className="nr-country-form-grid">
           <label>
-            <span>
-              {isArabic
-                ? "المنطقة الزمنية"
-                : "Timezone"}
-            </span>
+            <span>{isArabic ? "المنطقة الزمنية" : "Timezone"}</span>
 
             <select
               className="nr-input"
               value={values.timezone}
-              onChange={(event) =>
-                updateValue(
-                  "timezone",
-                  event.target.value,
-                )
-              }
+              onChange={(event) => updateValue("timezone", event.target.value)}
               required
             >
               <option value="">
-                {isArabic
-                  ? "اختر المنطقة الزمنية"
-                  : "Select a timezone"}
+                {isArabic ? "اختر المنطقة الزمنية" : "Select a timezone"}
               </option>
 
-              {timezoneOptions.map(
-                (timezone) => (
-                  <option
-                    key={timezone}
-                    value={timezone}
-                  >
-                    {timezone}
-                  </option>
-                ),
-              )}
+              {timezoneOptions.map((timezone) => (
+                <option key={timezone} value={timezone}>
+                  {timezone}
+                </option>
+              ))}
             </select>
           </label>
 
           <label>
-            <span>
-              {isArabic
-                ? "ترتيب الظهور"
-                : "Display Order"}
-            </span>
+            <span>{isArabic ? "ترتيب الظهور" : "Display Order"}</span>
 
             <input
               className="nr-input"
@@ -780,12 +578,7 @@ export default function CountryForm({
               min={0}
               value={values.sortOrder}
               onChange={(event) =>
-                updateValue(
-                  "sortOrder",
-                  Number(
-                    event.target.value,
-                  ),
-                )
+                updateValue("sortOrder", Number(event.target.value))
               }
               required
             />
@@ -796,12 +589,7 @@ export default function CountryForm({
           <input
             type="checkbox"
             checked={values.isActive}
-            onChange={(event) =>
-              updateValue(
-                "isActive",
-                event.target.checked,
-              )
-            }
+            onChange={(event) => updateValue("isActive", event.target.checked)}
           />
 
           <span>
@@ -812,11 +600,19 @@ export default function CountryForm({
         </label>
       </section>
 
+      <CoordinatePicker
+        latitude={values.latitude}
+        longitude={values.longitude}
+        onChange={(lat, lon) =>
+          setValues((current) => ({
+            ...current,
+            latitude: lat,
+            longitude: lon,
+          }))
+        }
+      />
       <div className="nr-country-form-actions">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-        >
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting
             ? isArabic
               ? "جارٍ الحفظ..."

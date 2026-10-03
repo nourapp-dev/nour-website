@@ -1,13 +1,5 @@
 "use client";
-
-import { createClient } from "../../lib/supabase/client";
-
-let browserClient: ReturnType<typeof createClient> | null = null;
-
+import { createClient } from "../lib/supabase/client";
 export function getSupabaseBrowserClient() {
-  if (!browserClient) {
-    browserClient = createClient();
-  }
-
-  return browserClient;
+  return createClient();
 }

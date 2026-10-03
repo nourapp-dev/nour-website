@@ -46,6 +46,7 @@ const contentSecurityPolicy = `
     data:
     blob:
     ${supabaseOrigin}
+    https://tile.openstreetmap.org
     https://nourappglobal.com
     https://www.nourappglobal.com;
 

@@ -14,6 +14,7 @@ export default function Sidebar(){
   {label:t.sidebar.dashboard,href:"/admin/dashboard",icon:CircleGauge},
   {label:language==="ar"?"الحجوزات":"Bookings",href:"/admin/bookings",icon:CalendarCheck2},
   {label:t.sidebar.countries,href:"/admin/countries",icon:Globe2},
+  {label:language==="ar"?"مدن الانطلاق":"Departure cities",href:"/admin/cities",icon:Globe2},
   {label:t.sidebar.programs,href:"/admin/programs",icon:FolderOpen},
   {label:language==="ar"?"المقالات":"Articles",href:"/admin/articles",icon:BookOpenText},
   {label:language==="ar"?"كلمة الرئيس التنفيذي":"CEO Message",href:"/admin/ceo-message",icon:MessageSquareQuote},

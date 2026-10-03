@@ -1,10 +1,16 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export type ProgramDepartureStatus = "scheduled" | "open" | "full" | "closed" | "cancelled";
+export type ProgramDepartureStatus =
+  | "scheduled"
+  | "open"
+  | "full"
+  | "closed"
+  | "cancelled";
 
 export type ProgramDeparture = {
   id: string;
   programId: string;
+  originCityId: string | null;
   startAt: string;
   endAt: string | null;
   bookingDeadline: string | null;
@@ -20,6 +26,7 @@ export type ProgramDeparture = {
 type DepartureRow = {
   id: string;
   program_id: string;
+  origin_city_id: string | null;
   start_at: string;
   end_at: string | null;
   booking_deadline: string | null;
@@ -32,12 +39,14 @@ type DepartureRow = {
   sort_order: number;
 };
 
-const select = "id,program_id,start_at,end_at,booking_deadline,capacity_total,seats_available,status,notes_ar,notes_en,is_active,sort_order";
+const select =
+  "id,program_id,origin_city_id,start_at,end_at,booking_deadline,capacity_total,seats_available,status,notes_ar,notes_en,is_active,sort_order";
 
 function mapRow(row: DepartureRow): ProgramDeparture {
   return {
     id: row.id,
     programId: row.program_id,
+    originCityId: row.origin_city_id,
     startAt: row.start_at,
     endAt: row.end_at,
     bookingDeadline: row.booking_deadline,
@@ -51,7 +60,10 @@ function mapRow(row: DepartureRow): ProgramDeparture {
   };
 }
 
-export async function getProgramDepartures(supabase: SupabaseClient, programId: string) {
+export async function getProgramDepartures(
+  supabase: SupabaseClient,
+  programId: string,
+) {
   const { data, error } = await supabase
     .from("program_departures")
     .select(select)
@@ -63,7 +75,10 @@ export async function getProgramDepartures(supabase: SupabaseClient, programId: 
   return ((data ?? []) as DepartureRow[]).map(mapRow);
 }
 
-export async function getPublicProgramDepartures(supabase: SupabaseClient, programId: string) {
+export async function getPublicProgramDepartures(
+  supabase: SupabaseClient,
+  programId: string,
+) {
   const { data, error } = await supabase
     .from("program_departures")
     .select(select)
@@ -76,7 +91,10 @@ export async function getPublicProgramDepartures(supabase: SupabaseClient, progr
   return ((data ?? []) as DepartureRow[]).map(mapRow);
 }
 
-export async function getNextPublicDepartures(supabase: SupabaseClient, programIds: string[]) {
+export async function getNextPublicDepartures(
+  supabase: SupabaseClient,
+  programIds: string[],
+) {
   const nextDates: Record<string, string> = {};
   if (!programIds.length) return nextDates;
   const now = new Date().toISOString();
@@ -92,13 +110,20 @@ export async function getNextPublicDepartures(supabase: SupabaseClient, programI
     .or(`booking_deadline.is.null,booking_deadline.gte.${now}`)
     .order("start_at", { ascending: true });
   if (error) throw error;
-  for (const row of (data ?? []) as Pick<DepartureRow, "program_id" | "start_at">[]) {
+  for (const row of (data ?? []) as Pick<
+    DepartureRow,
+    "program_id" | "start_at"
+  >[]) {
     nextDates[row.program_id] ??= row.start_at;
   }
   return nextDates;
 }
 
-export async function createProgramDeparture(supabase: SupabaseClient, programId: string, payload: Record<string, unknown>) {
+export async function createProgramDeparture(
+  supabase: SupabaseClient,
+  programId: string,
+  payload: Record<string, unknown>,
+) {
   const { data, error } = await supabase
     .from("program_departures")
     .insert({ program_id: programId, ...payload })
@@ -108,7 +133,11 @@ export async function createProgramDeparture(supabase: SupabaseClient, programId
   return mapRow(data as DepartureRow);
 }
 
-export async function updateProgramDeparture(supabase: SupabaseClient, id: string, payload: Record<string, unknown>) {
+export async function updateProgramDeparture(
+  supabase: SupabaseClient,
+  id: string,
+  payload: Record<string, unknown>,
+) {
   const { data, error } = await supabase
     .from("program_departures")
     .update(payload)
@@ -119,7 +148,10 @@ export async function updateProgramDeparture(supabase: SupabaseClient, id: strin
   return mapRow(data as DepartureRow);
 }
 
-export async function archiveProgramDeparture(supabase: SupabaseClient, id: string) {
+export async function archiveProgramDeparture(
+  supabase: SupabaseClient,
+  id: string,
+) {
   const { error } = await supabase
     .from("program_departures")
     .update({ deleted_at: new Date().toISOString(), is_active: false })

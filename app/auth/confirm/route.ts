@@ -8,15 +8,15 @@ export async function GET(request: Request) {
 
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const next = searchParams.get("next") ?? "/admin/invite";
+  const scope = type === "invite" || type === "recovery" ? "admin" : "pilgrim";
+  const destination =
+    scope === "admin" ? "/admin/login/invite" : "/account/profile";
 
   if (!tokenHash || !type) {
-    return NextResponse.redirect(
-      `${origin}/admin/login?error=invalid_invite`,
-    );
+    return NextResponse.redirect(`${origin}/admin/login?error=invalid_invite`);
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient(scope);
 
   const { error } = await supabase.auth.verifyOtp({
     type,
@@ -29,12 +29,5 @@ export async function GET(request: Request) {
     );
   }
 
-  const safeNext =
-    next.startsWith("/") && !next.startsWith("//")
-      ? next
-      : "/admin/invite";
-
-  return NextResponse.redirect(
-    `${origin}${safeNext}`,
-  );
+  return NextResponse.redirect(`${origin}${destination}`);
 }
