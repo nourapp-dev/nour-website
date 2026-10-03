@@ -19,3 +19,8 @@ The provider refreshes published settings on new page loads and after publicatio
 Tests cover normalizing missing/malformed content, preserving hidden/empty arrays and order, blocking unsafe links/unapproved image origins, validating official store hosts, separate draft/publication writes, and interactive tab/keyboard/swipe behavior. Typecheck and lint run through `npm run quality`; production is verified with `npm run build -- --webpack` and GitHub CI. Browser visual QA and live admin upload/publish acceptance are still required: this environment's browser blocks localhost. No live admin account or sample content was created for testing.
 
 Hostinger deployment remains manual per the existing runbook. Merging code does not deploy it there. The hero photo can be uploaded later without another code deployment.
+
+
+## Hero display modes
+
+The hero defaults to the original two-phone design, including when existing settings have no `hero.mode`. The editor supports `phones` and `photo`, independent front/back phone mockups and bilingual alt text. Switching modes preserves all saved images. Phone uploads should include the device frame and a transparent background; clearing one restores its original asset. Use the existing draft/preview/publish controls to review and publish changes. Photo mode continues to use the saved hero photo.

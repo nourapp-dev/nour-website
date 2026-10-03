@@ -140,3 +140,28 @@ test("invalid publishing stops before network writes and permission failures pro
   );
   assert.equal(calls, 1);
 });
+
+
+test("legacy hero settings restore phones while retaining the saved photo", () => {
+  const result = normalizePresentation({ hero: { image: "/images/site/front-view.png" } });
+  assert.equal(result.hero.mode, "phones");
+  assert.equal(result.hero.image, "/images/site/front-view.png");
+  assert.equal(result.hero.frontImage, defaultPresentation.hero.frontImage);
+  assert.equal(result.hero.backImage, defaultPresentation.hero.backImage);
+});
+
+test("both hero modes retain custom phone images and reject unsafe uploads", () => {
+  const value = config();
+  value.hero.frontImage = "/images/app-screens/packages.png";
+  value.hero.backImage = "/images/app-screens/trip.png";
+  value.hero.image = "/images/site/front-view.png";
+  for (const mode of ["photo", "phones"]) {
+    value.hero.mode = mode;
+    const result = normalizePresentation(value);
+    assert.deepEqual(result.hero, value.hero);
+    assert.equal(validatePresentation(result), null);
+  }
+  value.hero.frontImage = "https://untrusted.example/phone.png";
+  assert.ok(validatePresentation(value));
+  assert.equal(normalizePresentation(value).hero.frontImage, defaultPresentation.hero.frontImage);
+});

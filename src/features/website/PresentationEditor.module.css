@@ -69,6 +69,7 @@
   font-size: 13px;
   font-weight: 600;
 }
+.field select,
 .field input,
 .field textarea {
   width: 100%;

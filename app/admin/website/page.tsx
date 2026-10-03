@@ -6,6 +6,7 @@ import { useLanguage } from "../../../src/core/i18n";
 import { createClient } from "../../../src/lib/supabase/client";
 import { uploadMedia } from "../../../src/features/media/repositories/media.repository";
 import {
+  defaultPresentation,
   normalizePresentation,
   validatePresentation,
   savePresentation,
@@ -218,8 +219,8 @@ function Editor({
       </div>
       <p className={styles.muted}>
         {ar
-          ? "يمكن ترك صورة الواجهة فارغة وإضافتها لاحقًا. الصور هنا تعريفية ولا تنشئ برامج أو حجوزات."
-          : "Leave the hero image empty until your photo is ready. Presentation images do not create programs or bookings."}{" "}
+          ? "اختر تصميم الجوالين أو صورة الحرم من إعدادات الواجهة. الصور هنا تعريفية ولا تنشئ برامج أو حجوزات."
+          : "Choose the two-phone design or a hero photo in the hero settings. Presentation images do not create programs or bookings."}{" "}
         {dirty
           ? ar
             ? "لديك تغييرات غير محفوظة."
@@ -297,6 +298,37 @@ function Editor({
             onChange={(v) => section("hero", { description: v })}
             multiline
           />
+          <label className={styles.field}>
+            <span>{ar ? "شكل العرض" : "Display style"}</span>
+            <select
+              value={value.hero.mode}
+              onChange={(event) => section("hero", { mode: event.target.value === "photo" ? "photo" : "phones" })}
+            >
+              <option value="phones">{ar ? "الجوالان — التصميم السابق" : "Two phones — original design"}</option>
+              <option value="photo">{ar ? "صورة الحرم" : "Hero photo"}</option>
+            </select>
+          </label>
+          <p className={styles.muted}>
+            {ar ? "تُحفظ صور الوضعين عند التبديل. ارفع صور الجوالات بإطارها وخلفية شفافة، ثم انشر التغييرات لتظهر للزوار." : "Both modes retain their images. Upload phone mockups with frames and transparent backgrounds, then publish to update the website."}
+          </p>
+          {value.hero.mode === "phones" && (["front", "back"] as const).map((position) => (
+            <div key={position}>
+              <ImageField
+                src={value.hero[`${position}Image`]}
+                label={position === "front" ? (ar ? "صورة الجوال الأمامي" : "Front phone image") : (ar ? "صورة الجوال الخلفي" : "Back phone image")}
+                onChange={(image) => section("hero", { [`${position}Image`]: image || defaultPresentation.hero[`${position}Image`] })}
+                onBusy={setBusy}
+                onError={setFeedback}
+                canUpload={canUpload}
+              />
+              <Pair
+                label={ar ? "وصف صورة الجوال" : "Phone image description"}
+                value={value.hero[`${position}Alt`]}
+                onChange={(alt) => section("hero", { [`${position}Alt`]: alt })}
+              />
+            </div>
+          ))}
+          {value.hero.mode === "photo" && <>
           <ImageField
             src={value.hero.image}
             label={
@@ -314,6 +346,7 @@ function Editor({
             value={value.hero.imageAlt}
             onChange={(v) => section("hero", { imageAlt: v })}
           />
+          </>}
           <Pair
             label={ar ? "نص الزر التعريفي" : "Information link label"}
             value={value.hero.button}
