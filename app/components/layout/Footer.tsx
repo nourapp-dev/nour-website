@@ -4,12 +4,14 @@ import type { ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  Building2,
   ExternalLink,
   Globe2,
   Mail,
   MapPin,
   MessageCircle,
   Phone,
+  ReceiptText,
   ShieldCheck,
 } from "lucide-react";
 import {
@@ -30,6 +32,7 @@ import NewsletterSubscribeForm from "../../../src/features/subscribers/component
 import { usePublicSettings } from "../../../src/features/settings/providers/PublicSettingsProvider";
 import usePublicContact from "../../../src/features/settings/hooks/usePublicContact";
 import { normalizePublicUrl } from "../../../src/features/settings/utils/public-contact";
+import styles from "./Footer.module.css";
 
 type FooterProps = {
   t: HomeCopy;
@@ -157,163 +160,170 @@ export default function Footer({
         </div>
       </section>
 
-      <div className="nr-container nr-footer-content nr-footer-premium-content">
-        <div className="nr-footer-brand">
-          <div className="nr-footer-brand-head">
-            <Image
-              src="/images/site/v-logo.png"
-              alt={platformName}
-              width={130}
-              height={110}
-            />
+      <div className={styles.shell}>
+        <div className={styles.main}>
+          <div className={styles.brand}>
+            <div className={styles.brandHead}>
+              <Image
+                className={styles.logo}
+                src="/images/site/v-logo.png"
+                alt={platformName}
+                width={78}
+                height={78}
+              />
+              <div>
+                <strong>{platformName}</strong>
+                <p>
+                  {isArabic
+                    ? "تجربة رقمية متكاملة تساعد المعتمر على التخطيط لرحلته ومتابعة تفاصيلها بوضوح وطمأنينة."
+                    : "An integrated digital experience helping pilgrims plan and follow their Umrah journey with clarity and confidence."}
+                </p>
+              </div>
+            </div>
 
+            {socialLinks.length > 0 ? (
+              <div
+                className={styles.social}
+                aria-label={isArabic ? "روابط التواصل الاجتماعي" : "Social media links"}
+              >
+                {socialLinks.map((socialLink) => {
+                  const Icon = socialLink.icon;
+                  return (
+                    <a
+                      key={socialLink.key}
+                      href={socialLink.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={socialLink.label}
+                    >
+                      <Icon size={17} aria-hidden={true} />
+                    </a>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+
+          <section className={styles.column} id="contact" aria-labelledby="footer-contact-title">
+            <h2 className={styles.heading} id="footer-contact-title">
+              {isArabic ? "تواصل معنا" : "Contact us"}
+            </h2>
+            <div className={styles.contact}>
+              {contact.phone ? (
+                <a href={contact.phoneHref}>
+                  <Phone aria-hidden="true" />
+                  <bdi dir="ltr">{contact.phoneLabel}</bdi>
+                </a>
+              ) : null}
+              {contact.email ? (
+                <a href={`mailto:${contact.email}`}>
+                  <Mail aria-hidden="true" />
+                  <bdi dir="ltr">{contact.email}</bdi>
+                </a>
+              ) : null}
+              {contact.whatsappHref ? (
+                <a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle aria-hidden="true" />
+                  <span>{isArabic ? "تواصل عبر واتساب" : "WhatsApp"}</span>
+                </a>
+              ) : null}
+              {contact.websiteHref ? (
+                <a href={contact.websiteHref} target="_blank" rel="noopener noreferrer">
+                  <Globe2 aria-hidden="true" />
+                  <bdi dir="ltr">{displayedWebsite}</bdi>
+                </a>
+              ) : null}
+              {address ? (
+                <div className={styles.contactItem}>
+                  <MapPin aria-hidden="true" />
+                  <span>{address}</span>
+                </div>
+              ) : null}
+            </div>
+          </section>
+
+          <nav className={styles.column} aria-labelledby="footer-links-title">
+            <h2 className={styles.heading} id="footer-links-title">
+              {isArabic ? "روابط مهمة" : "Useful links"}
+            </h2>
+            <div className={styles.links}>
+              <Link href="/become-a-partner">{isArabic ? "كن شريك نور" : "Partner with Nour"}</Link>
+              <Link href="/join-us">{isArabic ? "انضم إلى فريقنا" : "Join our team"}</Link>
+              <Link href="/privacy">{isArabic ? "سياسة الخصوصية" : "Privacy Policy"}</Link>
+              <Link href="/terms">{isArabic ? "الشروط والأحكام" : "Terms & Conditions"}</Link>
+              <a href="#official-documents">{isArabic ? "التراخيص والوثائق" : "Official documents"}</a>
+            </div>
+          </nav>
+        </div>
+
+        <section className={styles.documents} id="official-documents" aria-labelledby="footer-documents-title">
+          <div className={styles.documentsHead}>
             <div>
-              <strong>{platformName}</strong>
+              <h2 className={styles.heading} id="footer-documents-title">
+                {isArabic ? "التراخيص والوثائق الرسمية" : "Official registration documents"}
+              </h2>
               <p>
                 {isArabic
-                  ? "تجربة رقمية متكاملة تساعد المعتمر على التخطيط لرحلته ومتابعة تفاصيلها بوضوح وطمأنينة."
-                  : "An integrated digital experience helping pilgrims plan and follow their Umrah journey with clarity and confidence."}
+                  ? "شركة كود لاند لتقنية المعلومات"
+                  : "Code Land Company for Information Technology"}
               </p>
             </div>
+            <span className={styles.documentHint}>
+              {isArabic ? "عرض الوثائق الأصلية بصيغة PDF" : "View the original PDF documents"}
+            </span>
           </div>
 
-          {socialLinks.length > 0 ? (
-            <div
-              className="nr-footer-social"
-              aria-label={
-                isArabic
-                  ? "روابط التواصل الاجتماعي"
-                  : "Social media links"
-              }
+          <div className={styles.documentGrid}>
+            <a
+              className={styles.documentCard}
+              href="/documents/code-land-commercial-registration-2026.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={isArabic ? "عرض شهادة السجل التجاري، PDF، يفتح في تبويب جديد" : "View commercial registration certificate, PDF, opens in a new tab"}
             >
-              {socialLinks.map((socialLink) => {
-                const Icon = socialLink.icon;
-
-                return (
-                  <a
-                    key={socialLink.key}
-                    href={socialLink.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={socialLink.label}
-                    title={socialLink.label}
-                  >
-                    <Icon
-                      size={17}
-                      aria-hidden={true}
-                    />
-                  </a>
-                );
-              })}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="nr-footer-column" id="contact" style={{ scrollMarginTop: 130 }}>
-          <span className="nr-footer-column-title">
-            {isArabic ? "تواصل معنا" : "Contact"}
-          </span>
-
-          <div className="nr-footer-contact">
-            {contact.phone ? (
-              <a href={contact.phoneHref} dir="ltr">
-                <Phone />
-                <span>{contact.phoneLabel}</span>
-              </a>
-            ) : null}
-
-            {contact.email ? (
-              <a href={`mailto:${contact.email}`} dir="ltr">
-                <Mail />
-                <span>{contact.email}</span>
-              </a>
-            ) : null}
-
-            {contact.whatsappHref ? (
-              <a
-                href={contact.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MessageCircle />
-                <span>
-                  {isArabic
-                    ? "تواصل عبر واتساب"
-                    : "WhatsApp"}
+              <span className={styles.documentIcon}><Building2 aria-hidden="true" /></span>
+              <span className={styles.documentCopy}>
+                <strong>{isArabic ? "السجل التجاري" : "Commercial registration"}</strong>
+                <span>{isArabic ? "الرقم الوطني الموحد" : "Unified national number"}</span>
+                <bdi dir="ltr">7039728899</bdi>
+                <span className={styles.documentAction}>
+                  {isArabic ? "عرض الشهادة" : "View certificate"} · PDF
+                  <ExternalLink aria-hidden="true" />
                 </span>
-              </a>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="nr-footer-column">
-          <span className="nr-footer-column-title">
-            {isArabic ? "نور آب" : "NourApp"}
-          </span>
-
-          <div className="nr-footer-contact">
-            {contact.websiteHref ? (
-              <a
-                href={contact.websiteHref}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Globe2 />
-                <span dir="ltr">{displayedWebsite}</span>
-              </a>
-            ) : null}
-
-            {address ? (
-              <span className="nr-footer-contact-static">
-                <MapPin />
-                <span>{address}</span>
               </span>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="nr-footer-column">
-          <span className="nr-footer-column-title">
-            {isArabic ? "روابط مهمة" : "Important links"}
-          </span>
-
-          <div className="nr-footer-links">
-            <Link href="/become-a-partner"><span>{isArabic ? "كن شريك نور" : "Partner with Nour"}</span><ExternalLink /></Link>
-            <Link href="/join-us"><span>{isArabic ? "انضم إلى فريقنا" : "Join our team"}</span><ExternalLink /></Link>
-            <a href="/privacy">
-              <span>
-                {isArabic
-                  ? "سياسة الخصوصية"
-                  : "Privacy Policy"}
-              </span>
-              <ExternalLink />
             </a>
-
-            <a href="/terms">
-              <span>
-                {isArabic
-                  ? "الشروط والأحكام"
-                  : "Terms & Conditions"}
+            <a
+              className={styles.documentCard}
+              href="/documents/code-land-vat-registration.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={isArabic ? "عرض شهادة ضريبة القيمة المضافة، PDF، يفتح في تبويب جديد" : "View VAT registration certificate, PDF, opens in a new tab"}
+            >
+              <span className={styles.documentIcon}><ReceiptText aria-hidden="true" /></span>
+              <span className={styles.documentCopy}>
+                <strong>{isArabic ? "شهادة ضريبة القيمة المضافة" : "VAT registration certificate"}</strong>
+                <span>{isArabic ? "رقم التسجيل الضريبي" : "VAT registration number"}</span>
+                <bdi dir="ltr">315049714300003</bdi>
+                <span className={styles.documentAction}>
+                  {isArabic ? "عرض الشهادة" : "View certificate"} · PDF
+                  <ExternalLink aria-hidden="true" />
+                </span>
               </span>
-              <ExternalLink />
             </a>
           </div>
+        </section>
+
+        <div className={styles.bottom}>
+          <span>
+            © {new Date().getFullYear()} {platformName}.{" "}
+            {isArabic ? "جميع الحقوق محفوظة." : "All rights reserved."}
+          </span>
+          <span>
+            {isArabic
+              ? "صُمم لتجربة عمرة أوضح وأسهل."
+              : "Designed for a clearer, easier Umrah journey."}
+          </span>
         </div>
-      </div>
-
-      <div className="nr-container nr-footer-bottom">
-        <span>
-          © {new Date().getFullYear()} {platformName}.{" "}
-          {isArabic
-            ? "جميع الحقوق محفوظة."
-            : "All rights reserved."}
-        </span>
-
-        <span className="nr-footer-bottom-note">
-          {isArabic
-            ? "صُمم لتجربة عمرة أوضح وأسهل."
-            : "Designed for a clearer, easier Umrah journey."}
-        </span>
       </div>
     </footer>
   );
