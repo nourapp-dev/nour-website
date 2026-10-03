@@ -7,9 +7,11 @@ import VisitorAnalyticsTracker from "../src/features/analytics/components/Visito
 import { getConfiguredSiteOrigin } from "../src/core/config/site-url";
 import { LanguageProvider } from "../src/core/i18n";
 
+import "../src/styles/tokens.css";
 import "./globals.css";
 import "./nour-redesign.css";
 import "./modern-upgrade.css";
+import "./ui-consistency.css";
 
 import {
   getPublicServerSettings,

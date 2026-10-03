@@ -1,0 +1,143 @@
+/* Nour Platform UI consistency layer
+ * Loaded after existing public styles to normalize typography and core tokens
+ * without redesigning page-specific components.
+ */
+
+:root {
+  --font-primary: var(--font-cairo);
+  --ui-primary: var(--NourApp-primary, #176fe8);
+  --ui-primary-hover: var(--NourApp-primary-hover, #0f5ecb);
+  --ui-secondary: var(--NourApp-secondary, #ffc313);
+  --ui-text: var(--NourApp-text-primary, #15233b);
+  --ui-muted: var(--NourApp-text-secondary, #64748b);
+  --ui-border: var(--NourApp-border, #e2e8f0);
+  --ui-radius-sm: var(--NourApp-radius-sm, 8px);
+  --ui-radius-md: var(--NourApp-radius-md, 12px);
+  --ui-radius-lg: var(--NourApp-radius-lg, 16px);
+  --ui-radius-xl: var(--NourApp-radius-xl, 24px);
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-primary), sans-serif;
+}
+
+body {
+  color: var(--ui-text);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  line-height: 1.5;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ui-primary) 32%, transparent);
+}
+
+/* Public Nour website: keep the existing visual direction while using one token source. */
+.nour-redesign {
+  --nr-blue: var(--NourApp-primary, #176fe8);
+  --nr-blue-dark: var(--NourApp-primary-hover, #0f5ecb);
+  --nr-gold: var(--NourApp-secondary, #ffc313);
+  --nr-text: var(--NourApp-text-primary, #15233b);
+  --nr-muted: var(--NourApp-text-secondary, #64748b);
+  --nr-border: color-mix(in srgb, var(--NourApp-text-primary, #15233b) 10%, transparent);
+}
+
+.nour-redesign h1,
+.nour-redesign h2,
+.nour-redesign h3,
+.nour-redesign h4,
+.nr-admin-theme h1,
+.nr-admin-theme h2,
+.nr-admin-theme h3,
+.nr-admin-theme h4 {
+  text-wrap: balance;
+}
+
+.nour-redesign p,
+.nour-redesign li,
+.nr-admin-theme p,
+.nr-admin-theme li {
+  text-wrap: pretty;
+}
+
+/* Keep body copy readable in both Arabic and English. */
+.nour-redesign p,
+.nour-redesign li,
+.nour-redesign input,
+.nour-redesign select,
+.nour-redesign textarea {
+  line-height: 1.8;
+}
+
+html[dir="ltr"] .nour-redesign p,
+html[dir="ltr"] .nour-redesign li,
+html[dir="ltr"] .nour-redesign input,
+html[dir="ltr"] .nour-redesign select,
+html[dir="ltr"] .nour-redesign textarea {
+  line-height: 1.65;
+}
+
+/* Normalized control ergonomics without overriding module-specific colors. */
+.nour-redesign button,
+.nour-redesign input,
+.nour-redesign select,
+.nour-redesign textarea,
+.nr-admin-theme button,
+.nr-admin-theme input,
+.nr-admin-theme select,
+.nr-admin-theme textarea {
+  border-radius: var(--ui-radius-md);
+}
+
+.nour-redesign input,
+.nour-redesign select,
+.nour-redesign textarea,
+.nr-admin-theme input,
+.nr-admin-theme select,
+.nr-admin-theme textarea {
+  min-height: 44px;
+}
+
+.nour-redesign textarea,
+.nr-admin-theme textarea {
+  min-height: 110px;
+}
+
+/* Hero layout remains owned by the dashboard-managed presentation components. */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
