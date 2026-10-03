@@ -35,6 +35,7 @@ const contentSecurityPolicy = `
   script-src
     'self'
     'unsafe-inline'
+    https://eauthenticate.saudibusiness.gov.sa
     ${isDevelopment ? "'unsafe-eval'" : ""};
 
   style-src
@@ -65,7 +66,7 @@ const contentSecurityPolicy = `
     ${supabaseOrigin};
 
   frame-src
-    'none';
+    https://eauthenticate.saudibusiness.gov.sa;
 
   worker-src
     'self'
