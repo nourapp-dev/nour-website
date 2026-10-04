@@ -272,23 +272,61 @@ export default function Footer({
 
           <div className={styles.documentGrid}>
             <div className={styles.documentCard}>
-              <span className={styles.documentIcon}><Building2 aria-hidden="true" /></span>
-              <span className={styles.documentCopy}>
-                <strong>{isArabic ? "السجل التجاري" : "Commercial registration"}</strong>
-                <span>{isArabic ? "الرقم الوطني الموحد" : "Unified national number"}</span>
-                <bdi dir="ltr">7039728899</bdi>
-              </span>
+              <div className={styles.documentHeading}>
+                <span className={styles.documentIcon}><Building2 aria-hidden="true" /></span>
+                <span className={styles.documentCopy}>
+                  <strong>{isArabic ? "السجل التجاري" : "Commercial registration"}</strong>
+                  <span>{isArabic ? "الرقم الوطني الموحد" : "Unified national number"}</span>
+                  <bdi dir="ltr">7039728899</bdi>
+                </span>
+              </div>
+              <a
+                className={styles.registrationSeal}
+                href="https://mc.gov.sa/ar/eservices/Pages/Commercial-data.aspx?CRNumber=7039728899"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className={styles.issuerBadge}>
+                  <Image
+                    src="/images/verification/ministry-of-commerce.png"
+                    width={145}
+                    height={64}
+                    alt={isArabic ? "وزارة التجارة" : "Ministry of Commerce"}
+                    unoptimized
+                  />
+                </span>
+                <span>{isArabic ? "التحقق من السجل التجاري" : "Check commercial registration"}</span>
+              </a>
             </div>
             <div className={styles.documentCard}>
-              <span className={styles.documentIcon}><ReceiptText aria-hidden="true" /></span>
-              <span className={styles.documentCopy}>
-                <strong>{isArabic ? "شهادة ضريبة القيمة المضافة" : "VAT registration certificate"}</strong>
-                <span>{isArabic ? "رقم التسجيل الضريبي" : "VAT registration number"}</span>
-                <bdi dir="ltr">315049714300003</bdi>
-              </span>
+              <div className={styles.documentHeading}>
+                <span className={styles.documentIcon}><ReceiptText aria-hidden="true" /></span>
+                <span className={styles.documentCopy}>
+                  <strong>{isArabic ? "شهادة ضريبة القيمة المضافة" : "VAT registration certificate"}</strong>
+                  <span>{isArabic ? "رقم التسجيل الضريبي" : "VAT registration number"}</span>
+                  <bdi dir="ltr">315049714300003</bdi>
+                </span>
+              </div>
+              <a
+                className={styles.registrationSeal}
+                href="https://zatca.gov.sa/ar/eServices/Pages/TaxpayerLookup.aspx"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className={styles.issuerBadge}>
+                  <Image
+                    src="/images/verification/zatca.svg"
+                    width={190}
+                    height={43}
+                    alt={isArabic ? "هيئة الزكاة والضريبة والجمارك" : "Zakat, Tax and Customs Authority"}
+                    unoptimized
+                  />
+                </span>
+                <span>{isArabic ? "التحقق من التسجيل الضريبي" : "Check VAT registration"}</span>
+              </a>
             </div>
             <div className={`${styles.documentCard} ${styles.verificationCard}`}>
-              <div className={styles.verificationHeading}>
+              <div className={styles.documentHeading}>
                 <span className={styles.documentIcon}><ShieldCheck aria-hidden="true" /></span>
                 <span className={styles.documentCopy}>
                   <strong>{isArabic ? "توثيق التجارة الإلكترونية" : "E-commerce verification"}</strong>
