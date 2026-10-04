@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Building2,
-  ExternalLink,
   Globe2,
   Mail,
   MapPin,
@@ -33,6 +32,7 @@ import { usePublicSettings } from "../../../src/features/settings/providers/Publ
 import usePublicContact from "../../../src/features/settings/hooks/usePublicContact";
 import { normalizePublicUrl } from "../../../src/features/settings/utils/public-contact";
 import styles from "./Footer.module.css";
+import BusinessVerificationSeal from "./BusinessVerificationSeal";
 
 type FooterProps = {
   t: HomeCopy;
@@ -251,7 +251,7 @@ export default function Footer({
               <Link href="/join-us">{isArabic ? "انضم إلى فريقنا" : "Join our team"}</Link>
               <Link href="/privacy">{isArabic ? "سياسة الخصوصية" : "Privacy Policy"}</Link>
               <Link href="/terms">{isArabic ? "الشروط والأحكام" : "Terms & Conditions"}</Link>
-              <a href="#official-documents">{isArabic ? "التراخيص والوثائق" : "Official documents"}</a>
+              <a href="#official-documents">{isArabic ? "التراخيص والتوثيق" : "Registration & verification"}</a>
             </div>
           </nav>
         </div>
@@ -260,7 +260,7 @@ export default function Footer({
           <div className={styles.documentsHead}>
             <div>
               <h2 className={styles.heading} id="footer-documents-title">
-                {isArabic ? "التراخيص والوثائق الرسمية" : "Official registration documents"}
+                {isArabic ? "التراخيص والتوثيق" : "Registration & verification"}
               </h2>
               <p>
                 {isArabic
@@ -268,48 +268,35 @@ export default function Footer({
                   : "Code Land Company for Information Technology"}
               </p>
             </div>
-            <span className={styles.documentHint}>
-              {isArabic ? "عرض الوثائق الأصلية بصيغة PDF" : "View the original PDF documents"}
-            </span>
           </div>
 
           <div className={styles.documentGrid}>
-            <a
-              className={styles.documentCard}
-              href="/documents/code-land-commercial-registration-2026.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={isArabic ? "عرض شهادة السجل التجاري، PDF، يفتح في تبويب جديد" : "View commercial registration certificate, PDF, opens in a new tab"}
-            >
+            <div className={styles.documentCard}>
               <span className={styles.documentIcon}><Building2 aria-hidden="true" /></span>
               <span className={styles.documentCopy}>
                 <strong>{isArabic ? "السجل التجاري" : "Commercial registration"}</strong>
                 <span>{isArabic ? "الرقم الوطني الموحد" : "Unified national number"}</span>
                 <bdi dir="ltr">7039728899</bdi>
-                <span className={styles.documentAction}>
-                  {isArabic ? "عرض الشهادة" : "View certificate"} · PDF
-                  <ExternalLink aria-hidden="true" />
-                </span>
               </span>
-            </a>
-            <a
-              className={styles.documentCard}
-              href="/documents/code-land-vat-registration.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={isArabic ? "عرض شهادة ضريبة القيمة المضافة، PDF، يفتح في تبويب جديد" : "View VAT registration certificate, PDF, opens in a new tab"}
-            >
+            </div>
+            <div className={styles.documentCard}>
               <span className={styles.documentIcon}><ReceiptText aria-hidden="true" /></span>
               <span className={styles.documentCopy}>
                 <strong>{isArabic ? "شهادة ضريبة القيمة المضافة" : "VAT registration certificate"}</strong>
                 <span>{isArabic ? "رقم التسجيل الضريبي" : "VAT registration number"}</span>
                 <bdi dir="ltr">315049714300003</bdi>
-                <span className={styles.documentAction}>
-                  {isArabic ? "عرض الشهادة" : "View certificate"} · PDF
-                  <ExternalLink aria-hidden="true" />
-                </span>
               </span>
-            </a>
+            </div>
+            <div className={`${styles.documentCard} ${styles.verificationCard}`}>
+              <div className={styles.verificationHeading}>
+                <span className={styles.documentIcon}><ShieldCheck aria-hidden="true" /></span>
+                <span className={styles.documentCopy}>
+                  <strong>{isArabic ? "توثيق التجارة الإلكترونية" : "E-commerce verification"}</strong>
+                  <span>{isArabic ? "المركز السعودي للأعمال" : "Saudi Business Center"}</span>
+                </span>
+              </div>
+              <BusinessVerificationSeal key={language} language={language} className={styles.verificationSeal} />
+            </div>
           </div>
         </section>
 
