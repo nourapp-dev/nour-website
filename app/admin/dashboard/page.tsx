@@ -213,7 +213,7 @@ export default function AdminDashboardPage() {
     <section className="nr-dashboard nr-ops-dashboard" dir={isArabic ? "rtl" : "ltr"}>
       <header className="nr-ops-head">
         <div>
-          <span className="nr-dashboard-kicker">{isArabic ? "لوحة إدارة نور" : "Nour Administration"}</span>
+          <span className="nr-dashboard-kicker">{isArabic ? "لوحة إدارة نور آب" : "Nour Administration"}</span>
           <h1>{isArabic ? "نظرة عامة على المنصة" : "Platform overview"}</h1>
           <p>{isArabic ? "ملخص واضح لأهم مؤشرات التشغيل والحجوزات والطلبات الحالية." : "A clear summary of current operations, bookings, and incoming requests."}</p>
         </div>

@@ -1,5 +1,8 @@
 # Hostinger VPS deployment
 
+> Current preparation (2026-11-03): read [release readiness](release-readiness.md) first. The infrastructure evidence below is historical; the live server path/SHA was not rechecked during this documentation update.
+> تجهيز النشر الحالي لا يعني تنفيذ نشر. تحقّق من الخدمة والنسخة الفعلية قبل أي تبديل، وأبقِ الحجز والمعاينة التجريبية وروابط التطبيق غير المفعّلة مغلقة.
+
 This runbook records the deployment verified on **2026-10-01 UTC**. Server results were supplied by the operator through the Hostinger Web Console; the public homepage, language switch, catalog and one program detail page were also checked in a browser.
 
 ## Installed layout
@@ -10,7 +13,7 @@ This runbook records the deployment verified on **2026-10-01 UTC**. Server resul
 | VPS | Existing Hostinger KVM 2, AlmaLinux 8, cPanel |
 | Application account | `nourapp` |
 | Initial release | Commit `9ed4386452886783b10a0c8f83a8bae4c5e65171` on `feat/website-browse-mode-hostinger` |
-| Live application | `/home/nourapp/nour-website-staging` |
+| Initial live application | `/home/nourapp/nour-website-staging` |
 | Runtime directory | `/home/nourapp/nour-website-runtime` |
 | Node.js | `/home/nourapp/nour-website-runtime/node-v24.21.0-linux-x64/bin/node` |
 | Service definition | `/etc/systemd/system/nour-website.service` |
@@ -18,7 +21,7 @@ This runbook records the deployment verified on **2026-10-01 UTC**. Server resul
 | Domain proxy include | `/etc/nginx/conf.d/users/nourapp/nourappglobal.com/nour-website.conf` |
 | Initial cutover backup | `/root/nour-website-backups/20261001-212803` |
 
-Despite its name, `nour-website-staging` is the **live production release**. The default GitHub branch does not necessarily contain this release while the stacked pull requests remain unmerged. Deploy a reviewed commit explicitly.
+At the initial deployment, `nour-website-staging` was the live production release. Later releases may run under `/home/nourapp/nour-website-releases`; read `systemctl show -p WorkingDirectory --value nour-website.service` before maintenance. The default GitHub branch does not necessarily contain this release while the stacked pull requests remain unmerged. Deploy a reviewed commit explicitly.
 
 The existing `/home/nourapp/public_html` contains other applications. Leave those files, the global Node.js installation, cPanel, Apache and other domain configurations intact. The Next.js process binds only to loopback; public traffic enters through Nginx.
 
@@ -33,6 +36,8 @@ NEXT_PUBLIC_SITE_URL=https://nourappglobal.com
 NEXT_PUBLIC_SUPABASE_URL=<existing-project-url>
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<existing-public-publishable-key>
 NEXT_PUBLIC_WEBSITE_BOOKING_ENABLED=false
+NEXT_PUBLIC_UI_PREVIEW=false
+NEXT_PUBLIC_NOUR_APP_LINKS_READY=false
 ```
 
 Public variables are compiled into the client build. Keep the booking flag `false` both at build time and in the service environment. Changing only the runtime environment does not update the compiled interface.
@@ -160,6 +165,8 @@ Expect `{"code":"website_booking_paused"}` and `BOOKING_HTTP=503`. If that respo
 The initial cutover checked the homepage, a real `/_next/static/` JavaScript asset, the booking pause and both redirects against the local Nginx endpoint using `curl --resolve`, without disabling TLS verification. The operator received `NOUR_DOMAIN_READY`. An external browser then loaded the public homepage in Arabic and English, the catalog and a program detail page with its pause notice.
 
 ## Updating without rebuilding the running release
+
+The existing `ops/deploy-hostinger.sh` automates an isolated-release cutover when run as root with a reviewed full SHA. It builds with Webpack, checks a candidate on loopback 3101, switches the service to 3100 and restores the prior unit on failure. Running it changes production. Review its current contents before use. It does not explicitly force `NEXT_PUBLIC_UI_PREVIEW` or `NEXT_PUBLIC_NOUR_APP_LINKS_READY` off; verify the private environment before building. Its tracked-file check also does not replace reviewing untracked files.
 
 1. Select a reviewed commit and record the currently running release path. Back up `/etc/systemd/system/nour-website.service` and the domain include to a new root-only backup directory. Keep the current release available for rollback.
 2. Prepare a **new** directory such as `/home/nourapp/nour-website-releases/<release-id>`, owned by `nourapp` and outside `public_html`. Check out the selected commit there. Do not run `git pull`, `npm ci` or `next build` in the directory used by the active service.

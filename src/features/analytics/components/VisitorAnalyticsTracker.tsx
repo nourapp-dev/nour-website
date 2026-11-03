@@ -1,5 +1,7 @@
 "use client";
 
+import usePrivacyConsent from "../../../core/privacy/usePrivacyConsent";
+import { analyticsAllowed } from "../../../core/privacy/consent";
 import { useEffect, useRef } from "react";
 import {
   usePathname,
@@ -12,6 +14,7 @@ const DUPLICATE_VISIT_WINDOW_MS = 2000;
 
 export default function VisitorAnalyticsTracker() {
   const pathname = usePathname();
+  const consent = usePrivacyConsent();
   const searchParams = useSearchParams();
 
   const lastVisitRef = useRef<{
@@ -20,7 +23,8 @@ export default function VisitorAnalyticsTracker() {
   } | null>(null);
 
   useEffect(() => {
-    if (!pathname) {
+    if (!pathname || !analyticsAllowed()) {
+      lastVisitRef.current = null;
       return;
     }
 
@@ -66,7 +70,7 @@ export default function VisitorAnalyticsTracker() {
       pageTitle: document.title,
       language,
     });
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, consent]);
 
   return null;
 }

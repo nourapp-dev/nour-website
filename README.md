@@ -1,68 +1,36 @@
-# Nour website
+# نور آب / NourApp website
 
-Public Arabic/English website and administration interface for `nourapp-dev/nour-website`, built with Next.js and Supabase.
+موقع نور آب بالعربية والإنجليزية، مع إدارة المحتوى داخل Next.js. مصدر البيانات والمصادقة الحالي Supabase؛ خطة الربط بـLaravel ملغاة. الحجز عبر الموقع مغلق، والتطبيق يُعرض بعبارة «التطبيق قريبًا».
+Arabic/English public website and content administration using Next.js and Supabase. Laravel integration is cancelled. Website bookings remain paused; public app actions show “App coming soon”.
 
-## Local development
+## ابدأ هنا / Start here
 
-Use Node.js 24.15 or later in the 24.x series (`.nvmrc` selects Node 24).
+- [تجهيز الإصدار ونتائج التحقق / Release readiness](docs/release-readiness.md)
+- [تشغيل ونشر Hostinger / Deployment runbook](docs/hostinger-vps.md)
+- [إدارة عرض الرئيسية / Managed homepage](docs/managed-home-presentation.md)
+- [تنظيم الملفات وحدود الخادم / Code organization](docs/website-organization.md)
+- [دليل قاعدة البيانات / Database documentation](docs/Database.md)
+- [سجل الواجهة التاريخي / UI history](docs/website-ui-history.md)
 
-```sh
-npm ci
-cp .env.example .env.local
-```
+## التشغيل المحلي / Local development
 
-Fill in the Supabase URL and publishable key, and set `NEXT_PUBLIC_SITE_URL=http://localhost:3000`. On Windows PowerShell, use `Copy-Item .env.example .env.local`.
+Node.js >=24.15.0 and <25 is required. Install locked dependencies with `npm ci`. Copy `.env.example` to a private `.env.local` only if it does not exist, then supply authorized development values. Never copy production secrets into local testing or commit environment files.
 
-```sh
-npm run dev
-```
+ابدأ بـ`npm run dev`. لا تستبدل إعدادات محلية موجودة. فحوص المشروع: `npm run quality`، `npm test`، `npm run build -- --webpack`. يتبع التشغيل بعد البناء `npm run start`؛ المنفذ الافتراضي 3000 ما لم يُحدد غيره.
 
-## Website booking pause
+For an isolated display preview, run `node scripts/ui-preview.mjs`, then open http://127.0.0.1:3201. The fixture API uses loopback port 54322. The review controls at `/ui-preview` expose sample success/loading/error/empty/secondary-service scenarios. Fixtures are not real offers, prices or availability. Preview mode requires development and is rejected in production; its build output is separate (`.next-ui-preview`).
 
-`NEXT_PUBLIC_WEBSITE_BOOKING_ENABLED` defaults to disabled unless its value is exactly `true`. Keep it `false` during the website launch:
+المعاينة الثابتة لا تثبت اتصال البيانات الحقيقية أو نجاح الدفع. صفحة `/ui-preview` غير متاحة في التشغيل العادي، ولا تُفعّل في الإنتاج.
 
-- Programs, filters, pricing information and details remain available.
-- Booking selectors and checkout do not mount, and old browser booking selections are cleared.
-- The website booking client rejects submissions, and `POST /api/bookings` responds with HTTP 503 and `website_booking_paused` before authentication or database operations.
-- Account access and administration remain available.
+## حدود الإصدار / Release constraints
 
-The flag is compiled into the build. Changing it requires rebuilding and redeploying. Before reactivation, test account authentication, published future departures, pricing, reservation expiry and payments in a test environment. The re-enabled website submits through the server route using the customer's Supabase session.
+- `NEXT_PUBLIC_WEBSITE_BOOKING_ENABLED=false` at build and runtime. The paused API returns HTTP 503 with code `website_booking_paused` before authentication or database work. Public flags require a rebuild when changed.
+- `NEXT_PUBLIC_UI_PREVIEW=false` and `NEXT_PUBLIC_NOUR_APP_LINKS_READY=false` for this release. No app-store or deep-link readiness claim.
+- Existing account/admin routes and authorization remain; hiding public login navigation does not delete those routes.
+- No pricing, backend integration, database migration or content transfer is part of this UI release.
+- Keep content images whose URLs may be stored in the CMS. A missing source-code reference alone does not prove an image is unused.
 
-This change applies to this website release. It does not change Supabase RPC permissions or disable other applications and already deployed older website versions. Retire the previous website deployment after the domain cutover. If every database booking channel must be suspended, manage that separately in Supabase.
+## الرفع والنشر / Upload and deployment
 
-## Verification
-
-```sh
-npm run quality
-npm test
-npm run build
-npm run start
-```
-
-The build needs the public environment variables. CI runs these checks with placeholder Supabase credentials; it does not create real bookings.
-
-## Hostinger deployment
-
-The website runs on the existing **Hostinger VPS with AlmaLinux 8 and cPanel**, using a dedicated Node.js runtime, a systemd service and cPanel's Nginx reverse proxy. The public URL is [https://nourappglobal.com](https://nourappglobal.com).
-
-| Setting | Value |
-| --- | --- |
-| Repository | `nourapp-dev/nour-website` |
-| Integration branch | `master` |
-| Initial deployed branch | `feat/website-browse-mode-hostinger` |
-| Initial deployed commit | `9ed4386452886783b10a0c8f83a8bae4c5e65171` |
-| Last verified website release | `9f0f19bd52cb74de3723415ed9b0cf6ffe0c574d` (Nour browser icon) |
-| Runtime | Dedicated Node.js 24.21.0 |
-| Install | `npm ci` |
-| VPS build | `npm run build -- --webpack` |
-| Service | `nour-website.service` |
-| Internal listener | `127.0.0.1:3100` |
-| Website bookings | Paused; API responds with HTTP 503 and `website_booking_paused` |
-
-See the [Hostinger VPS runbook](docs/hostinger-vps.md) for the installed paths, environment, proxy configuration, health checks, isolated release updates and rollback.
-
-The initial production release used a directory named `nour-website-staging`; subsequent releases use separate directories under `/home/nourapp/nour-website-releases`. Confirm the active working directory with `systemctl show nour-website.service -p WorkingDirectory` before maintenance. Do not run `npm ci`, rebuild `.next`, or switch Git branches inside the running release.
-
-This is a Node.js application, not a static export. Supabase still provides the existing database, storage and authentication; these were not migrated to the VPS. Keep environment files private and outside Git.
-
-Database migration is deferred by the owner's decision on 2026-10-02 (Asia/Riyadh). The [migration assessment](docs/supabase-hostinger-migration.md) is retained for future reference. Merging repository changes does not run that assessment, install database services or switch the live website's provider.
+العمل المحلي على `feat/website-ui-improvements`. لا يمثل HEAD القديم نسخة الواجهة المعدلة غير المسجلة بعد. راجع الملفات الجديدة والمحذوفة ثم أنشئ commit للإصدار قبل رفعه؛ لا تنشر 09bcc73 بوصفه النسخة الجديدة.
+Deployment is manual and targets a reviewed full commit SHA in an isolated server release directory. A Git push or merge does not itself establish that Hostinger is serving that commit. Follow the readiness checklist and runbook; do not build in the running release directory.

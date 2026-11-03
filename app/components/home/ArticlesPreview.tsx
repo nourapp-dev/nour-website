@@ -1,5 +1,7 @@
 "use client";
 
+import cardStyles from "./MediaCards.module.css";
+
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
@@ -61,7 +63,7 @@ export default function ArticlesPreview({ language }: Props) {
   const ar = language === "ar";
 
   return (
-    <section className="nr-articles-preview" dir={ar ? "rtl" : "ltr"}>
+    <section className={"nr-articles-preview " + cardStyles.scope} dir={ar ? "rtl" : "ltr"}>
       <div className="nr-container">
         <div className="nr-articles-head">
           <div className="nr-articles-head-copy">
@@ -83,14 +85,14 @@ export default function ArticlesPreview({ language }: Props) {
             return (
               <motion.article
                 key={item.id}
-                className={`nr-article-card ${index === 0 ? "nr-article-card--featured" : ""}`}
+                className={"nr-article-card " + cardStyles.card}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ delay: index * 0.08 }}
               >
                 <Link href={`/articles/${item.slug}`} className="nr-article-image" aria-label={title}>
-                  {item.image ? <img src={item.image} alt={title} /> : <div className="nr-article-image-placeholder">NourApp</div>}
+                  {item.image ? <img loading="lazy" decoding="async" src={item.image} alt={title} /> : <div className="nr-article-image-placeholder">NourApp</div>}
                   {item.is_featured ? <span className="nr-article-featured-badge">{ar ? "مميز" : "Featured"}</span> : null}
                 </Link>
                 <div className="nr-article-card-body">

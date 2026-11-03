@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import type { Language } from "../../data/home";
 import usePublicProgramCatalog from "../../../src/features/programs/hooks/usePublicProgramCatalog";
 import { getProgramCountries, programSearchHref } from "../../../src/features/programs/utils/program-discovery";
+import { languageHref } from "../../../src/core/i18n/public-language";
 
 export default function ProgramSearch({ language }: { language: Language }) {
   const isArabic = language === "ar";
@@ -19,11 +20,12 @@ export default function ProgramSearch({ language }: { language: Language }) {
 
   const search = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    router.push(programSearchHref(selectedCountry, duration));
+    router.push(languageHref(programSearchHref(selectedCountry, duration), language));
   };
 
   return (
     <form className="nr-program-search" action="/programs" method="get" onSubmit={search} role="search" aria-label={isArabic ? "البحث عن برامج العمرة" : "Find an Umrah program"} dir={isArabic ? "rtl" : "ltr"}>
+      <input type="hidden" name="lang" value={language} />
       <div className="nr-program-search-fields">
         <label htmlFor="hero-country">
           <span><MapPin size={16} aria-hidden="true" />{isArabic ? "بلد الانطلاق" : "Departure country"}</span>

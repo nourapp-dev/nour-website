@@ -34,6 +34,7 @@ test("official seal is present before hydration, resizes safely and returns afte
     exports: loaded.exports,
     require: createRequire(import.meta.url),
     window: dom.window,
+    process: { env: { NODE_ENV: "test" } },
   });
   const Seal = loaded.exports.default;
   const container = document.getElementById("root");

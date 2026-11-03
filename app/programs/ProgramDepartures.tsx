@@ -1,5 +1,6 @@
 "use client";
 
+import ProgramSectionState from "./ProgramSectionState";
 import { useMemo } from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -55,7 +56,12 @@ export default function ProgramDepartures() {
     queryFn: () => getPublicDeparturePriceTiers(supabase, programQuery.data!),
   });
 
-  if (!slug || !programQuery.data || departuresQuery.isLoading || departuresQuery.isError || !departuresQuery.data?.length) return null;
+  if (!slug) return null;
+  if (programQuery.isError) return <ProgramSectionState language={language} title={isArabic ? "المواعيد" : "Departures"} state="error" onRetry={() => void programQuery.refetch()} />;
+  if (!programQuery.data) return null;
+  if (departuresQuery.isLoading) return <ProgramSectionState language={language} title={isArabic ? "المواعيد" : "Departures"} state="loading" />;
+  if (departuresQuery.isError) return <ProgramSectionState language={language} title={isArabic ? "المواعيد" : "Departures"} state="error" onRetry={() => void departuresQuery.refetch()} />;
+  if (!departuresQuery.data?.length) return <ProgramSectionState language={language} title={isArabic ? "المواعيد" : "Departures"} state="empty" />;
 
   const priceTiers = pricingQuery.data ?? [];
 
@@ -63,11 +69,12 @@ export default function ProgramDepartures() {
     <section className="pdep-public" dir={isArabic ? "rtl" : "ltr"} aria-label={isArabic ? "مواعيد الانطلاق" : "Program departures"}>
       <div className="pdep-public-container">
         <div className="pdep-public-head">
-          <span>{isArabic ? "اختر موعد رحلتك" : "Choose your departure"}</span>
+          <span>{isArabic ? "استعرض المواعيد المعلنة" : "Browse published departures"}</span>
           <h2>{isArabic ? "مواعيد الانطلاق والتوفر" : "Departures & availability"}</h2>
           <p>{isArabic ? "اطّلع على مواعيد الرحلات وتفاصيل الأسعار المعلنة." : "Explore departure dates and published pricing."}</p>
         </div>
 
+        {pricingQuery.isLoading ? <ProgramSectionState language={language} title={isArabic ? "أسعار المواعيد" : "Departure prices"} state="loading" /> : pricingQuery.isError ? <ProgramSectionState language={language} title={isArabic ? "أسعار المواعيد" : "Departure prices"} state="error" onRetry={() => void pricingQuery.refetch()} /> : null}
         <div className="pdep-public-grid">
           {departuresQuery.data.map((departure) => {
             const start = new Date(departure.startAt);

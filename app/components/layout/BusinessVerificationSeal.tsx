@@ -42,6 +42,10 @@ export default function BusinessVerificationSeal({ language, className }: Props)
     return () => window.removeEventListener("message", resize);
   }, []);
 
+  if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_UI_PREVIEW === "true") {
+    return <p className={className}>{language === "ar" ? "ختم التوثيق الخارجي غير محمّل في المعاينة المحلية." : "The external verification seal is not loaded in this local preview."}</p>;
+  }
+
   return (
     <div className={className}>
       <iframe

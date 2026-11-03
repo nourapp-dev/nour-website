@@ -132,7 +132,7 @@ export default function BecomePartnerPage() {
       setForm(INITIAL_FORM);
       setAttachment(null);
       setSuccessMessage(
-        "تم استلام طلب الشراكة بنجاح. سيقوم فريق نور بمراجعة البيانات والتواصل معكم.",
+        "تم استلام طلب الشراكة بنجاح. سيقوم فريق نور آب بمراجعة البيانات والتواصل معكم.",
       );
 
       const fileInput = document.getElementById(
@@ -156,7 +156,7 @@ export default function BecomePartnerPage() {
       <section className="partner-hero">
         <div className="partner-container partner-hero-grid">
           <div>
-            <span className="partner-kicker">كن شريك نور</span>
+            <span className="partner-kicker">كن شريك نور آب</span>
             <h1>
               ننمو مع شركائنا
               <strong> لنصنع رحلة أفضل للمعتمر</strong>
@@ -176,7 +176,7 @@ export default function BecomePartnerPage() {
           <div className="partner-hero-card">
             <span>شراكة متكاملة</span>
             <strong>
-              اربط خدماتك بمنصة نور وكن جزءًا من تجربة رقمية موثوقة.
+              اربط خدماتك بمنصة نور آب وكن جزءًا من تجربة رقمية موثوقة.
             </strong>
             <p>
               نراجع كل طلب شراكة وفق نوع الخدمة، الجودة، نطاق التغطية والجاهزية
@@ -192,7 +192,7 @@ export default function BecomePartnerPage() {
             <span>طلب شراكة</span>
             <h2>عرّفنا بمنشأتك</h2>
             <p>
-              أدخل المعلومات الأساسية وسيتولى فريق نور مراجعة الطلب.
+              أدخل المعلومات الأساسية وسيتولى فريق نور آب مراجعة الطلب.
             </p>
           </div>
 
@@ -349,7 +349,7 @@ export default function BecomePartnerPage() {
                 onChange={(e) =>
                   setField("servicesDescription", e.target.value)
                 }
-                placeholder="اشرح الخدمات التي يمكن تقديمها لمستخدمي نور..."
+                placeholder="اشرح الخدمات التي يمكن تقديمها لمستخدمي نور آب..."
               />
             </label>
 

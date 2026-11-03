@@ -1,0 +1,41 @@
+.nour-home-batch { --home-text: #173557; --home-muted: #465b73; background: #f8fafd; color: var(--home-text); }
+.nour-home-batch h1, .nour-home-batch h2, .nour-home-batch h3 { line-height: 1.45; letter-spacing: normal; }
+.nour-home-batch p { font-size: 17px; line-height: 1.9; color: var(--home-muted); }
+.nour-home-hero { width: min(1280px, calc(100% - 40px)); margin: auto; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 40px; padding-block: 48px; align-items: center; }
+.nour-home-hero h1 { font-size: clamp(30px, 3.6vw, 54px); margin-block: 14px; }
+.nour-home-eyebrow { color: #0750ad; font-size: 15px; font-weight: 800; }
+.nour-home-photo { position: relative; align-self: stretch; min-height: 400px; margin: 0; overflow: hidden; border-radius: 28px; background: #eaf0f8; }
+.nour-home-photo img { object-fit: cover; object-position: center; }
+.nour-home-photo figcaption { position: absolute; bottom: 0; inset-inline: 0; padding: 24px; color: #fff; background: linear-gradient(transparent, #07182cee); font-size: 17px; }
+.nour-home-section { width: min(1280px, calc(100% - 40px)); margin: auto; padding-block: 40px; }
+.nour-home-section h2 { font-size: clamp(25px, 3vw, 36px); margin-block: 12px; }
+.nour-home-section-heading { display: flex; gap: 24px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.nour-home-programs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.nour-home-program { background: #fff; border: 1px solid #cbd8e6; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+.nour-home-program-cover { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 9; color: var(--home-text); background: #edf3fa; }
+.nour-home-program-cover img { object-fit: cover; object-position: center; }
+.nour-home-program-body { padding: 24px; display: flex; flex-direction: column; flex: 1; gap: 12px; }
+.nour-home-program-body h3 { font-size: 23px; margin: 0; }
+.nour-home-program-body h3 a { color: var(--home-text); text-decoration: none; }
+.nour-home-program-body p { margin: 0; font-size: 16px; }
+.nour-home-program-body > span { font-size: 14px; color: var(--home-muted); }
+.nour-home-program-body .program-action { margin-top: auto; }
+.nour-home-guide { border-block: 1px solid #d7e1ed; }
+.nour-home-guide ol { list-style-position: inside; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 0; margin-block: 24px; }
+.nour-home-guide li { padding: 24px; border-top: 4px solid #ffc313; background: #fff; border-radius: 16px; }
+.nour-home-guide li::marker { color: #0750ad; font-size: 22px; font-weight: 800; }
+.nour-home-guide h3 { font-size: 21px; }
+.nour-home-trust { display: grid; grid-template-columns: 2fr 1fr; align-items: center; gap: 40px; }
+.nour-home-trust-links { display: grid; gap: 12px; }
+.nour-home-trust-links a { padding: 12px; min-height: 44px; border-bottom: 1px solid #cbd8e6; color: #0750ad; }
+.nour-home-map { border: 1px solid #cbd8e6; border-radius: 16px; overflow: hidden; }
+.nour-home-map summary { padding: 20px; min-height: 48px; cursor: pointer; font-weight: 700; }
+.nour-home-next { padding: 32px; background: #eaf2ff; border-radius: 24px; margin-bottom: 48px; }
+.nour-home-batch .nr-program-search { box-shadow: none; border: 1px solid #cbd8e6; }
+html[data-theme="dark"] .nour-home-batch { --home-text: #edf5ff; --home-muted: #bdcde0; background: #07182c; }
+html[data-theme="dark"] .nour-home-program, html[data-theme="dark"] .nour-home-guide li { background: #0c223d; }
+html[data-theme="dark"] .nour-home-next { background: #122e4b; }
+html[data-theme="dark"] .nour-home-eyebrow, html[data-theme="dark"] .nour-home-trust-links a { color: #a5cdff; }
+@media (max-width: 1000px) { .nour-home-programs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 768px) { .nour-home-hero, .nour-home-trust { grid-template-columns: 1fr; gap: 24px; } .nour-home-photo { min-height: 0; aspect-ratio: 16 / 9; } .nour-home-guide ol { grid-template-columns: 1fr; } .nour-home-section, .nour-home-hero { width: calc(100% - 32px); padding-block: 28px; } }
+@media (max-width: 700px) { .nour-home-programs { grid-template-columns: 1fr; } .nour-home-program-body { padding: 20px; } }

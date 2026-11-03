@@ -1,3 +1,4 @@
+import { analyticsAllowed } from "../../core/privacy/consent";
 export type MapAnalyticsEventName =
   | "map_city_selected"
   | "map_country_selected"
@@ -28,7 +29,7 @@ export function trackMapEvent(
   name: MapAnalyticsEventName,
   payload: MapAnalyticsPayload = {},
 ) {
-  if (typeof window === "undefined") return;
+  if (!analyticsAllowed()) return;
 
   const event = {
     event: name,
@@ -44,10 +45,10 @@ export function trackMapEvent(
 
   try {
     const current = JSON.parse(
-      sessionStorage.getItem(SESSION_KEY) ?? "[]",
+      window.sessionStorage.getItem(SESSION_KEY) ?? "[]",
     ) as unknown[];
     const next = [...current, event].slice(-MAX_SESSION_EVENTS);
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(next));
+    window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(next));
   } catch {
     // Analytics must never interrupt the map experience.
   }

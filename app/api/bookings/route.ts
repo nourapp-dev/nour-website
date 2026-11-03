@@ -4,8 +4,8 @@ import {
   WEBSITE_BOOKING_PAUSED_CODE,
 } from "../../../src/core/config/website-booking";
 import { getConfiguredSiteUrl } from "../../../src/core/config/site-url";
-import { createClient } from "../../../src/lib/supabase/server";
-import { createProgramBookingRecord } from "../../../src/features/bookings/services/program-booking.server";
+import { createClient } from "../../../src/server/supabase/session";
+import { createProgramBookingRecord } from "../../../src/server/bookings/program-booking.server";
 import { isBookingInput } from "../../../src/features/bookings/utils/booking-input";
 
 const reply = (body: unknown, status: number) =>

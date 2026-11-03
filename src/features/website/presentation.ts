@@ -68,7 +68,7 @@ export const defaultPresentation: Presentation = {
   },
   showcase: {
     title: {
-      ar: "رحلتك مع نور… بين يديك",
+      ar: "رحلتك مع نور آب… بين يديك",
       en: "Your journey with Nour, in your hands",
     },
     description: {
@@ -82,7 +82,7 @@ export const defaultPresentation: Presentation = {
       {
         id: "welcome",
         image: "/images/app-screens/home.png",
-        title: { ar: "مرحبًا بنور", en: "Welcome" },
+        title: { ar: "مرحبًا بنور آب", en: "Welcome" },
         description: {
           ar: "رفيقك في رحلة السعادة.",
           en: "Your happiness journey companion.",
@@ -137,7 +137,7 @@ export const defaultPresentation: Presentation = {
     ],
   },
   download: {
-    title: { ar: "نور معك في كل خطوة", en: "Nour, with you at every step" },
+    title: { ar: "نور آب معك في كل خطوة", en: "Nour, with you at every step" },
     description: {
       ar: "حمّل التطبيق عند توفره في المتجر، واجعل تفاصيل رحلتك بين يديك.",
       en: "Download the app when available in your store and keep your journey details at hand.",
@@ -158,7 +158,13 @@ function text(value: unknown, fallback: string, limit = 1600) {
 }
 function pair(value: unknown, fallback: Bilingual): Bilingual {
   const v = obj(value);
-  return { ar: text(v.ar, fallback.ar), en: text(v.en, fallback.en) };
+  return {
+    ar: text(v.ar, fallback.ar).replace(
+      /(?<![\p{L}\p{N}_])([وبلكف]?)نـ*وـ*ر(?!\s*آب)(?=$|[^\p{L}\p{N}_])/gu,
+      "$1نور آب",
+    ),
+    en: text(v.en, fallback.en),
+  };
 }
 export function safeLink(value: unknown): string {
   if (typeof value !== "string" || !value || /[\\\s\u0000-\u001f]/.test(value))

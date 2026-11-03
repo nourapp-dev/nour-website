@@ -165,3 +165,12 @@ test("both hero modes retain custom phone images and reject unsafe uploads", () 
   assert.ok(validatePresentation(value));
   assert.equal(normalizePresentation(value).hero.frontImage, defaultPresentation.hero.frontImage);
 });
+
+test("Arabic brand normalization preserves complete names, other words and English", () => {
+  const value = config();
+  value.hero.title = { ar: "نور، نــور، مرحبًا بنور، نور آب، منور", en: "Nour" };
+  const result = normalizePresentation(value);
+  assert.equal(result.hero.title.ar, "نور آب، نور آب، مرحبًا بنور آب، نور آب، منور");
+  assert.equal(result.hero.title.en, "Nour");
+  assert.equal(value.hero.title.ar, "نور، نــور، مرحبًا بنور، نور آب، منور");
+});

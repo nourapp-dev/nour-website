@@ -1,0 +1,60 @@
+.form {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  margin: 0;
+  padding: 24px;
+  border: 1px solid #ffffff30;
+  border-radius: 20px;
+  background: #ffffff08;
+  color: #edf3fc;
+  text-align: start;
+}
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.field { display: grid; gap: 8px; min-width: 0; }
+.field:last-child { grid-column: 1 / -1; }
+.field > span { color: #edf3fc; font-size: 14px; font-weight: 600; }
+.field input, .field select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid #8ca3bd;
+  border-radius: 12px;
+  background: #102e50;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.field input::placeholder { color: #b8cbe2; opacity: 1; }
+.field select option { background: #102e50; color: #fff; }
+.consent { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; color: #d6e2f2; font-size: 14px; line-height: 1.8; cursor: pointer; }
+.consent input { flex: 0 0 20px; width: 20px; height: 20px; margin: 4px 0 0; accent-color: #ffc313; }
+.consent span { min-width: 0; overflow-wrap: anywhere; }
+.submit {
+  justify-self: start;
+  min-height: 48px;
+  padding: 10px 24px;
+  border: 1px solid #ffc313;
+  border-radius: 12px;
+  background: #ffc313;
+  color: #09233f;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.submit:hover:not(:disabled) { background: #ffd34e; }
+.submit:disabled { background: #294560; color: #bfcedf; border-color: #607890; cursor: not-allowed; }
+.form :is(input, select, button):focus-visible { outline: 3px solid #ffc313; outline-offset: 4px; }
+.message { margin: 0; padding: 12px 14px; border-radius: 12px; font-size: 15px; line-height: 1.8; overflow-wrap: anywhere; }
+.success { background: #123f36; color: #d5f9e5; }
+.error { background: #55252c; color: #ffe4e6; }
+@media (max-width: 600px) {
+  .form { padding: 20px; }
+  .fields { grid-template-columns: minmax(0, 1fr); }
+  .field:last-child { grid-column: auto; }
+  .submit { width: 100%; }
+}

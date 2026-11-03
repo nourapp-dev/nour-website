@@ -1,0 +1,9 @@
+/* Interaction-only refinements; preserve the existing page composition and imagery. */
+.nour-redesign :is(a, button, input, select, textarea, summary):focus-visible { outline: 3px solid #0750ad; outline-offset: 4px; box-shadow: 0 0 0 6px #fff; }
+.nour-redesign .nr-v2-header:focus-within { transform: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  .nour-redesign *, .nour-redesign *::before, .nour-redesign *::after { animation: none !important; transition: none !important; }
+  .nour-redesign .nr-reveal { opacity: 1 !important; transform: none !important; }
+  .nr-site-intro { display: none !important; }
+}

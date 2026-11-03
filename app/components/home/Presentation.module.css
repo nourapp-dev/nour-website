@@ -265,11 +265,16 @@
   outline-offset: 5px;
 }
 .download {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: 58px 24px;
   background: linear-gradient(110deg, #103b70, #092c55);
   color: #fff;
 }
 .downloadInner {
+  position: relative;
+  z-index: 1;
   max-width: 1120px;
   margin: auto;
   display: flex;
@@ -371,4 +376,35 @@
   .screenImage {
     animation: none;
   }
+}
+
+
+/* App-preview rotation; phone geometry stays fixed. */
+.showcase .screenImage { animation: none; }
+.showcase .screenReady { animation: screenTransition .38s ease-out; }
+.showcase .previewLabel { max-width: 460px; font-size: 13px; line-height: 1.8; color: #d6e3f3; }
+.showcase .rotationControls { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 14px; position: relative; }
+.showcase .rotationControls small { color: #c5d6eb; text-align: center; line-height: 1.7; }
+.showcase .rotationButton {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 9px 16px; border: 1px solid #ffffff40; border-radius: 12px;
+  background: #ffffff08; color: #e4efff; font: inherit; font-size: 14px; cursor: pointer;
+}
+.showcase .rotationButton svg { width: 16px; height: 16px; }
+.showcase .rotationButton:disabled { cursor: default; opacity: .7; }
+.showcase .screen:focus-visible { outline: 3px solid #ffc313; outline-offset: -4px; }
+.showcase .tabs { margin-top: 14px; }
+.showcase .tab { position: relative; overflow: hidden; padding-bottom: 12px; font: inherit; font-size: 13px; }
+.progressTrack { position: absolute; inset-inline: 9px; bottom: 3px; height: 3px; border-radius: 4px; overflow: hidden; background: #071b3026; }
+.progressFill { display: block; height: 100%; background: #071b30; transform-origin: left; animation: screenProgress linear both; }
+.showcase[dir="rtl"] .progressFill { transform-origin: right; }
+.screenStatus { position: absolute; inset: 0; display: grid; place-content: center; padding: 24px; margin: 0; background: #eef5ff; color: #123454; text-align: center; line-height: 1.8; }
+.preloadScreen { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
+@keyframes screenTransition {
+  from { opacity: .35; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes screenProgress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .showcase .screenImage, .showcase .progressFill { animation: none; }
 }

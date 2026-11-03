@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
@@ -11,10 +11,27 @@ import {
 } from "../../../../src/features/journeys/journey.service";
 import { trackMapEvent } from "../../../../src/lib/analytics/map-events";
 import styles from "./NourWorldMap.module.css";
+import { languageHref } from "../../../../src/core/i18n/public-language";
+import { validCoordinates } from "../../../../src/features/journeys/coordinates";
+import MapBoundary from "./MapBoundary";
 const GeographicMap = dynamic(
   () => import("../../../../src/components/maps/GeographicMap"),
   { ssr: false, loading: () => <p>تحميل الخريطة / Loading map…</p> },
 );
+function subscribeToMobile(onChange: () => void) {
+  const media = window.matchMedia?.("(max-width: 760px)");
+  media?.addEventListener("change", onChange);
+  return () => media?.removeEventListener("change", onChange);
+}
+const mobileSnapshot = () => window.matchMedia?.("(max-width: 760px)").matches ?? false;
+const serverSnapshot = () => false;
+
+function countryIso2(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const code = value.trim().toUpperCase();
+  return /^[A-Z]{2}$/.test(code) ? code : null;
+}
+
 const makkah = {
   id: "makkah",
   name: "مكة",
@@ -24,6 +41,23 @@ const makkah = {
 };
 export default function NourWorldMap({ language }: { language: Language }) {
   const ar = language === "ar";
+  const mobile = useSyncExternalStore(subscribeToMobile, mobileSnapshot, serverSnapshot);
+  const [expanded, setExpanded] = useState(false);
+  const showMap = !mobile || expanded;
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const [mapReady, setMapReady] = useState(false);
+  useEffect(() => {
+    if (!mapContainer.current || !showMap) return;
+    if (typeof window.IntersectionObserver === "undefined") {
+      const timer = window.setTimeout(() => setMapReady(true), 0);
+      return () => window.clearTimeout(timer);
+    }
+    const observer = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) { setMapReady(true); observer.disconnect(); }
+    }, { rootMargin: "300px" });
+    observer.observe(mapContainer.current);
+    return () => observer.disconnect();
+  }, [showMap]);
   const client = useMemo(() => createClient("pilgrim"), []);
   const [mode, setMode] = useState<"saudi" | "world">("saudi");
   const [selected, setSelected] = useState<string | null>(null);
@@ -35,35 +69,33 @@ export default function NourWorldMap({ language }: { language: Language }) {
     refetchOnWindowFocus: true,
   });
   const data = query.data;
-  const saudiId = data?.countries.find(
-    (c) => c.iso2.toUpperCase() === "SA",
-  )?.id;
+  const countries = useMemo(() => (data?.countries ?? []).filter(country => countryIso2(country.iso2) !== null), [data?.countries]);
+  const hasIncompleteCountries = Boolean(data && countries.length < data.countries.length);
+  const saudiId = countries.find(country => countryIso2(country.iso2) === "SA")?.id;
   const locations = useMemo(
     () =>
       mode === "saudi"
         ? (data?.cities ?? [])
-            .filter((c) => c.country_id === saudiId)
+            .filter((c) => Boolean(saudiId) && c.country_id === saudiId)
             .map((c) => ({
               id: c.id,
               name: ar ? c.name_ar : c.name_en,
               latitude: c.latitude,
               longitude: c.longitude,
-              available: (data?.departures ?? []).some(
-                (d) =>
-                  d.origin_city_id === c.id &&
-                  data?.programs.some((p) => p.id === d.program_id),
-              ),
+              count: (data?.programs ?? []).filter(p =>
+                data?.departures.some(d => d.origin_city_id === c.id && d.program_id === p.id),
+              ).length,
             }))
-        : (data?.countries ?? [])
-            .filter((c) => c.iso2.toUpperCase() !== "SA")
+        : countries
+            .filter((c) => countryIso2(c.iso2) !== "SA")
             .map((c) => ({
               id: c.id,
               name: ar ? c.nameAr : c.nameEn,
               latitude: c.latitude,
               longitude: c.longitude,
-              available: c.hasPublishedPrograms,
+              count: (data?.programs ?? []).filter(p => p.countryId === c.id).length,
             })),
-    [mode, data, saudiId, ar],
+    [mode, data, countries, saudiId, ar],
   );
   const location = locations.find((c) => c.id === selected);
   const departures = (data?.departures ?? []).filter((d) =>
@@ -94,7 +126,7 @@ export default function NourWorldMap({ language }: { language: Language }) {
   const hasSelectedDeparture = Boolean(selectedDeparture);
   const points = useMemo(
     () => [
-      ...locations,
+      ...locations.map(l => ({ ...l, available: l.count > 0 })),
       { ...makkah, name: ar ? "مكة المكرمة" : "Makkah" },
       ...(hasSelectedDeparture && mode === "saudi"
         ? (meeting.data ?? [])
@@ -110,7 +142,7 @@ export default function NourWorldMap({ language }: { language: Language }) {
     ],
     [locations, ar, hasSelectedDeparture, mode, meeting.data],
   );
-  function select(id: string) {
+  function select(id: string, source: "map" | "chip" = "map") {
     if (locations.some((l) => l.id === id)) {
       setSelected(id);
       setDepartureId(null);
@@ -119,8 +151,8 @@ export default function NourWorldMap({ language }: { language: Language }) {
         {
           countryId: mode === "saudi" ? saudiId : id,
           cityId: mode === "saudi" ? id : undefined,
-          source: "map",
-          hasPrograms: locations.find((l) => l.id === id)?.available,
+          source,
+          hasPrograms: Boolean(locations.find((l) => l.id === id)?.count),
         },
       );
     }
@@ -141,8 +173,8 @@ export default function NourWorldMap({ language }: { language: Language }) {
           </h2>
           <p>
             {ar
-              ? "اختر نقطة الانطلاق واكتشف البرامج والمواعيد المتاحة."
-              : "Choose your origin and explore available programs and departures."}
+              ? "اختر نقطة الانطلاق واستعرض البرامج والمواعيد المنشورة."
+              : "Choose your origin and explore published programs and departures."}
           </p>
         </div>
         <div
@@ -171,20 +203,41 @@ export default function NourWorldMap({ language }: { language: Language }) {
           ))}
         </div>
       </header>
+      {hasIncompleteCountries && <p role="status">{ar ? "بعض الدول غير معروضة لأن رمز البلد غير مكتمل. يمكنك متابعة استعراض البرامج." : "Some countries are not shown because their country code is incomplete. You can still browse programs."}</p>}
+      <p className={styles.notice}>{ar ? "للاستعراض فقط — حجز الموقع متوقف، والتطبيق قريبًا." : "Browse only — website booking is paused; the app is coming soon."}</p>
+      {!query.isPending && !query.isError && locations.length > 0 && (
+        <div className={styles.locations} role="group" aria-label={ar ? "نقاط الانطلاق" : "Origins"}>
+          {locations.map(l => (
+            <button type="button" key={l.id} aria-pressed={selected === l.id}
+              aria-controls="journey-origin-details" onClick={() => select(l.id, "chip")}>
+              <span>{l.name}</span>
+              <small>{l.count
+                ? ar ? `${l.count} برامج منشورة` : `${l.count} published programs`
+                : ar ? "لا توجد برامج منشورة حاليًا" : "No published programs right now"}</small>
+            </button>
+          ))}
+        </div>
+      )}
+      {mobile && <button className={styles.mapToggle} type="button" aria-expanded={expanded}
+        aria-controls="journey-map" onClick={() => { setExpanded(value => !value); if (!expanded) setMapReady(true); }}>
+        {expanded ? (ar ? "إخفاء الخريطة" : "Hide map") : (ar ? "عرض الخريطة" : "Show map")}
+      </button>}
       <div className={styles.layout}>
-        <div className={styles.map}>
-          <GeographicMap
+        <div id="journey-map" className={styles.map} ref={mapContainer} hidden={!showMap}>
+          {showMap && mapReady ? <MapBoundary language={language}><GeographicMap
             points={points}
             selectedId={location?.id}
             mode={mode}
             onSelect={select}
+            language={language}
+            cluster
             route
             label={ar ? "خريطة الانطلاق إلى مكة" : "Origins and Makkah map"}
-          />
+          /></MapBoundary> : <p role="status">{ar ? "تُحمّل الخريطة عند الاقتراب منها." : "The map loads as you approach this section."}</p>}
         </div>
-        <aside className={styles.details} aria-live="polite">
+        <aside id="journey-origin-details" className={styles.details}>
           {query.isPending ? (
-            <p>{ar ? "جارٍ تحميل المواقع…" : "Loading locations…"}</p>
+            <p role="status">{ar ? "جارٍ تحميل المواقع…" : "Loading locations…"}</p>
           ) : query.isError ? (
             <div role="alert">
               <p>
@@ -192,7 +245,7 @@ export default function NourWorldMap({ language }: { language: Language }) {
                   ? "تعذر تحميل بيانات الرحلات."
                   : "Journey data could not be loaded."}
               </p>
-              <button type="button" onClick={() => void query.refetch()}>
+              <button type="button" disabled={query.isFetching} onClick={() => void query.refetch()}>
                 {ar ? "إعادة المحاولة" : "Retry"}
               </button>
             </div>
@@ -214,18 +267,19 @@ export default function NourWorldMap({ language }: { language: Language }) {
               {location ? (
                 <>
                   <p>
-                    {location.name} ← {ar ? "مكة المكرمة" : "Makkah"}
+                    {location.name} {ar ? "←" : "→"} {ar ? "مكة المكرمة" : "Makkah"}
                   </p>
-                  <p>
+                  <p role="status">
                     {programs.length
                       ? ar
-                        ? `${programs.length} برامج متاحة`
-                        : `${programs.length} programs available`
+                        ? `${programs.length} برامج منشورة`
+                        : `${programs.length} published programs`
                       : ar
-                        ? "لا توجد رحلات متاحة من هذا الموقع حاليًا."
-                        : "No journeys are currently available from this origin."}
+                        ? "لا توجد برامج منشورة حاليًا لهذه النقطة ضمن المواعيد المعروضة."
+                        : "No published programs for this origin in the listed departures right now."}
                   </p>
-                  {departures[0] ? (
+                  {!validCoordinates(location.latitude, location.longitude) && <p>{ar ? "موقع الانطلاق غير محدد على الخريطة؛ يمكنك استعراض برامجه أدناه." : "Map coordinates are missing for this origin; you can still browse its programs below."}</p>}
+                  {departures[0] && Number.isFinite(Date.parse(departures[0].start_at)) ? (
                     <p>
                       {ar ? "أقرب موعد: " : "Next departure: "}
                       {new Intl.DateTimeFormat(ar ? "ar-SA" : "en-GB", {
@@ -253,21 +307,21 @@ export default function NourWorldMap({ language }: { language: Language }) {
                             source: "program_card",
                           })
                         }
-                        href={`/programs/${encodeURIComponent(program.slug)}`}
+                        href={languageHref(`/programs/${encodeURIComponent(program.slug)}`, language)}
                       >
                         {ar ? "عرض تفاصيل البرنامج" : "View program details"}
                       </Link>
                     </article>
                   ))}
-                  {programs.length > 3 ? (
+                  {programs.length > 0 ? (
                     <Link
                       href={
-                        mode === "saudi"
+                        languageHref(mode === "saudi"
                           ? `/programs?city=${encodeURIComponent(location.id)}`
-                          : `/programs?country=${encodeURIComponent(location.id)}`
+                          : `/programs?country=${encodeURIComponent(location.id)}`, language)
                       }
                     >
-                      {ar ? "عرض جميع البرامج" : "View all programs"}
+                      {ar ? "استعرض البرامج" : "Browse programs"}
                     </Link>
                   ) : null}
                 </>
@@ -275,8 +329,8 @@ export default function NourWorldMap({ language }: { language: Language }) {
                 <p>
                   {locations.length
                     ? ar
-                      ? "اختر من الخريطة أو القائمة أدناه."
-                      : "Select on the map or from the list below."
+                      ? "اختر نقطة انطلاق من القائمة أعلاه أو من الخريطة."
+                      : "Choose an origin from the list above or from the map."
                     : ar
                       ? "لا توجد مواقع انطلاق مفعّلة حاليًا."
                       : "No active origins yet."}
@@ -285,27 +339,6 @@ export default function NourWorldMap({ language }: { language: Language }) {
             </>
           )}
         </aside>
-      </div>
-      <div className={styles.locations}>
-        {locations.map((l) => (
-          <button
-            type="button"
-            key={l.id}
-            aria-pressed={selected === l.id}
-            onClick={() => select(l.id)}
-          >
-            {l.name}
-            <small>
-              {l.available
-                ? ar
-                  ? "برامج متاحة"
-                  : "Programs available"
-                : ar
-                  ? "لا توجد رحلات الآن"
-                  : "No journeys yet"}
-            </small>
-          </button>
-        ))}
       </div>
       {mode === "saudi" && location && departures.length > 0 ? (
         <div className={styles.pickups}>
@@ -337,11 +370,12 @@ export default function NourWorldMap({ language }: { language: Language }) {
             meeting.isPending ? (
               <p>{ar ? "جارٍ تحميل النقاط…" : "Loading meeting points…"}</p>
             ) : meeting.isError ? (
-              <p role="alert">
-                {ar
-                  ? "تعذر تحميل نقاط التجمع."
-                  : "Unable to load meeting points."}
-              </p>
+              <div role="alert">
+                <p>{ar ? "تعذر تحميل نقاط التجمع. تفاصيل البرامج ما زالت متاحة." : "Meeting points could not be loaded. Program details are still available."}</p>
+                <button type="button" disabled={meeting.isFetching} onClick={() => void meeting.refetch()}>
+                  {ar ? "إعادة المحاولة" : "Retry"}
+                </button>
+              </div>
             ) : meeting.data?.length ? (
               <ul>
                 {meeting.data.map((p) => (
@@ -361,6 +395,11 @@ export default function NourWorldMap({ language }: { language: Language }) {
           ) : null}
         </div>
       ) : null}
+      {showMap && <div className={styles.legend} aria-label={ar ? "مفتاح الخريطة" : "Map legend"}>
+        <span><i className={styles.blueDot} aria-hidden="true" />{ar ? "نقطة انطلاق" : "Origin"}</span>
+        <span><i className={styles.goldDot} aria-hidden="true" />{ar ? "الموقع المحدد / مكة" : "Selected origin / Makkah"}</span>
+        <span>{ar ? "الرقم على العلامة يجمع مواقع متقاربة، وليس عدد البرامج." : "Numbered markers group nearby locations, not programs."}</span>
+      </div>}
       <footer className={styles.footer}>
         <span>
           {ar

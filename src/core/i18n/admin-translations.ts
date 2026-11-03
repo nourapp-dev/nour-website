@@ -3,7 +3,7 @@ import type { AdminLanguage } from "./LanguageProvider";
 export const adminTranslations = {
   ar: {
     topbar: {
-      title: "لوحة إدارة نور",
+      title: "لوحة إدارة نور آب",
       subtitle: "إدارة المحتوى والخدمات والإعدادات",
       searchPlaceholder: "بحث في لوحة الإدارة...",
       notifications: "الإشعارات",

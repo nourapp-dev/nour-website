@@ -1,3 +1,5 @@
+> Historical reference / مرجع تاريخي: this document describes its stated audit/schema date, not the current deployed state. No live re-audit or schema verification was performed on 2026-11-03. See [release readiness](release-readiness.md) and [database documentation](Database.md).
+
 # NourApp Full Audit — 2026-08-26
 
 ## Scope

@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
         <div className="nr-auth-heading">
           <span>لوحة الإدارة</span>
           <h1>مرحبًا بعودتك</h1>
-          <p>سجّل الدخول باستخدام حسابك الإداري للوصول إلى لوحة نور.</p>
+          <p>سجّل الدخول باستخدام حسابك الإداري للوصول إلى لوحة نور آب.</p>
         </div>
 
         <form className="nr-auth-form" onSubmit={handleSubmit}>

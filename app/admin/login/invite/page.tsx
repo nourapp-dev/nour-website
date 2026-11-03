@@ -86,7 +86,7 @@ export default function AdminInvitePage() {
         <div className="nr-auth-heading">
           <span>دعوة مستخدم</span>
           <h1>أنشئ كلمة المرور</h1>
-          <p>أكمل تفعيل حسابك الإداري ثم سجل الدخول إلى لوحة نور.</p>
+          <p>أكمل تفعيل حسابك الإداري ثم سجل الدخول إلى لوحة نور آب.</p>
         </div>
 
         {!isReady ? (

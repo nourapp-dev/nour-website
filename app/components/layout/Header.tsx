@@ -18,9 +18,12 @@ type Props = {
   theme: Theme;
   menuOpen: boolean;
   activeSection: SectionId;
-  navItems: { id: SectionId; label: string }[];
-  accountHref: string;
-  accountLabel: string;
+  navItems: { id: SectionId; label: string; href?: string }[];
+  homeHref?: string;
+  actionHref: string;
+  actionLabel: string;
+  actionExternal?: boolean;
+  showAction?: boolean;
   onLanguageChange: () => void;
   onThemeChange: () => void;
   onMenuToggle: () => void;
@@ -34,8 +37,11 @@ export default function Header({
   menuOpen,
   activeSection,
   navItems,
-  accountHref,
-  accountLabel,
+  homeHref = "#home",
+  actionHref,
+  actionLabel,
+  actionExternal = false,
+  showAction = true,
   onLanguageChange,
   onThemeChange,
   onMenuToggle,
@@ -57,7 +63,7 @@ export default function Header({
       setIsScrolled(currentScrollY > 24);
 
       // Always keep the header visible near the top of the page.
-      if (currentScrollY <= 90) {
+      if (currentScrollY <= 90 || document.activeElement?.closest(".nr-v2-header")) {
         setIsHeaderHidden(false);
       } else if (!menuOpen) {
         // Ignore tiny scroll movements to prevent jitter.
@@ -117,6 +123,7 @@ export default function Header({
   return (
     <>
       <header
+        onFocusCapture={() => setIsHeaderHidden(false)}
         className={`nr-v2-header ${isScrolled ? "is-scrolled" : ""} ${
           isHeaderHidden && !menuOpen ? "is-hidden" : ""
         }`}
@@ -126,7 +133,7 @@ export default function Header({
             <div className="nr-v2-trust-items">
               <span>
                 <CheckIcon />
-                {language === "ar" ? "دعم متواصل" : "Continuous support"}
+                {language === "ar" ? "تواصل واستفسارات" : "Contact & enquiries"}
               </span>
 
               <span>
@@ -152,17 +159,20 @@ export default function Header({
           <div className="nr-container nr-v2-nav-inner">
             <a
               className="nr-v2-logo"
-              href="#home"
+              href={homeHref}
               aria-label={language === "ar" ? "العودة للرئيسية" : "Back home"}
               onClick={onMenuClose}
             >
-              <Image
-                src="/images/site/v-logo.png"
-                alt="NourApp"
-                width={160}
-                height={64}
-                priority
-              />
+              <picture>
+                <source media="(max-width: 700px)" srcSet="/images/brand/nour-symbol.svg" />
+                <Image
+                  src={theme === "dark" ? "/images/brand/nour-horizontal-light.svg" : "/images/brand/nour-horizontal.svg"}
+                  alt="NourApp"
+                  width={1210}
+                  height={410}
+                  priority
+                />
+              </picture>
             </a>
 
             <nav
@@ -174,7 +184,7 @@ export default function Header({
               {navItems.map((item) => (
                 <a
                   key={item.id}
-                  href={`#${item.id}`}
+                  href={item.href ?? `#${item.id}`}
                   className={navClass(item.id)}
                   aria-current={
                     activeSection === item.id ? "location" : undefined
@@ -214,10 +224,12 @@ export default function Header({
                 {theme === "light" ? <MoonIcon /> : <SunIcon />}
               </button>
 
-              <Link className="nr-v2-primary-action" href={accountHref}>
-                <span>{accountLabel}</span>
+              {showAction && (<Link className="nr-v2-primary-action" href={actionHref}
+                target={actionExternal ? "_blank" : undefined}
+                rel={actionExternal ? "noopener noreferrer" : undefined}>
+                <span>{actionLabel}</span>
                 <ArrowIcon language={language} />
-              </Link>
+              </Link>)}
 
               <button
                 type="button"
@@ -259,7 +271,7 @@ export default function Header({
                 {navItems.map((item) => (
                   <a
                     key={item.id}
-                    href={`#${item.id}`}
+                    href={item.href ?? `#${item.id}`}
                     className={navClass(item.id)}
                     aria-current={
                       activeSection === item.id ? "location" : undefined
@@ -289,14 +301,16 @@ export default function Header({
                   </button>
                 </div>
 
-                <Link
+                {showAction && (<Link
                   className="nr-v2-mobile-cta"
-                  href={accountHref}
+                  href={actionHref}
+                  target={actionExternal ? "_blank" : undefined}
+                  rel={actionExternal ? "noopener noreferrer" : undefined}
                   onClick={onMenuClose}
                 >
-                  <span>{accountLabel}</span>
+                  <span>{actionLabel}</span>
                   <ArrowIcon language={language} />
-                </Link>
+                </Link>)}
               </nav>
             </motion.div>
           )}
@@ -407,26 +421,24 @@ export default function Header({
           align-items: center;
         }
 
+        .nr-v2-logo picture { display: flex; align-items: center; }
         .nr-v2-logo img {
-          width: 72px;
-          height: 58px;
-          padding: 5px;
-          border-radius: 12px;
+          display: block;
+          width: 180px;
+          height: 61px;
+          padding: 0;
+          border-radius: 0;
           object-fit: contain;
-          background: #ffffff;
-          transition:
-            width 0.25s ease,
-            height 0.25s ease,
-            transform 0.25s ease;
+          background: transparent;
         }
 
         .nr-v2-logo:hover img {
-          transform: translateY(-2px);
+          transform: none;
         }
 
         .nr-v2-header.is-scrolled .nr-v2-logo img {
-          width: 64px;
-          height: 52px;
+          width: 168px;
+          height: 57px;
         }
 
         .nr-v2-desktop-nav {
@@ -746,7 +758,7 @@ export default function Header({
           }
 
           .nr-v2-logo img {
-            width: 62px;
+            width: 150px;
             height: 51px;
           }
 
@@ -801,6 +813,10 @@ export default function Header({
             transition-duration: 0.01ms !important;
             animation-duration: 0.01ms !important;
           }
+        }
+        @media (max-width: 700px) {
+          .nr-v2-logo img,
+          .nr-v2-header.is-scrolled .nr-v2-logo img { width: 44px; height: 51px; }
         }
       `}</style>
     </>

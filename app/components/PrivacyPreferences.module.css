@@ -1,0 +1,52 @@
+.root { position: fixed; left: 16px; bottom: calc(var(--nour-program-bar-clearance, 0px) + max(16px, env(safe-area-inset-bottom))); z-index: 1200; max-width: calc(100vw - 32px); color: #173451; font-family: var(--font-cairo), sans-serif; }
+.panel { width: min(480px, calc(100vw - 32px)); max-height: min(580px, 65dvh, calc(100dvh - var(--nour-program-bar-clearance, 0px) - max(16px, env(safe-area-inset-bottom)) - 24px)); overflow-y: auto; overscroll-behavior: contain; padding: 22px; border: 1px solid #cbdcf0; border-top: 3px solid #e9b923; border-radius: 18px; background: #fff; box-shadow: 0 12px 45px rgba(6, 30, 55, .2); }
+.heading { display: flex; align-items: center; gap: 10px; }
+.heading > svg { width: 24px; height: 24px; flex-shrink: 0; color: #1763cc; }
+.heading h2 { margin: 0; font-size: 19px; line-height: 1.6; font-weight: 700; }
+.root p { margin: 12px 0; font-size: 15px; line-height: 1.9; }
+.root button { font: inherit; cursor: pointer; }
+.root .close { margin-inline-start: auto; flex-shrink: 0; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 10px; background: #eef5fd; color: #173451; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.actions button { flex: 1 1 120px; min-height: 46px; padding: 10px 12px; border: 1px solid #1763cc; border-radius: 10px; background: #eef5ff; color: #144f9d; font-size: 14px; font-weight: 700; }
+.actions button:hover { background: #dfebfc; }
+.root :is(button, a, input):focus-visible, .heading h2:focus-visible { outline: 3px solid #1763cc; outline-offset: 3px; }
+.root .policy { display: inline-flex; align-items: center; min-height: 44px; margin-top: 4px; font-size: 14px; color: #144f9d; text-decoration: underline; text-underline-offset: 4px; }
+.options { margin-top: 16px; border-block-start: 1px solid #dce5ee; }
+.option { display: block; padding-block: 14px; border-block-end: 1px solid #dce5ee; font-size: 15px; }
+.option > span:not(.checkRow) { display: block; font-size: 13px; color: #475b72; }
+.option p { margin-bottom: 0; }
+.checkRow { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.checkRow input { width: 22px; height: 22px; accent-color: #1763cc; flex-shrink: 0; }
+.root .note { font-size: 13px; color: #475b72; }
+.launcher { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 14px; background: #fff; color: #173451; border: 1px solid #cbdcf0; border-radius: 12px; box-shadow: 0 3px 14px #07182d15; font-size: 13px !important; }
+.launcher svg { width: 18px; height: 18px; }
+.notice { max-width: 480px; padding: 12px; border: 1px solid #cbdcf0; border-radius: 10px; background: #fff; }
+.notice button { min-width: 44px; min-height: 44px; border: 0; background: transparent; color: inherit; }
+@media (max-width: 600px) {
+  .root { left: 12px; bottom: calc(var(--nour-program-bar-clearance, 0px) + max(12px, env(safe-area-inset-bottom))); max-width: calc(100vw - 24px); }
+  .panel { width: calc(100vw - 24px); padding: 18px; max-height: min(60dvh, calc(100dvh - var(--nour-program-bar-clearance, 0px) - max(12px, env(safe-area-inset-bottom)) - 24px)); }
+  .actions button { flex-basis: 100%; }
+}
+:global(html[data-theme="dark"]) .panel,
+:global(html.dark) .panel,
+:global(body.dark) .panel,
+:global(html.dark) .launcher,
+:global(body.dark) .launcher,
+:global(html[data-theme="dark"]) .launcher,
+:global(html.dark) .notice,
+:global(body.dark) .notice,
+:global(html[data-theme="dark"]) .notice { background: #0e2541; color: #eaf2ff; border-color: #415c7b; }
+:global(html.dark) .root .note,
+:global(body.dark) .root .note,
+:global(html[data-theme="dark"]) .root .note,
+:global(html.dark) .option > span:not(.checkRow),
+:global(body.dark) .option > span:not(.checkRow),
+:global(html[data-theme="dark"]) .option > span:not(.checkRow) { color: #c3d3e7; }
+:global(html.dark) .root .policy,
+:global(body.dark) .root .policy,
+:global(html[data-theme="dark"]) .root .policy { color: #a8cdff; }
+
+/* The visible mobile/tablet program bar owns the compact privacy trigger. */
+@media (max-width: 900px) {
+  :global(html:has(.nr-program-mobile-booking)) .launcher { display: none; }
+}

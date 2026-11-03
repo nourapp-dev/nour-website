@@ -176,3 +176,40 @@
     display: block;
   }
 }
+
+/* Discovery controls stay local to this section. */
+.panel { font-size: 16px; }
+.panel button, .panel select { min-height: 44px; }
+.panel :is(button, a, select):focus-visible { outline: 3px solid #ffd044; outline-offset: 4px; }
+.panel button:disabled { opacity: .65; cursor: wait; }
+.map[hidden] { display: none; }
+.mapToggle, .pickups button, .map button {
+  font: inherit; padding: 10px 16px; border: 1px solid #708ba2; border-radius: 10px;
+  background: #14334f; color: #fff; cursor: pointer;
+}
+.mapToggle { margin-top: 18px; }
+.notice { line-height: 1.8; color: #dbe8f5; margin: 16px 0 0; }
+.locations button { min-width: 0; flex: 1 1 155px; max-width: 240px; }
+.locations small { font-size: 13px; line-height: 1.6; }
+.locations button[aria-pressed="true"] { background: #ffd044; border-color: #ffd044; }
+.details { min-width: 0; }
+.details a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; text-underline-offset: 4px; }
+.details strong, .details h3, .locations span { overflow-wrap: anywhere; }
+.program small { font-size: 14px; line-height: 1.7; }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; margin-top: 18px; font-size: 14px; line-height: 1.7; }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; flex-shrink: 0; }
+.blueDot { background: #176fe8; }
+.goldDot { background: #ffc313; }
+.footer { font-size: 14px; }
+.map :global(.leaflet-control-zoom a) { width: 44px; height: 44px; line-height: 44px; }
+.map :global(.leaflet-marker-icon:focus-visible) { outline: 3px solid #09233f; outline-offset: 3px; }
+@media (max-width: 760px) {
+  .details { grid-row: 1; }
+  .locations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .locations button { max-width: none; padding: 12px; }
+  .mapToggle { width: 100%; }
+  .header { gap: 16px; }
+  .footer span { display: block; margin-bottom: 8px; }
+}
+@media (max-width: 360px) { .locations { grid-template-columns: 1fr; } }
