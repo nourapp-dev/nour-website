@@ -2,6 +2,8 @@
 import { useEffect, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { WEBSITE_BOOKING_ENABLED } from "../../src/core/config/website-booking";
+import PublicPageShell from "../components/layout/PublicPageShell";
+import "./programs-ui.css";
 import ProgramDetailsExperience from "./ProgramDetailsExperience";
 import ProgramStructuredContent from "./ProgramStructuredContent";
 import ProgramDepartures from "./ProgramDepartures";
@@ -26,15 +28,15 @@ export default function ProgramsLayout({
   }, []);
 
   return (
-    <>
+    <PublicPageShell>
       {children}
-      <ProgramDepartures />
+      <div id="departures"><ProgramDepartures /></div>
       {WEBSITE_BOOKING_ENABLED && isDetailsRoute ? <>
         <ProgramBookingSelector />
         <ProgramBookingCheckout />
       </> : null}
-      <ProgramStructuredContent />
+      <div id="additional-information"><ProgramStructuredContent /></div>
       <ProgramDetailsExperience />
-    </>
+    </PublicPageShell>
   );
 }

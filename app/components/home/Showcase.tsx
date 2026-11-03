@@ -1,6 +1,22 @@
 "use client";
 import Image from "next/image";
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { Pause, Play } from "lucide-react";
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+function subscribeMotion(notify: () => void) {
+  const media = window.matchMedia?.(motionQuery);
+  media?.addEventListener("change", notify);
+  return () => media?.removeEventListener("change", notify);
+}
+const readReducedMotion = () => window.matchMedia?.(motionQuery).matches ?? true;
+function subscribeVisibility(notify: () => void) {
+  document.addEventListener("visibilitychange", notify);
+  return () => document.removeEventListener("visibilitychange", notify);
+}
+const readVisible = () => document.visibilityState === "visible";
+const serverReducedMotion = () => true;
+const serverVisible = () => false;
 import type { HomeCopy, Language } from "../../data/home";
 import type { Presentation } from "../../../src/features/website/presentation";
 import { usePresentation } from "../../../src/features/website/usePresentation";
@@ -21,9 +37,43 @@ export default function Showcase({
   const start = useRef<{ x: number; y: number } | null>(null);
   const uid = useId();
   const ar = language === "ar";
+  const viewport = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [loadedImage, setLoadedImage] = useState("");
+  const [failedImage, setFailedImage] = useState("");
+  const reduceMotion = useSyncExternalStore(subscribeMotion, readReducedMotion, serverReducedMotion);
+  const pageVisible = useSyncExternalStore(subscribeVisibility, readVisible, serverVisible);
+  const hasScreen = Boolean(current);
+  const next = screens.length > 1 ? screens[(active + 1) % screens.length] : undefined;
+  const nextId = next?.id;
+  const duration = current?.id === "welcome" ? 3000 : 5000;
+  const imageReady = Boolean(current && loadedImage === current.image && failedImage !== current.image);
+  const running = showcase.visible && !paused && !reduceMotion && inView && pageVisible && imageReady && Boolean(nextId);
+
+  useEffect(() => {
+    if (!showcase.visible || !hasScreen || !viewport.current || typeof window.IntersectionObserver === "undefined") return;
+    const observer = new window.IntersectionObserver(entries => {
+      const entry = entries[0];
+      if (entry) setInView(entry.isIntersecting && entry.intersectionRatio >= 0.25);
+    }, { threshold: [0, 0.25] });
+    observer.observe(viewport.current);
+    return () => observer.disconnect();
+  }, [showcase.visible, hasScreen]);
+
+  useEffect(() => {
+    if (!running || !nextId) return;
+    const timer = window.setTimeout(() => setSelected(nextId), duration);
+    return () => window.clearTimeout(timer);
+  }, [running, nextId, duration, current?.id, language]);
+
+  const pauseForInteraction = (target: EventTarget | null) => {
+    if (!(target as HTMLElement | null)?.closest("[data-rotation-control]")) setPaused(true);
+  };
   const select = (index: number, focus = false) => {
     const target = screens[(index + screens.length) % screens.length];
     if (!target) return;
+    setPaused(true);
     setSelected(target.id);
     if (focus) document.getElementById(`${uid}-${target.id}`)?.focus();
   };
@@ -32,6 +82,8 @@ export default function Showcase({
     <div className={styles.root}>
       <section
         id="showcase"
+        onFocusCapture={(event) => pauseForInteraction(event.target)}
+        onPointerDownCapture={(event) => pauseForInteraction(event.target)}
         className={styles.showcase}
         dir={ar ? "rtl" : "ltr"}
         aria-labelledby={`${uid}-title`}
@@ -50,7 +102,7 @@ export default function Showcase({
                   className={styles.feature}
                   type="button"
                   aria-pressed={s.id === current.id}
-                  onClick={() => setSelected(s.id)}
+                  onClick={() => select(i)}
                 >
                   <span aria-hidden="true">0{i + 1}</span>
                   <div>
@@ -68,13 +120,15 @@ export default function Showcase({
             )}
           </div>
           <div className={styles.stage}>
-            <div className={styles.phone}>
+            <div className={styles.phone} ref={viewport}>
               <div
                 className={styles.screen}
                 role="tabpanel"
                 id={`${uid}-panel`}
                 aria-labelledby={`${uid}-${current.id}`}
                 tabIndex={0}
+                aria-live={paused || reduceMotion ? "polite" : "off"}
+                aria-busy={!imageReady && failedImage !== current.image}
                 onPointerDown={(e) => {
                   start.current = { x: e.clientX, y: e.clientY };
                 }}
@@ -92,24 +146,48 @@ export default function Showcase({
                 }}
               >
                 <Image
-                  key={current.image}
-                  className={styles.screenImage}
+                  key={current.id + current.image}
+                  className={styles.screenImage + (imageReady ? " " + styles.screenReady : "")}
+                  style={{ animation: reduceMotion ? "none" : undefined }}
+                  onLoad={() => { setLoadedImage(current.image); setFailedImage(""); }}
+                  onError={() => setFailedImage(current.image)}
                   src={current.image}
                   alt={current.title[language]}
                   fill
                   sizes="310px"
-                  unoptimized
+                  unoptimized={!current.image.startsWith("/images/")}
                   draggable={false}
                 />
+                {!imageReady && <p className={styles.screenStatus} role="status">
+                  {failedImage === current.image
+                    ? ar ? "تعذر تحميل هذه الشاشة. اختر شاشة أخرى من القائمة." : "This screen could not load. Choose another screen from the list."
+                    : ar ? "جارٍ تحميل الشاشة…" : "Loading screen…"}
+                </p>}
               </div>
             </div>
-            {current.preview && (
-              <p className={styles.previewLabel}>
-                {ar
-                  ? "معاينة للتطبيق · البيانات الظاهرة توضيحية"
-                  : "App preview · Illustrative data"}
-              </p>
-            )}
+            {inView && pageVisible && next && <div className={styles.preloadScreen} aria-hidden="true">
+              <Image src={next.image} alt="" fill sizes="310px" loading="eager"
+                unoptimized={!next.image.startsWith("/images/")} />
+            </div>}
+            <p className={styles.previewLabel}>
+              {ar ? "معاينة لتجربة التطبيق — التطبيق قريبًا، والحجز عبر الموقع متوقف."
+                : "App experience preview — the app is coming soon; website booking is paused."}
+            </p>
+            {screens.length > 1 && <div className={styles.rotationControls}>
+              <button type="button" className={styles.rotationButton} data-rotation-control
+                disabled={reduceMotion}
+                aria-controls={`${uid}-panel`}
+                aria-describedby={reduceMotion ? `${uid}-motion-note` : undefined}
+                onClick={() => setPaused(value => !value)}>
+                {paused || reduceMotion ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
+                {paused || reduceMotion
+                  ? ar ? "تشغيل العرض التلقائي" : "Play slideshow"
+                  : ar ? "إيقاف العرض التلقائي" : "Pause slideshow"}
+              </button>
+              {reduceMotion && <small id={`${uid}-motion-note`}>
+                {ar ? "التنقل اليدوي مفعّل احترامًا لإعداد تقليل الحركة." : "Manual navigation respects your reduced-motion preference."}
+              </small>}
+            </div>}
             <div
               className={styles.tabs}
               role="tablist"
@@ -139,6 +217,10 @@ export default function Showcase({
                   }}
                 >
                   {s.title[language]}
+                  {s.id === current.id && <span aria-hidden="true" className={styles.progressTrack}>
+                    {running && <span key={current.id + language} className={styles.progressFill}
+                      style={{ animationDuration: duration + "ms" }} />}
+                  </span>}
                 </button>
               ))}
             </div>

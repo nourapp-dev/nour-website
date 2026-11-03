@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { CheckCircle2, MessageCircle, Smartphone } from "lucide-react";
-import { WEBSITE_BOOKING_ENABLED } from "../../src/core/config/website-booking";
+import { CheckCircle2, ShieldCheck, Smartphone } from "lucide-react";
 import { useLanguage } from "../../src/core/i18n";
+import { openPrivacySettings } from "../../src/core/privacy/consent";
 
-const SECTION_IDS = ["overview", "hotels", "flights", "transport", "visas"] as const;
+const SECTION_IDS = ["overview", "hotels", "flights", "transport", "visas", "departures", "additional-information"] as const;
 
 export default function ProgramDetailsExperience() {
   const { language } = useLanguage();
@@ -14,18 +14,19 @@ export default function ProgramDetailsExperience() {
   const pathname = usePathname();
   const isDetailsRoute = /^\/programs\/[^/]+\/?$/.test(pathname);
   const [activeSection, setActiveSection] = useState<string>("overview");
-  const [bookingHref, setBookingHref] = useState("");
+  const [hasProgram, setHasProgram] = useState(false);
   const [priceText, setPriceText] = useState("");
+  const mobileBar = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!isDetailsRoute) return;
 
     const syncDetails = () => {
-      const booking = document.querySelector<HTMLAnchorElement>(".nr-program-details-book");
+      const booking = document.querySelector<HTMLElement>(".nr-program-details-book");
       const price = document.querySelector<HTMLElement>(".nr-program-details-booking > strong");
 
-      if (booking?.href) setBookingHref(booking.href);
-      if (price?.textContent) setPriceText(price.textContent.replace(/\s+/g, " ").trim());
+      setHasProgram(Boolean(booking));
+      setPriceText(price?.textContent?.replace(/\s+/g, " ").trim() ?? "");
     };
 
     syncDetails();
@@ -34,34 +35,37 @@ export default function ProgramDetailsExperience() {
     observer.observe(document.body, { childList: true, characterData: true, subtree: true });
 
     return () => observer.disconnect();
-  }, [isDetailsRoute]);
+  }, [isDetailsRoute, pathname]);
 
   useEffect(() => {
     if (!isDetailsRoute) return;
 
-    const sections = SECTION_IDS
-      .map((id) => document.getElementById(id))
-      .filter((section): section is HTMLElement => Boolean(section));
-
-    if (!sections.length) return;
-
+    const observed = new Set<HTMLElement>();
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
         if (visible?.target.id) setActiveSection(visible.target.id);
       },
-      {
-        rootMargin: "-20% 0px -62% 0px",
-        threshold: [0.08, 0.2, 0.45, 0.7],
-      },
+      { rootMargin: "-20% 0px -62% 0px", threshold: [0.08, 0.2, 0.45, 0.7] },
     );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [isDetailsRoute]);
+    // Program sections arrive asynchronously and can be replaced after retry.
+    const syncSections = () => {
+      const sections = SECTION_IDS.map(id => document.getElementById(id))
+        .filter((section): section is HTMLElement => Boolean(section));
+      for (const section of observed) {
+        if (!sections.includes(section)) { observer.unobserve(section); observed.delete(section); }
+      }
+      for (const section of sections) {
+        if (!observed.has(section)) { observer.observe(section); observed.add(section); }
+      }
+    };
+    syncSections();
+    const changes = new MutationObserver(syncSections);
+    changes.observe(document.body, { childList: true, subtree: true });
+    return () => { changes.disconnect(); observer.disconnect(); };
+  }, [isDetailsRoute, pathname]);
 
   useEffect(() => {
     if (!isDetailsRoute) return;
@@ -79,24 +83,54 @@ export default function ProgramDetailsExperience() {
     });
   }, [activeSection, isDetailsRoute]);
 
+  useEffect(() => {
+    const bar = mobileBar.current;
+    if (!isDetailsRoute || !hasProgram || !bar) return;
+
+    // Share the rendered height: translated text and zoom can wrap the bar.
+    const rootStyle = document.documentElement.style;
+    const property = "--nour-program-bar-clearance";
+    const previous = rootStyle.getPropertyValue(property);
+    const syncClearance = () => {
+      const height = bar.getBoundingClientRect().height;
+      rootStyle.setProperty(property, height > 0 ? Math.ceil(height + 10) + "px" : "0px");
+    };
+    syncClearance();
+    const resize = typeof window.ResizeObserver === "function"
+      ? new window.ResizeObserver(syncClearance) : null;
+    resize?.observe(bar);
+    window.addEventListener("resize", syncClearance);
+    return () => {
+      resize?.disconnect();
+      window.removeEventListener("resize", syncClearance);
+      if (previous) rootStyle.setProperty(property, previous);
+      else rootStyle.removeProperty(property);
+    };
+  }, [isDetailsRoute, hasProgram, pathname]);
+
   if (!isDetailsRoute) return null;
 
   return (
     <>
-      {bookingHref ? (
-        <aside className="nr-program-mobile-booking" aria-label={isArabic ? "معلومات البرنامج" : "Program information"}>
+      {hasProgram ? (
+        <aside ref={mobileBar} className="nr-program-mobile-booking" aria-label={isArabic ? "معلومات البرنامج" : "Program information"}>
           <div>
             <span>
               <CheckCircle2 aria-hidden="true" />
-              {WEBSITE_BOOKING_ENABLED ? (isArabic ? "الحجز متاح عبر التطبيق" : "Booking available in the app") : (isArabic ? "الحجز متوقف مؤقتًا" : "Website booking paused")}
+              {isArabic ? "الحجز عبر الموقع متوقف" : "Website booking paused"}
             </span>
             {priceText ? <strong>{priceText}</strong> : null}
           </div>
 
-          <a href={bookingHref}>
-            {WEBSITE_BOOKING_ENABLED ? <Smartphone aria-hidden="true" /> : <MessageCircle aria-hidden="true" />}
-            {WEBSITE_BOOKING_ENABLED ? (isArabic ? "احجز الآن" : "Book now") : (isArabic ? "تواصل معنا" : "Contact us")}
-          </a>
+          <span className="nr-app-coming-soon" role="status">
+            <Smartphone aria-hidden="true" />
+            {isArabic ? "التطبيق قريبًا" : "App coming soon"}
+          </span>
+          <button type="button" className="nr-program-privacy-button" onClick={openPrivacySettings}
+            aria-label={isArabic ? "إعدادات الخصوصية" : "Privacy settings"}>
+            <ShieldCheck aria-hidden="true" />
+            {isArabic ? "الخصوصية" : "Privacy"}
+          </button>
         </aside>
       ) : null}
 
@@ -171,7 +205,7 @@ export default function ProgramDetailsExperience() {
             white-space: nowrap;
           }
 
-          .nr-program-mobile-booking > a {
+          .nr-program-mobile-booking > .nr-app-coming-soon {
             flex: 0 0 auto;
             min-height: 48px;
             display: inline-flex;
@@ -188,7 +222,7 @@ export default function ProgramDetailsExperience() {
             font-weight: 900;
           }
 
-          .nr-program-mobile-booking > a svg {
+          .nr-program-mobile-booking > .nr-app-coming-soon svg {
             width: 17px;
             height: 17px;
           }
@@ -211,7 +245,7 @@ export default function ProgramDetailsExperience() {
             font-size: 13px;
           }
 
-          .nr-program-mobile-booking > a {
+          .nr-program-mobile-booking > .nr-app-coming-soon {
             min-height: 46px;
             padding-inline: 13px;
             font-size: 11px;

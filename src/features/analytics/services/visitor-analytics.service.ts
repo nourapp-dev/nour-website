@@ -1,3 +1,4 @@
+import { analyticsAllowed } from "../../../core/privacy/consent";
 import { createBrowserClient } from "@supabase/ssr";
 
 type VisitorDeviceType =
@@ -138,7 +139,7 @@ export async function recordVisitorPageVisit({
   pageTitle,
   language,
 }: RecordVisitInput): Promise<void> {
-  if (typeof window === "undefined") {
+  if (!analyticsAllowed()) {
     return;
   }
 

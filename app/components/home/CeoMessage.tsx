@@ -57,7 +57,7 @@ export default function CeoMessage({ language }: Props) {
           viewport={{ once: true, amount: 0.25 }}
         >
           <div className="nr-ceo-photo">
-            {image ? <img src={image} alt={name || title || "CEO"} /> : <div className="nr-ceo-placeholder">NourApp</div>}
+            {image ? <img loading="lazy" decoding="async" src={image} alt={name || title || "CEO"} /> : <div className="nr-ceo-placeholder">NourApp</div>}
           </div>
           <div className="nr-ceo-photo-caption">
             <strong>{name}</strong>

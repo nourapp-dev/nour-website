@@ -1,10 +1,12 @@
 "use client";
 
+import { openPrivacySettings } from "../../../src/core/privacy/consent";
 import type { ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
   Building2,
+  FileText,
   Globe2,
   Mail,
   MapPin,
@@ -58,12 +60,15 @@ export default function Footer({
   const contact = usePublicContact();
   const isArabic = language === "ar";
 
-  const platformName = getText(
+  const configuredPlatformName = getText(
     isArabic
       ? "general.platform_name"
       : "general.platform_name_en",
     isArabic ? "نور آب" : "NourApp",
   );
+
+  const platformName = isArabic && configuredPlatformName.trim() === "نور"
+    ? "نور آب" : configuredPlatformName;
 
   const address = getText(
     isArabic
@@ -124,13 +129,13 @@ export default function Footer({
 
   return (
     <footer
-      className="nr-footer nr-footer-premium"
+      className={"nr-footer nr-footer-premium " + styles.footer}
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <section className="nr-newsletter nr-newsletter-premium">
-        <div className="nr-container nr-newsletter-premium-shell">
-          <div className="nr-newsletter-copy">
-            <span className="nr-newsletter-kicker">
+      <section className={styles.newsletter}>
+        <div className={styles.newsletterInner}>
+          <div className={styles.newsletterCopy}>
+            <span className={styles.newsletterKicker}>
               {isArabic ? "ابقَ على اطلاع" : "Stay informed"}
             </span>
 
@@ -146,7 +151,7 @@ export default function Footer({
                 : "New programs, important updates, and selected offers delivered directly to you."}
             </p>
 
-            <div className="nr-newsletter-trust">
+            <div className={styles.newsletterTrust}>
               <ShieldCheck />
               <span>
                 {isArabic
@@ -166,10 +171,10 @@ export default function Footer({
             <div className={styles.brandHead}>
               <Image
                 className={styles.logo}
-                src="/images/site/v-logo.png"
+                src="/images/brand/nour-horizontal-light.svg"
                 alt={platformName}
-                width={78}
-                height={78}
+                width={1210}
+                height={410}
               />
               <div>
                 <strong>{platformName}</strong>
@@ -247,7 +252,7 @@ export default function Footer({
               {isArabic ? "روابط مهمة" : "Useful links"}
             </h2>
             <div className={styles.links}>
-              <Link href="/become-a-partner">{isArabic ? "كن شريك نور" : "Partner with Nour"}</Link>
+              <Link href="/become-a-partner">{isArabic ? "كن شريك نور آب" : "Partner with Nour"}</Link>
               <Link href="/join-us">{isArabic ? "انضم إلى فريقنا" : "Join our team"}</Link>
               <Link href="/privacy">{isArabic ? "سياسة الخصوصية" : "Privacy Policy"}</Link>
               <Link href="/terms">{isArabic ? "الشروط والأحكام" : "Terms & Conditions"}</Link>
@@ -287,13 +292,15 @@ export default function Footer({
                 rel="noopener noreferrer"
               >
                 <span className={styles.issuerBadge}>
-                  <Image
+                  <span className={styles.issuerArtwork + " " + styles.commerceArtwork}>
+                    <Image
                     src="/images/verification/ministry-of-commerce.png"
-                    width={145}
-                    height={64}
+                    width={281}
+                    height={124}
                     alt={isArabic ? "وزارة التجارة" : "Ministry of Commerce"}
                     unoptimized
                   />
+                  </span>
                 </span>
                 <span>{isArabic ? "التحقق من السجل التجاري" : "Check commercial registration"}</span>
               </a>
@@ -314,15 +321,46 @@ export default function Footer({
                 rel="noopener noreferrer"
               >
                 <span className={styles.issuerBadge}>
-                  <Image
+                  <span className={styles.issuerArtwork + " " + styles.vatArtwork}>
+                    <Image
                     src="/images/verification/zatca.svg"
-                    width={190}
-                    height={43}
+                    width={215}
+                    height={48}
                     alt={isArabic ? "هيئة الزكاة والضريبة والجمارك" : "Zakat, Tax and Customs Authority"}
                     unoptimized
                   />
+                  </span>
                 </span>
                 <span>{isArabic ? "التحقق من التسجيل الضريبي" : "Check VAT registration"}</span>
+              </a>
+            </div>
+            <div className={styles.documentCard}>
+              <div className={styles.documentHeading}>
+                <span className={styles.documentIcon}><FileText aria-hidden="true" /></span>
+                <span className={styles.documentCopy}>
+                  <strong>{isArabic ? "تصريح وزارة السياحة" : "Ministry of Tourism permit"}</strong>
+                  <span>{isArabic ? "رقم التصريح" : "Permit number"}</span>
+                  <bdi dir="ltr">73219947</bdi>
+                </span>
+              </div>
+              <a
+                className={styles.registrationSeal}
+                href={`https://mt.gov.sa/${isArabic ? "ar" : "en"}/eservices/licensed-activities-inquiry-service`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className={styles.issuerBadge}>
+                  {/* Official asset source: https://mt.gov.sa/about */}
+                  <span className={styles.issuerArtwork + " " + styles.tourismArtwork}>
+                    <Image
+                    src="/images/verification/ministry-of-tourism.webp"
+                    width={665}
+                    height={350}
+                    alt={isArabic ? "وزارة السياحة" : "Ministry of Tourism"}
+                  />
+                  </span>
+                </span>
+                <span>{isArabic ? "التحقق من التصريح" : "Check tourism permit"}</span>
               </a>
             </div>
             <div className={`${styles.documentCard} ${styles.verificationCard}`}>
@@ -339,6 +377,7 @@ export default function Footer({
         </section>
 
         <div className={styles.bottom}>
+          <button type="button" onClick={openPrivacySettings} style={{ minHeight: 44, padding: "8px 12px", border: "1px solid currentColor", borderRadius: 8, background: "transparent", color: "inherit", font: "inherit", cursor: "pointer" }}>{isArabic ? "إعدادات الخصوصية" : "Privacy settings"}</button>
           <span>
             © {new Date().getFullYear()} {platformName}.{" "}
             {isArabic ? "جميع الحقوق محفوظة." : "All rights reserved."}

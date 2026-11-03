@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { isBookingInput } from "../src/features/bookings/utils/booking-input.ts";
-import { createProgramBookingRecord } from "../src/features/bookings/services/program-booking.server.ts";
+import { loadServerModule } from "./helpers/load-server-module.mjs";
+const { createProgramBookingRecord } = loadServerModule("src/server/bookings/program-booking.server.ts");
 
 const input = {
   programId: "00000000-0000-4000-8000-000000000001",

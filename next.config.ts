@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const isDevelopment = process.env.NODE_ENV === "development";
+const isUiPreview = process.env.NEXT_PUBLIC_UI_PREVIEW === "true";
+if (isUiPreview && !isDevelopment) throw new Error("UI fixtures may only run in local development.");
 
 let supabaseOrigin = "";
 let supabaseWsOrigin = "";
@@ -28,7 +30,7 @@ const contentSecurityPolicy = `
 
   form-action 'self';
 
-  frame-ancestors 'none';
+  frame-ancestors ${isUiPreview ? "'self'" : "'none'"};
 
   object-src 'none';
 
@@ -65,7 +67,7 @@ const contentSecurityPolicy = `
     ${supabaseOrigin};
 
   frame-src
-    https://eauthenticate.saudibusiness.gov.sa;
+    ${isUiPreview ? "'self'" : "https://eauthenticate.saudibusiness.gov.sa"};
 
   worker-src
     'self'
@@ -74,7 +76,7 @@ const contentSecurityPolicy = `
   manifest-src
     'self';
 
-  upgrade-insecure-requests;
+  ${isDevelopment ? "" : "upgrade-insecure-requests;"}
 `
   .replace(/\s{2,}/g, " ")
   .trim();
@@ -90,7 +92,7 @@ const securityHeaders = [
   },
   {
     key: "X-Frame-Options",
-    value: "DENY",
+    value: isUiPreview ? "SAMEORIGIN" : "DENY",
   },
   {
     key: "Referrer-Policy",
@@ -112,6 +114,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  distDir: isUiPreview ? ".next-ui-preview" : ".next",
   poweredByHeader: false,
 
   async headers() {

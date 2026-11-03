@@ -1,5 +1,7 @@
 "use client";
 
+import cardStyles from "./MediaCards.module.css";
+
 import Link from "next/link";
 
 import Image from "next/image";
@@ -119,7 +121,7 @@ export default function ProgramsPreview({
 
   return (
     <section
-      className="nr-programs-preview"
+      className={"nr-programs-preview " + cardStyles.scope}
       id="programs"
       dir={isArabic ? "rtl" : "ltr"}
       aria-labelledby="nr-programs-title"
@@ -269,13 +271,10 @@ export default function ProgramsPreview({
                 return (
                   <motion.article
                     key={program.id}
-                    className="nr-program-card"
+                    className={"nr-program-card " + cardStyles.card}
                     variants={
                       cardVariants
                     }
-                    whileHover={{
-                      y: -10,
-                    }}
                   >
                     <Link
                       className="nr-program-card-link"

@@ -1,0 +1,195 @@
+/* Shared program browsing controls. Brand tokens and Cairo remain unchanged. */
+.programs-shell { --program-muted: #465b73; }
+.nour-preview-banner { margin: 0; padding: 14px 20px; color: #173557; background: #fff0b8; font-size: 15px; line-height: 1.8; }
+.nour-preview-banner a { color: #0750ad; text-decoration: underline; }
+.programs-shell [hidden] { display: none !important; }
+.programs-shell .nr-v2-header { position: relative; transform: none; }
+.programs-shell .nr-v2-header.is-hidden { transform: none; }
+.programs-shell .nr-all-programs-container { width: min(1280px, calc(100% - 40px)); }
+.programs-shell .nr-all-programs-search-wrap { display: flex; flex-wrap: wrap; gap: 12px; }
+.programs-shell .nr-all-programs-search { flex: 1 1 220px; }
+.programs-shell .nr-all-programs-filter-chip,
+.programs-shell .program-action,
+.programs-shell .nr-all-programs-details,
+.programs-shell .nr-all-programs-clear,
+.programs-shell .program-active-filters button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 16px; border: 1px solid #b6c9e0;
+  border-radius: 12px; font: inherit; font-size: 15px; font-weight: 700;
+  color: #173557; background: #fff; cursor: pointer; text-decoration: none;
+}
+.programs-shell .program-action,
+.programs-shell .nr-all-programs-details { background: #176fe8; color: #fff; border-color: #176fe8; }
+.programs-shell .nr-all-programs-filter-chip[aria-expanded="true"] { background: #fff8db; border-color: #b28a07; }
+.programs-shell .nr-all-programs-filters { margin-top: 16px; gap: 12px; }
+.programs-shell .nr-all-programs-select { display: grid; gap: 6px; padding: 12px; align-content: start; }
+.programs-shell .nr-all-programs-select > span { position: static; color: var(--program-muted); font-size: 14px; }
+.programs-shell .nr-all-programs-select select { min-height: 44px; margin: 0; font-size: 16px; padding-inline-end: 24px; }
+.programs-shell .nr-all-programs-search input { min-height: 44px; font-size: 16px; }
+.programs-shell .nr-all-programs-select > svg { inset-inline-end: 18px; bottom: 24px; }
+.programs-shell .nr-all-programs-result-row { margin-block: 20px; gap: 16px; }
+.programs-shell .nr-all-programs-result-row span,
+.programs-shell .nr-all-programs-card-body > p { font-size: 16px; line-height: 1.8; color: var(--program-muted); }
+.programs-shell .nr-all-programs-card h2 { font-size: 22px; line-height: 1.6; }
+.programs-shell .nr-all-programs-image { height: auto; aspect-ratio: 16 / 9; }
+.programs-shell .nr-all-programs-image img { object-fit: cover; object-position: center; }
+.programs-shell .nr-all-programs-image-meta span,
+.programs-shell .nr-all-programs-meta span,
+.programs-shell .nr-all-programs-card-footer small { font-size: 14px; }
+.programs-shell .nr-all-programs-card-footer { align-items: start; flex-wrap: wrap; gap: 16px; }
+.programs-shell .nr-all-programs-card-footer > div { flex: 1 1 auto; }
+.programs-shell .nr-all-programs-card:hover { transform: none; }
+.programs-shell .nr-all-programs-card:hover .nr-all-programs-image img { transform: none; }
+.programs-shell .program-active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.programs-shell .program-active-filters button { background: #edf5ff; text-align: start; overflow-wrap: anywhere; }
+.programs-shell .program-price-note { color: var(--program-muted); font-size: 14px; line-height: 1.8; margin-block: 12px; }
+.programs-shell .program-section-state { margin: 20px auto; padding: 20px; width: min(1240px, calc(100% - 32px)); border: 1px solid #cbd8e6; border-radius: 16px; background: #f8fafd; color: #173557; }
+.programs-shell .program-section-state p { font-size: 16px; line-height: 1.8; }
+.programs-shell .nr-program-details-section { scroll-margin-top: 80px; }
+.programs-shell .nr-program-details-state { min-height: 50vh; display: grid; place-content: center; padding: 40px 20px; gap: 16px; text-align: center; }
+.programs-shell .nr-program-details-state a { display: inline-flex; justify-content: center; align-items: center; min-height: 44px; }
+.programs-shell .nr-program-details :where(p, li) { font-size: 16px; line-height: 1.9; }
+.programs-shell .nr-program-details :where(small, em),
+.programs-shell .nr-program-details-kicker,
+.programs-shell .nr-program-details-trust > div,
+.programs-shell .nr-program-details-hotel-meta span,
+.programs-shell .nr-program-flight-meta span,
+.programs-shell .nr-program-flight-route span,
+.programs-shell .nr-program-flight-policy span,
+.programs-shell .nr-program-transport-meta span,
+.programs-shell .nr-program-transport-route span,
+.programs-shell .nr-program-visa-meta span,
+.programs-shell .nr-program-details-booking-facts span,
+.programs-shell .nr-program-details-booking-trust span,
+.programs-shell .nr-program-mobile-booking > div > span { font-size: 14px; line-height: 1.7; }
+.programs-shell .nr-program-details-description,
+.programs-shell .nr-program-details-hotel-body > p,
+.programs-shell .nr-program-flight-route span,
+.programs-shell .nr-program-transport-route span,
+.programs-shell .nr-program-visa-description { color: var(--program-muted); }
+.programs-shell .nr-program-details-subnav a,
+.programs-shell .nr-program-details-back,
+.programs-shell .nr-program-details-book,
+.programs-shell .nr-program-mobile-booking a,
+.programs-shell .nr-program-mobile-booking .nr-app-coming-soon { min-height: 44px; font-size: 15px; }
+.programs-shell .nr-program-details-subnav a { color: #465b73; }
+.programs-shell .nr-program-details-copy h1 { line-height: 1.3; }
+.programs-shell .nr-program-details-booking > p,
+.programs-shell .nr-program-details-booking-hint,
+.programs-shell .nr-program-details-booking > span:not(.nr-program-details-book) { color: #d5e4f7; }
+.programs-shell .nr-booking-notice-description { color: #465b73; font-size: 15px; }
+.programs-shell .nr-program-mobile-booking { flex-wrap: wrap; }
+.programs-shell .pdep-public-price-row small,
+.programs-shell .pdep-public-price-row em,
+.programs-shell .pdep-public-meta span,
+.programs-shell .psc-meta em,
+.programs-shell .psc-two p { font-size: 14px; color: var(--program-muted); }
+.programs-shell button:focus-visible,
+.programs-shell a:focus-visible,
+.programs-shell input:focus-visible,
+.programs-shell select:focus-visible,
+.programs-shell summary:focus-visible { outline: 3px solid #0a57b8; outline-offset: 4px; }
+.programs-shell .programs-skip { position: absolute; inset-inline-start: 16px; top: 8px; z-index: 2000; padding: 12px 18px; background: #fff; color: #173557; transform: translateY(-200%); }
+.programs-shell .programs-skip:focus { transform: none; }
+.programs-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+html[data-theme="dark"] .programs-shell { --program-muted: #bdcde0; }
+html[data-theme="dark"] .programs-shell .nr-all-programs-select > span { color: #bdcde0; }
+html[data-theme="dark"] .programs-shell .program-section-state { background: #0c223d; color: #edf5ff; border-color: #61758c; }
+html[data-theme="dark"] .programs-shell .psc-wrap,
+html[data-theme="dark"] .programs-shell .pdep-public { background: #07182c; color: #edf5ff; }
+html[data-theme="dark"] .programs-shell .psc-card,
+html[data-theme="dark"] .programs-shell .pdep-public-card { background: #0c223d; color: #edf5ff; }
+html[data-theme="dark"] .programs-shell .pdep-public-prices,
+html[data-theme="dark"] .programs-shell .psc-two > div { background: #122e4b; }
+@media (max-width: 700px) {
+  .programs-shell .nr-all-programs-container { width: calc(100% - 24px); }
+  .programs-shell .nr-all-programs-filters { grid-template-columns: 1fr; }
+  .programs-shell .nr-all-programs-result-row { flex-wrap: wrap; }
+  .programs-shell .nr-program-details-subnav .nr-program-details-container { overflow-x: auto; }
+  .programs-shell { padding-bottom: 112px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .programs-shell *, .programs-shell *::before, .programs-shell *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Browsing refinements only; no selectors target the home page. */
+.programs-shell #departures,
+.programs-shell #additional-information { scroll-margin-top: 90px; }
+.programs-shell .nr-all-programs-select select { max-width: 100%; width: 100%; }
+.programs-shell .nr-all-programs-card,
+.programs-shell .nr-program-details-main,
+.programs-shell .nr-program-details-copy { min-width: 0; overflow-wrap: anywhere; }
+.programs-shell .nr-program-details-subnav-inner { flex-wrap: wrap; gap: 8px; }
+.programs-shell .nr-program-details-subnav a { white-space: normal; text-align: center; }
+.programs-shell .nr-all-programs-state .program-action { margin-top: 16px; }
+.programs-shell .nr-booking-notice strong { font-size: 15px; }
+@media (max-width: 700px) {
+  .programs-shell .nr-program-details-subnav-inner { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .programs-shell .nr-program-details-subnav { position: static; }
+  .programs-shell #departures,
+  .programs-shell #additional-information { scroll-margin-top: 16px; }
+}
+
+/* Structured details: pair each nested surface with readable theme colors. */
+.programs-shell .psc-day h4,
+.programs-shell .psc-mini > strong,
+.programs-shell .psc-rules strong { color: #14253d; }
+.programs-shell .psc-intro p,
+.programs-shell .psc-day p,
+.programs-shell .psc-mini p,
+.programs-shell .psc-mini small,
+.programs-shell .psc-rules p,
+.programs-shell .psc-faqs p { color: #465b73; }
+html[data-theme="dark"] .programs-shell .psc-day,
+html[data-theme="dark"] .programs-shell .psc-mini,
+html[data-theme="dark"] .programs-shell .psc-rules > div { background: #122e4b; border-color: #415c7b; }
+html[data-theme="dark"] .programs-shell .psc-day h4,
+html[data-theme="dark"] .programs-shell .psc-mini > strong,
+html[data-theme="dark"] .programs-shell .psc-rules strong { color: #edf5ff; }
+html[data-theme="dark"] .programs-shell .psc-intro p,
+html[data-theme="dark"] .programs-shell .psc-day p,
+html[data-theme="dark"] .programs-shell .psc-mini p,
+html[data-theme="dark"] .programs-shell .psc-mini small,
+html[data-theme="dark"] .programs-shell .psc-rules p,
+html[data-theme="dark"] .programs-shell .psc-faqs p,
+html[data-theme="dark"] .programs-shell .psc-meta em,
+html[data-theme="dark"] .programs-shell .psc-mini span { color: #bdcde0; }
+html[data-theme="dark"] .programs-shell .psc-included h4 { color: #86efac; }
+html[data-theme="dark"] .programs-shell .psc-excluded h4 { color: #fda4af; }
+html[data-theme="dark"] .programs-shell .psc-intro > span,
+html[data-theme="dark"] .programs-shell .psc-title small,
+html[data-theme="dark"] .programs-shell .psc-mini b { color: #9dcaff; }
+html[data-theme="dark"] .programs-shell .psc-rules span { color: #f5d578; }
+html[data-theme="dark"] .programs-shell .psc-two > div > div,
+html[data-theme="dark"] .programs-shell .psc-faqs details { border-color: #415c7b; }
+@media (max-width: 900px) {
+  .programs-shell { padding-bottom: calc(var(--nour-program-bar-clearance, 0px) + 80px + env(safe-area-inset-bottom)); }
+}
+
+/* Visual recheck: readable flight notices and tablet filter labels. */
+.programs-shell .nr-program-flight-policy strong { font-size: 15px; line-height: 1.7; }
+.programs-shell .nr-program-flight-policy span { color: #465b73; }
+.programs-shell .nr-program-flight-policy-included { background: #f0fdf4; }
+.programs-shell .nr-program-flight-policy-excluded { background: #fff3f2; }
+.programs-shell .nr-program-flight-policy-dynamic { background: #eef5ff; }
+html[data-theme="dark"] .programs-shell .nr-program-flight-policy { background: #122e4b; border-color: #61758c; }
+html[data-theme="dark"] .programs-shell .nr-program-flight-policy strong { color: #edf5ff; }
+html[data-theme="dark"] .programs-shell .nr-program-flight-policy span { color: #bdcde0; }
+html[data-theme="dark"] .programs-shell .nr-program-flight-policy > svg { color: #9dcaff; }
+.programs-shell .nr-all-programs-filters .nr-all-programs-select { min-width: 0; padding: 12px; }
+.programs-shell .nr-all-programs-select select { min-width: 0; }
+@media (min-width: 701px) and (max-width: 1100px) {
+  .programs-shell .nr-all-programs-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .programs-shell .nr-program-mobile-booking { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; }
+  .programs-shell .nr-program-mobile-booking > div { grid-column: 1 / -1; }
+  .programs-shell .nr-program-mobile-booking > .nr-app-coming-soon { justify-self: start; }
+  .programs-shell .nr-program-privacy-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-height: 44px; min-width: 44px; padding: 8px 12px;
+    border: 1px solid #9bb4d0; border-radius: 12px;
+    background: #eef5ff; color: #173557; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .programs-shell .nr-program-privacy-button svg { width: 18px; height: 18px; flex-shrink: 0; }
+}

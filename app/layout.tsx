@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Cairo } from "next/font/google";
 
 import QueryProvider from "../src/components/providers/QueryProvider";
+import PrivacyPreferences from "./components/PrivacyPreferences";
 import VisitorAnalyticsTracker from "../src/features/analytics/components/VisitorAnalyticsTracker";
 import { getConfiguredSiteOrigin } from "../src/core/config/site-url";
 import { LanguageProvider } from "../src/core/i18n";
@@ -12,11 +13,12 @@ import "./globals.css";
 import "./nour-redesign.css";
 import "./modern-upgrade.css";
 import "./ui-consistency.css";
+import "./accessibility.css";
 
 import {
   getPublicServerSettings,
   getServerTextSetting,
-} from "../src/features/settings/services/public-settings.server";
+} from "./metadata-settings";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -67,7 +69,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: "/",
       languages: {
-        ar: "/",
+        ar: "/?lang=ar",
         en: "/?lang=en",
       },
     },
@@ -103,6 +105,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <LanguageProvider>
             <Suspense fallback={null}>
               <VisitorAnalyticsTracker />
+              <PrivacyPreferences />
             </Suspense>
             {children}
           </LanguageProvider>

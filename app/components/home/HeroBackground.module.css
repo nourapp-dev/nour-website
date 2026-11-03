@@ -1,0 +1,84 @@
+/* Decorative only: never changes hero content, grid or phone geometry. */
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 25% 48%, rgba(35, 111, 197, .4), transparent 54%),
+    linear-gradient(110deg, #123e70 0%, #0d3159 48%, #092644 100%);
+}
+.background::before,
+.shimmer {
+  position: absolute;
+  inset-inline-end: -36px;
+  top: 24%;
+  width: min(32%, 440px);
+  aspect-ratio: 460 / 270;
+  pointer-events: none;
+}
+.background::before {
+  content: "";
+  background: url("/images/brand/nour-hero-lines.svg") center / contain no-repeat;
+  opacity: .07;
+}
+:global(.nr-premium-hero[dir="ltr"]) .background {
+  background:
+    radial-gradient(ellipse at 75% 48%, rgba(35, 111, 197, .4), transparent 54%),
+    linear-gradient(250deg, #123e70 0%, #0d3159 48%, #092644 100%);
+}
+@container (max-width: 1020px) {
+  .background,
+  :global(.nr-premium-hero[dir="ltr"]) .background {
+    background:
+      radial-gradient(ellipse at 50% 80%, rgba(35, 111, 197, .28), transparent 48%),
+      linear-gradient(180deg, #092644, #10365f);
+  }
+  .background::before,
+  .shimmer {
+    top: auto;
+    bottom: 7%;
+    width: min(30%, 240px);
+  }
+  .background::before { opacity: .05; }
+}
+@container (max-width: 600px) {
+  .background::before, .shimmer { inset-inline-end: -24px; bottom: 5%; width: 160px; }
+}
+
+.shimmer {
+  display: block;
+  height: auto;
+  overflow: visible;
+  opacity: .32;
+}
+.ray, .gold {
+  stroke: #b9e5ff;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 12 88;
+  stroke-dashoffset: 0;
+  opacity: .8;
+  filter: drop-shadow(0 0 3px #67b9ff);
+  animation: traceRay 3s linear infinite both;
+  animation-play-state: paused;
+}
+.gold {
+  stroke: #ffd56b;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 2px #ffc313);
+  opacity: .7;
+}
+.background[data-active="true"] :is(.ray, .gold) { animation-play-state: running; }
+/* One normalized dash period per cycle: the end matches the start without a pause. */
+@keyframes traceRay {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -100; }
+}
+@container (max-width: 768px) {
+  .shimmer { opacity: .2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer { display: none; }
+  .ray, .gold { animation: none; }
+}

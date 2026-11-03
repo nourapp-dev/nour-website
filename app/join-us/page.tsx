@@ -109,7 +109,7 @@ export default function JoinUsPage() {
       setForm(INITIAL_FORM);
       setCvFile(null);
       setSuccessMessage(
-        "تم استلام طلبك بنجاح. سيتواصل معك فريق نور عند وجود فرصة مناسبة.",
+        "تم استلام طلبك بنجاح. سيتواصل معك فريق نور آب عند وجود فرصة مناسبة.",
       );
 
       const fileInput = document.getElementById(
@@ -133,7 +133,7 @@ export default function JoinUsPage() {
       <section className="join-hero">
         <div className="join-container join-hero-grid">
           <div>
-            <span className="join-kicker">انضم إلى فريق نور</span>
+            <span className="join-kicker">انضم إلى فريق نور آب</span>
             <h1>
               اصنع معنا تجربة عمرة
               <strong> أكثر سهولة وطمأنينة</strong>
@@ -151,7 +151,7 @@ export default function JoinUsPage() {
           </div>
 
           <div className="join-hero-card">
-            <span>لماذا نور؟</span>
+            <span>لماذا نور آب؟</span>
             <strong>نبني منصة تخدم رحلة المعتمر من مكان واحد.</strong>
             <p>
               التقنية، التشغيل، المحتوى وخدمة العملاء تعمل معًا لبناء تجربة
@@ -299,7 +299,7 @@ export default function JoinUsPage() {
                 rows={6}
                 value={form.message}
                 onChange={(e) => setField("message", e.target.value)}
-                placeholder="حدثنا باختصار عن خبرتك وما الذي تود تقديمه مع نور..."
+                placeholder="حدثنا باختصار عن خبرتك وما الذي تود تقديمه مع نور آب..."
               />
             </label>
 

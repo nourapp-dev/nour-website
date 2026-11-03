@@ -1,5 +1,6 @@
 "use client";
 
+import ProgramSectionState from "./ProgramSectionState";
 import { useMemo } from "react";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -46,18 +47,23 @@ export default function ProgramStructuredContent() {
     queryFn: () => getProgramDetailContent(supabase, programQuery.data!),
   });
 
-  if (!slug || !programQuery.data || contentQuery.isLoading || contentQuery.isError || !contentQuery.data) return null;
+  if (!slug) return null;
+  if (programQuery.isError) return <ProgramSectionState language={language} title={isArabic ? "معلومات البرنامج الإضافية" : "Additional program information"} state="error" onRetry={() => void programQuery.refetch()} />;
+  if (!programQuery.data) return null;
+  if (contentQuery.isLoading) return <ProgramSectionState language={language} title={isArabic ? "معلومات البرنامج الإضافية" : "Additional program information"} state="loading" />;
+  if (contentQuery.isError) return <ProgramSectionState language={language} title={isArabic ? "معلومات البرنامج الإضافية" : "Additional program information"} state="error" onRetry={() => void contentQuery.refetch()} />;
+  if (!contentQuery.data) return null;
 
   const content = contentQuery.data;
   const hasContent = content.itinerary.length || content.inclusions.length || content.cancellation.length || content.meetingPoints.length || content.priceTiers.length || content.faqs.length;
-  if (!hasContent) return null;
+  if (!hasContent) return <ProgramSectionState language={language} title={isArabic ? "معلومات البرنامج الإضافية" : "Additional program information"} state="empty" />;
 
   return (
     <section className="psc-wrap" dir={isArabic ? "rtl" : "ltr"} aria-label={isArabic ? "تفاصيل إضافية للبرنامج" : "Additional program details"}>
       <div className="psc-container">
         <header className="psc-intro">
           <span>{isArabic ? "تفاصيل الرحلة" : "Journey details"}</span>
-          <h2>{isArabic ? "كل ما تحتاج معرفته قبل الحجز" : "Everything to know before booking"}</h2>
+          <h2>{isArabic ? "معلومات تساعدك على تقييم البرنامج" : "Information to help you assess this program"}</h2>
           <p>{isArabic ? "معلومات منظمة ومباشرة من بيانات البرنامج المنشورة في نور آب." : "Structured information published directly from the program data in NourApp."}</p>
         </header>
 
@@ -86,8 +92,8 @@ export default function ProgramStructuredContent() {
           <article className="psc-card" id="inclusions">
             <div className="psc-title"><Tags/><div><small>{isArabic ? "المحتويات" : "Inclusions"}</small><h3>{isArabic ? "ما يشمله البرنامج وما لا يشمله" : "What's included and excluded"}</h3></div></div>
             <div className="psc-two">
-              <div className="psc-included"><h4><CheckCircle2/>{isArabic ? "يشمل" : "Included"}</h4>{content.inclusions.filter((x) => x.inclusionType === "included").map((item) => <div key={item.id}><strong>{isArabic ? item.titleAr : item.titleEn}</strong>{(isArabic ? item.descriptionAr : item.descriptionEn) ? <p>{isArabic ? item.descriptionAr : item.descriptionEn}</p> : null}</div>)}</div>
-              <div className="psc-excluded"><h4><CircleX/>{isArabic ? "لا يشمل" : "Not included"}</h4>{content.inclusions.filter((x) => x.inclusionType === "excluded").map((item) => <div key={item.id}><strong>{isArabic ? item.titleAr : item.titleEn}</strong>{(isArabic ? item.descriptionAr : item.descriptionEn) ? <p>{isArabic ? item.descriptionAr : item.descriptionEn}</p> : null}</div>)}</div>
+              <div className="psc-included"><h4><CheckCircle2/>{isArabic ? "يشمل" : "Included"}</h4>{!content.inclusions.some(item => item.inclusionType === "included") && <p>{isArabic ? "لم تُنشر بنود المشمول بعد؛ لا تفترض شمول خدمة دون توضيح." : "Included services have not been listed yet; do not assume a service is included."}</p>}{content.inclusions.filter((x) => x.inclusionType === "included").map((item) => <div key={item.id}><strong>{isArabic ? item.titleAr : item.titleEn}</strong>{(isArabic ? item.descriptionAr : item.descriptionEn) ? <p>{isArabic ? item.descriptionAr : item.descriptionEn}</p> : null}</div>)}</div>
+              <div className="psc-excluded"><h4><CircleX/>{isArabic ? "لا يشمل" : "Not included"}</h4>{!content.inclusions.some(item => item.inclusionType === "excluded") && <p>{isArabic ? "لم تُنشر بنود غير المشمول بعد؛ هذا لا يعني أن جميع الخدمات مشمولة." : "Excluded services have not been listed yet; this does not mean all services are included."}</p>}{content.inclusions.filter((x) => x.inclusionType === "excluded").map((item) => <div key={item.id}><strong>{isArabic ? item.titleAr : item.titleEn}</strong>{(isArabic ? item.descriptionAr : item.descriptionEn) ? <p>{isArabic ? item.descriptionAr : item.descriptionEn}</p> : null}</div>)}</div>
             </div>
           </article>
         ) : null}

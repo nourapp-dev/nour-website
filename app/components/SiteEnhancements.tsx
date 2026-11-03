@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../../src/core/i18n";
 import usePublicContact from "../../src/features/settings/hooks/usePublicContact";
@@ -13,7 +13,6 @@ const revealSelectors = [
   ".nr-showcase",
   ".nr-payments",
   ".nr-cta",
-  ".nr-footer",
   ".nr-goals article",
   ".nr-feature-grid article",
   ".nr-journey-step",
@@ -23,6 +22,7 @@ const revealSelectors = [
 
 export default function SiteEnhancements() {
   const contact = usePublicContact();
+  const reduceMotion = useReducedMotion();
   const { language } = useLanguage();
   const [progress, setProgress] = useState(0);
   const [showTop, setShowTop] = useState(false);
@@ -54,6 +54,7 @@ export default function SiteEnhancements() {
   }, []);
 
   useEffect(() => {
+    if (reduceMotion) return;
     const elements =
       document.querySelectorAll<HTMLElement>(revealSelectors);
 
@@ -93,13 +94,14 @@ export default function SiteEnhancements() {
 
     return () => {
       observer.disconnect();
+      elements.forEach(element => { element.classList.remove("nr-reveal", "is-visible"); element.style.removeProperty("--nr-reveal-delay"); });
     };
-  }, []);
+  }, [reduceMotion]);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: reduceMotion ? "auto" : "smooth",
     });
   };
 

@@ -1,0 +1,29 @@
+.window {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: min(22%, 280px);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.wheel {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  inset-inline-end: -170px;
+  top: calc(50% - 170px);
+  background: url("/images/brand/nour-download-ornament.svg") center / contain no-repeat;
+  transform-origin: center;
+  animation: slowTurn 75s linear infinite;
+  animation-play-state: paused;
+}
+.window[data-active="true"] .wheel { animation-play-state: running; }
+@keyframes slowTurn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@container (max-width: 768px) {
+  .window { top: auto; bottom: 0; width: 140px; height: 52px; }
+  .wheel { width: 180px; height: 180px; inset-inline-end: -90px; top: auto; bottom: -90px; opacity: .75; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wheel { animation: none; }
+}

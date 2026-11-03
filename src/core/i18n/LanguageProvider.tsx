@@ -1,12 +1,17 @@
 "use client";
 
 import {
+  Suspense,
+  useCallback,
   createContext,
   useContext,
   useEffect,
   useMemo,
   type ReactNode,
 } from "react";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import { languageHref, parsePublicLanguage } from "./public-language";
 
 import { usePersistentState } from "../hooks";
 
@@ -26,14 +31,30 @@ type LanguageProviderProps = {
   children: ReactNode;
 };
 
+function LanguageFromUrl({ onLanguage }: { onLanguage: (language: AdminLanguage) => void }) {
+  const params = useSearchParams();
+  const language = parsePublicLanguage(params.get("lang"));
+  useEffect(() => { if (language) onLanguage(language); }, [language, onLanguage]);
+  return null;
+}
+
 export default function LanguageProvider({
   children,
 }: LanguageProviderProps) {
-  const [language, setLanguage] =
+  const router = useRouter();
+  const [language, setStoredLanguage] =
     usePersistentState<AdminLanguage>(
       "nour-language",
       "ar",
     );
+
+  const setLanguage = useCallback((next: AdminLanguage) => {
+    setStoredLanguage(next);
+    const path = window.location.pathname;
+    if (path === "/" || path === "/get-app" || path === "/open-app" || path === "/programs" || path.startsWith("/programs/")) {
+      router.replace(languageHref(window.location.href, next), { scroll: false });
+    }
+  }, [router, setStoredLanguage]);
 
   const direction: "rtl" | "ltr" =
     language === "ar" ? "rtl" : "ltr";
@@ -50,11 +71,7 @@ export default function LanguageProvider({
         direction,
         setLanguage,
         toggleLanguage: () => {
-          setLanguage((currentLanguage) =>
-            currentLanguage === "ar"
-              ? "en"
-              : "ar",
-          );
+          setLanguage(language === "ar" ? "en" : "ar");
         },
       }),
       [
@@ -73,6 +90,7 @@ export default function LanguageProvider({
         lang={language}
         className={`nr-language-root nr-admin-language nr-admin-language--${language}`}
       >
+        <Suspense fallback={null}><LanguageFromUrl onLanguage={setStoredLanguage} /></Suspense>
         {children}
       </div>
     </LanguageContext.Provider>

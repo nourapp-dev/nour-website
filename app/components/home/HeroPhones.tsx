@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import ProgramSearch from "./ProgramSearch";
+import HeroBackground from "./HeroBackground";
 import {
   motion,
   useMotionValue,
@@ -60,21 +61,7 @@ export default function HeroPhones({ t, hero }: Props) {
         mouseY.set(0);
       }}
     >
-      <motion.div
-        className="nr-premium-haram-bg"
-        aria-hidden="true"
-        initial={{ scale: 1.06, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{
-          duration: 1.35,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      />
-
-      <div className="nr-premium-haram-overlay" aria-hidden="true" />
-      <div className="nr-premium-grid" aria-hidden="true" />
-      <motion.div className="nr-premium-glow nr-premium-glow-blue" style={{ x: glowX, y: glowY }} />
-      <motion.div className="nr-premium-glow nr-premium-glow-gold" style={{ x: backX, y: backY }} />
+      <HeroBackground />
 
       <div className="nr-container nr-premium-hero-grid">
         <motion.div
@@ -136,7 +123,7 @@ export default function HeroPhones({ t, hero }: Props) {
             </div>
             <span className="nr-premium-trust-divider" />
             <div>
-              <strong>24/7</strong>
+              <strong>{isArabic ? "تواصل معنا" : "Contact us"}</strong>
               <small>{isArabic ? "دعم ومتابعة" : "Support & follow-up"}</small>
             </div>
             <span className="nr-premium-trust-divider" />
@@ -189,7 +176,8 @@ export default function HeroPhones({ t, hero }: Props) {
               <Image
                 src={hero.backImage}
                 alt={hero.backAlt[language]}
-                unoptimized
+                unoptimized={!hero.backImage.startsWith("/images/")}
+                sizes="(max-width: 760px) 70vw, 630px"
                 width={630}
                 height={630}
                 priority
@@ -240,7 +228,8 @@ export default function HeroPhones({ t, hero }: Props) {
                 <Image
                   src={hero.frontImage}
                   alt={hero.frontAlt[language]}
-                  unoptimized
+                  unoptimized={!hero.frontImage.startsWith("/images/")}
+                  sizes="(max-width: 760px) 65vw, 420px"
                   width={420}
                   height={720}
                   priority
@@ -268,71 +257,7 @@ export default function HeroPhones({ t, hero }: Props) {
           overflow: hidden;
           isolation: isolate;
           color: #fff;
-          background: #0b65d7;
-        }
-
-        .nr-premium-haram-bg {
-          position: absolute;
-          inset: 0;
-          z-index: -5;
-          background:
-            url("/images/site/nour-hero-brand-background-1920x900.webp")
-            right center / cover no-repeat;
-          transform-origin: center;
-          filter: none;
-          pointer-events: none;
-        }
-
-        .nr-premium-haram-overlay {
-          position: absolute;
-          inset: 0;
-          z-index: -4;
-          pointer-events: none;
-          background:
-            linear-gradient(
-              90deg,
-              rgba(17, 15, 114, .10) 0%,
-              rgba(17, 15, 114, .05) 45%,
-              rgba(17, 15, 114, .12) 100%
-            );
-        }
-
-        .nr-premium-grid {
-          position: absolute;
-          inset: 0;
-          z-index: -1;
-          opacity: 0.09;
-          background-image:
-            linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
-          background-size: 58px 58px;
-          mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 82%, transparent);
-        }
-
-        .nr-premium-glow {
-          position: absolute;
-          z-index: -1;
-          border-radius: 50%;
-          filter: blur(8px);
-          pointer-events: none;
-        }
-
-        .nr-premium-glow-blue {
-          width: 300px;
-          height: 330px;
-          top: -170px;
-          inset-inline-start: -145px;
-          background: rgba(32, 235, 213, 0.16);
-          filter: blur(18px);
-        }
-
-        .nr-premium-glow-gold {
-          width: 320px;
-          height: 320px;
-          right: -180px;
-          bottom: -245px;
-          background: rgba(255, 195, 19, 0.10);
-          filter: blur(28px);
+          background: #0a294b;
         }
 
         .nr-premium-hero-grid {
@@ -491,7 +416,7 @@ export default function HeroPhones({ t, hero }: Props) {
           left: 50%;
           transform: translateX(-50%);
           border-radius: 50%;
-          background: rgba(255,255,255,.26);
+          background: rgba(55,135,230,.18);
           filter: blur(58px);
           opacity: .66;
           pointer-events: none;
@@ -644,16 +569,7 @@ export default function HeroPhones({ t, hero }: Props) {
         }
 
         @container (max-width: 768px) {
-          .nr-premium-haram-bg {
-            background-position: left center;
-            background-size: auto 100%;
-            background-color: #110f72;
-            filter: none;
-          }
 
-          .nr-premium-haram-overlay {
-            background: linear-gradient(180deg, rgba(17,15,114,.08), rgba(17,15,114,.16));
-          }
 
   .nr-premium-hero {
     min-height: auto !important;

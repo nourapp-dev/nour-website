@@ -49,13 +49,13 @@ type PartnerApplication = {
 
 const copy = {
   ar: {
-    kicker:"إدارة الشراكات",title:"طلبات الشراكة",subtitle:"مراجعة طلبات الفنادق والنقل والتأشيرات والشركات ومزودي الخدمات الراغبين في الشراكة مع نور.",
+    kicker:"إدارة الشراكات",title:"طلبات الشراكة",subtitle:"مراجعة طلبات الفنادق والنقل والتأشيرات والشركات ومزودي الخدمات الراغبين في الشراكة مع نور آب.",
     refresh:"تحديث",total:"إجمالي الظاهر",new:"طلبات جديدة",review:"قيد المراجعة",contacted:"تم التواصل",all:"جميع الحالات",
     search:"بحث باسم المنشأة، المسؤول، البريد، السجل...",company:"المنشأة",type:"نوع الشراكة",country:"الدولة",status:"الحالة",date:"تاريخ الطلب",
     details:"التفاصيل",loading:"جارٍ تحميل الطلبات...",empty:"لا توجد طلبات مطابقة.",drawer:"تفاصيل طلب الشراكة",contact:"اسم المسؤول",
     email:"البريد الإلكتروني",phone:"رقم الجوال",city:"المدينة",registration:"السجل التجاري",license:"رقم الترخيص",lastContact:"آخر تواصل",
     website:"فتح الموقع الإلكتروني",attachment:"فتح المرفق",served:"الدول التي تخدمها المنشأة",companyDesc:"نبذة عن المنشأة",services:"الخدمات المقدمة",
-    applicantNotes:"ملاحظات مقدم الطلب",internalNotes:"ملاحظات داخلية",notesPlaceholder:"ملاحظات فريق نور عن الشريك...",save:"حفظ الملاحظات",saving:"جارٍ الحفظ...",
+    applicantNotes:"ملاحظات مقدم الطلب",internalNotes:"ملاحظات داخلية",notesPlaceholder:"ملاحظات فريق نور آب عن الشريك...",save:"حفظ الملاحظات",saving:"جارٍ الحفظ...",
     approve:"قبول",archive:"أرشفة الطلب",archiveConfirm:"هل تريد أرشفة طلب الشراكة؟",
     hotel:"فندق / ضيافة",transport:"نقل",visa:"تأشيرات",umrah:"شركة عمرة",guide:"إرشاد وخدمات ميدانية",airline:"طيران",provider:"مزود خدمات",technology:"شراكة تقنية",other:"أخرى",
     sNew:"جديد",sReview:"قيد المراجعة",sContacted:"تم التواصل",sApproved:"مقبول",sRejected:"مرفوض"

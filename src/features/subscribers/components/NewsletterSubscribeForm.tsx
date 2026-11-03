@@ -6,6 +6,8 @@ import {
   useState,
 } from "react";
 
+import styles from "./NewsletterSubscribeForm.module.css";
+
 import { subscribeToUpdates } from "../services/subscribers.service";
 
 type Language = "ar" | "en";
@@ -192,13 +194,13 @@ export default function NewsletterSubscribeForm({
 
   return (
     <form
-      className="nr-newsletter-form"
+      className={styles.form}
       onSubmit={handleSubmit}
       noValidate
       dir={isArabic ? "rtl" : "ltr"}
     >
-      <div className="nr-newsletter-fields">
-        <label className="nr-newsletter-field">
+      <div className={styles.fields}>
+        <label className={styles.field}>
           <span>
             {isArabic ? "الاسم" : "Name"}
           </span>
@@ -223,7 +225,7 @@ export default function NewsletterSubscribeForm({
           />
         </label>
 
-        <label className="nr-newsletter-field">
+        <label className={styles.field}>
           <span>
             {isArabic
               ? "البريد الإلكتروني"
@@ -248,7 +250,7 @@ export default function NewsletterSubscribeForm({
           />
         </label>
 
-        <label className="nr-newsletter-field">
+        <label className={styles.field}>
           <span>
             {isArabic
               ? "الدولة"
@@ -286,7 +288,7 @@ export default function NewsletterSubscribeForm({
         </label>
       </div>
 
-      <label className="nr-newsletter-consent">
+      <label className={styles.consent}>
         <input
           type="checkbox"
           checked={
@@ -310,7 +312,7 @@ export default function NewsletterSubscribeForm({
 
       <button
         type="submit"
-        className="nr-newsletter-submit"
+        className={styles.submit}
         disabled={!canSubmit}
       >
         {isSubmitting
@@ -324,7 +326,7 @@ export default function NewsletterSubscribeForm({
 
       {message ? (
         <p
-          className={`nr-newsletter-message nr-newsletter-message--${status}`}
+          className={styles.message + " " + (status === "error" ? styles.error : styles.success)}
           role={
             status === "error"
               ? "alert"

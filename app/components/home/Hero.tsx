@@ -50,7 +50,7 @@ export default function Hero({
               />
             ) : (
               <div className={styles.brandArt} aria-hidden="true">
-                <strong>نــور · NOUR</strong>
+                <strong>نور آب · NOUR</strong>
                 <span>
                   {language === "ar"
                     ? "رفيقك في رحلة السعادة"
