@@ -1,5 +1,6 @@
 "use client";
 
+import ProgramReadiness from './components/ProgramReadiness';
 import Link from "next/link";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -1311,4 +1312,5 @@ export default function ProgramDetailsPage({
       `}</style>
     </section>
   );
+      <ProgramReadiness programId={programId}/>
 }

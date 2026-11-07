@@ -205,22 +205,6 @@ export async function replaceProgramFlights(
   programId: string,
   flights: ProgramFlightFormValue[],
 ): Promise<void> {
-  const { error: deleteError } =
-    await supabase
-      .from("program_flights")
-      .delete()
-      .eq("program_id", programId);
-
-  if (deleteError) {
-    throw new Error(
-      `تعذر تحديث رحلات البرنامج: ${deleteError.message}`,
-    );
-  }
-
-  if (flights.length === 0) {
-    return;
-  }
-
   const rows = flights.map(
     (flight, index) => ({
       program_id: programId,
@@ -312,9 +296,7 @@ export async function replaceProgramFlights(
   );
 
   const { error: insertError } =
-    await supabase
-      .from("program_flights")
-      .insert(rows);
+    await supabase.rpc("replace_program_flights",{p_program_id:programId,p_flights:rows});
 
   if (insertError) {
     throw new Error(

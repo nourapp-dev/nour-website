@@ -1,13 +1,32 @@
 "use client";
+import { useDraftGuard } from "../../admin-workspace/useUnsaved";
 
 import CoordinatePicker from "../../../components/maps/CoordinatePicker";
 import { useState } from "react";
+import {
+  countryDirectory,
+  ianaTimezones,
+  marketStates,
+  publicationStates,
+  marketLabel,
+} from "../directory";
 
 import Button from "../../../components/ui/Button";
 import MediaUploader from "../../../components/ui/media/MediaUploader";
 import { useLanguage } from "../../../core/i18n";
 
 type CountryFormValues = {
+  marketStatus?: string | null;
+  publicationStatus?: string | null;
+  showPublic?: boolean | null;
+  showOnMap?: boolean | null;
+  statusLabelAr?: string;
+  statusLabelEn?: string;
+  phoneCodes?: string[];
+  currencyCodes?: string[];
+  timezones?: string[];
+  directorySource?: string;
+  flagEmoji?: string;
   nameAr: string;
   nameEn: string;
 
@@ -35,9 +54,21 @@ type CountryFormProps = {
   initialValues?: Partial<CountryFormValues>;
   onSubmit: (values: CountryFormValues) => Promise<void>;
   isSubmitting?: boolean;
+  canPublish?: boolean;
 };
 
 const defaultValues: CountryFormValues = {
+  marketStatus: "setup",
+  publicationStatus: "draft",
+  showPublic: false,
+  showOnMap: false,
+  statusLabelAr: "",
+  statusLabelEn: "",
+  phoneCodes: [],
+  currencyCodes: [],
+  timezones: [],
+  directorySource: "",
+  flagEmoji: "",
   nameAr: "",
   nameEn: "",
 
@@ -65,14 +96,7 @@ type CountryFormErrors = Partial<
   Record<keyof CountryFormValues | "form", string>
 >;
 
-const timezoneOptions = [
-  "Asia/Riyadh",
-  "Africa/Lagos",
-  "Asia/Karachi",
-  "Asia/Dubai",
-  "Africa/Cairo",
-  "Europe/London",
-];
+const timezoneOptions = ianaTimezones;
 
 function normalizeUppercaseCode(value: string, maxLength: number) {
   return value
@@ -95,6 +119,7 @@ export default function CountryForm({
   initialValues: providedInitialValues,
   onSubmit,
   isSubmitting = false,
+  canPublish = false,
 }: CountryFormProps) {
   const { language } = useLanguage();
 
@@ -110,7 +135,14 @@ export default function CountryForm({
 
     flagFile: null,
   });
+  const markDraftSaved = useDraftGuard(
+    values,
+    language === "ar"
+      ? "لديك تعديلات غير محفوظة. هل تريد المغادرة؟"
+      : "You have unsaved changes. Leave?",
+  );
 
+  const [directorySearch, setDirectorySearch] = useState("");
   const [errors, setErrors] = useState<CountryFormErrors>({});
 
   function updateValue<K extends keyof CountryFormValues>(
@@ -226,6 +258,7 @@ export default function CountryForm({
 
         timezone: values.timezone.trim(),
       });
+      markDraftSaved();
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
 
@@ -267,6 +300,226 @@ export default function CountryForm({
 
   return (
     <form className="nr-country-form" onSubmit={handleSubmit} noValidate>
+      <section className="aw-card">
+        <h2>
+          {isArabic ? "دليل الدول المرجعي" : "Reference country directory"}
+        </h2>
+        <p className="aw-muted">
+          {isArabic
+            ? "اختيار الدولة يملأ بياناتها المرجعية فقط، ولا ينشئ سوقًا متاحًا أو برامج. المرجع: world-countries 5.1.0 وIANA."
+            : "Selecting a country fills reference data only; it does not activate a market or create programs. Source: world-countries 5.1.0 and IANA."}
+        </p>
+        <label>
+          {isArabic ? "بحث بالاسم أو رمز ISO" : "Search by name or ISO code"}
+          <input
+            value={directorySearch}
+            onChange={(event) => setDirectorySearch(event.target.value)}
+          />
+        </label>
+        <label>
+          {isArabic ? "اختر الدولة من الدليل" : "Select from directory"}
+          <select
+            value={
+              countryDirectory.some((item) => item.iso2 === values.iso2)
+                ? values.iso2
+                : ""
+            }
+            disabled={isSubmitting}
+            onChange={(event) => {
+              const country = countryDirectory.find(
+                (item) => item.iso2 === event.target.value,
+              );
+              if (!country) return;
+              setValues((current) => ({
+                ...current,
+                iso2: country.iso2,
+                iso3: country.iso3,
+                nameAr: country.nameAr,
+                nameEn: country.nameEn,
+                phoneCode: country.primaryPhone,
+                phoneCodes: country.phoneCodes,
+                currencyCode: country.currencies[0]?.code ?? "",
+                currencyNameAr: country.currencies[0]?.ar ?? "",
+                currencyNameEn: country.currencies[0]?.en ?? "",
+                currencyCodes: country.currencies.map((item) => item.code),
+                timezone: country.timezones[0] ?? "",
+                timezones: country.timezones,
+                latitude: country.latitude,
+                longitude: country.longitude,
+                flagEmoji: country.flag,
+                directorySource:
+                  "world-countries@5.1.0;countries-and-timezones@3.11.0",
+              }));
+            }}
+          >
+            <option value="">
+              {isArabic ? "اختر دولة" : "Choose a country"}
+            </option>
+            {countryDirectory
+              .filter((country) =>
+                `${country.nameAr} ${country.nameEn} ${country.iso2} ${country.iso3}`
+                  .toLowerCase()
+                  .includes(directorySearch.toLowerCase()),
+              )
+              .map((country) => (
+                <option key={country.iso2} value={country.iso2}>
+                  {country.flag} {isArabic ? country.nameAr : country.nameEn} (
+                  {country.iso2})
+                </option>
+              ))}
+          </select>
+        </label>
+        <p className="aw-muted">
+          {isArabic
+            ? "قد تتعدد العملات ومفاتيح الاتصال والمناطق الزمنية؛ القيم الأساسية أدناه اختيار تشغيل، والقائمة المرجعية محفوظة كاملة."
+            : "Currencies, calling codes and timezones may be multiple. Primary fields below are an operational choice; the complete reference arrays are retained."}
+        </p>
+        {!!values.timezones?.length && (
+          <p className="aw-muted" dir="ltr">
+            {values.timezones.join(" · ")}
+          </p>
+        )}
+      </section>
+      <section className="aw-card">
+        <h2>
+          {isArabic
+            ? "السوق والنشر والظهور"
+            : "Market, publication & visibility"}
+        </h2>
+        <div className="aw-detail-grid">
+          <label>
+            {isArabic ? "حالة سوق نور آب" : "Nour market status"}
+            <select
+              value={values.marketStatus ?? "legacy"}
+              onChange={(event) =>
+                updateValue("marketStatus", event.target.value)
+              }
+            >
+              <option value="legacy" disabled>
+                {marketLabel(null, language)}
+              </option>
+              {marketStates.map((state) => (
+                <option
+                  value={state}
+                  key={state}
+                  disabled={state === "browsable" && !canPublish}
+                >
+                  {marketLabel(state, language)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {isArabic ? "حالة النشر" : "Publication"}
+            <select
+              disabled={!canPublish}
+              value={values.publicationStatus ?? "legacy"}
+              onChange={(event) =>
+                updateValue("publicationStatus", event.target.value)
+              }
+            >
+              <option value="legacy" disabled>
+                {marketLabel(null, language)}
+              </option>
+              {publicationStates.map((state) => (
+                <option value={state} key={state}>
+                  {marketLabel(state, language)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {isArabic ? "الظهور العام" : "Public visibility"}
+            <select
+              disabled={!canPublish}
+              value={
+                values.showPublic == null ? "legacy" : String(values.showPublic)
+              }
+              onChange={(event) =>
+                updateValue("showPublic", event.target.value === "true")
+              }
+            >
+              <option value="legacy" disabled>
+                {marketLabel(null, language)}
+              </option>
+              <option value="true">
+                {isArabic ? "يظهر عند النشر" : "Show when published"}
+              </option>
+              <option value="false">
+                {isArabic ? "غير ظاهر" : "Not visible"}
+              </option>
+            </select>
+          </label>
+          <label>
+            {isArabic ? "الظهور على الخريطة" : "Map visibility"}
+            <select
+              disabled={!canPublish}
+              value={
+                values.showOnMap == null ? "legacy" : String(values.showOnMap)
+              }
+              onChange={(event) =>
+                updateValue("showOnMap", event.target.value === "true")
+              }
+            >
+              <option value="legacy" disabled>
+                {marketLabel(null, language)}
+              </option>
+              <option value="true">
+                {isArabic ? "ظاهر على الخريطة" : "Show on map"}
+              </option>
+              <option value="false">{isArabic ? "غير ظاهر" : "Hidden"}</option>
+            </select>
+          </label>
+          <label>
+            {isArabic
+              ? "النص التعريفي للحالة بالعربية"
+              : "Arabic status description"}
+            <input
+              value={values.statusLabelAr ?? ""}
+              maxLength={500}
+              onChange={(event) =>
+                updateValue("statusLabelAr", event.target.value)
+              }
+            />
+          </label>
+          <label>
+            {isArabic
+              ? "النص التعريفي للحالة بالإنجليزية"
+              : "English status description"}
+            <input
+              value={values.statusLabelEn ?? ""}
+              maxLength={500}
+              onChange={(event) =>
+                updateValue("statusLabelEn", event.target.value)
+              }
+            />
+          </label>
+        </div>
+        <p className="aw-notice">
+          {isArabic
+            ? "لا يفعّل أي اختيار الحجز أو الدفع. إخفاء الدولة يحجب مدنها وبرامجها عن الزائر دون حذف العلاقات. السجلات السابقة تبقى غير مصنفة حتى يراجعها مخوّل."
+            : "No selection enables booking or payment. Hiding a country hides its cities/programs publicly without deleting relationships. Legacy states stay unclassified until explicitly reviewed."}
+        </p>
+        <aside
+          className="aw-card"
+          aria-label={isArabic ? "معاينة إعدادات الظهور" : "Visibility preview"}
+        >
+          <h3>{isArabic ? "معاينة بيانات الدولة" : "Country preview"}</h3>
+          <strong>
+            {values.flagEmoji} {isArabic ? values.nameAr : values.nameEn}
+          </strong>
+          <p>
+            {marketLabel(values.marketStatus, language)} ·{" "}
+            {marketLabel(values.publicationStatus, language)}
+          </p>
+          <p>{isArabic ? values.statusLabelAr : values.statusLabelEn}</p>
+          <small>
+            {isArabic
+              ? "العرض العام يتطلب التفعيل والنشر والسماح بالظهور. برامج الدولة لا تظهر في سوق «قريبًا» أو «موقوف»."
+              : "Public display requires active, published and visible status. Programs remain hidden for coming-soon or paused markets."}
+          </small>
+        </aside>
+      </section>
       {errors.form ? (
         <div className="nr-form-error" role="alert">
           {errors.form}
@@ -594,7 +847,7 @@ export default function CountryForm({
 
           <span>
             {isArabic
-              ? "الدولة نشطة ومتاحة للعرض"
+              ? "السجل مفعّل تشغيليًا — النشر مستقل"
               : "Country is active and visible"}
           </span>
         </label>

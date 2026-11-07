@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import usePublicContact from "../../../src/features/settings/hooks/usePublicContact";
 
+import {languageHref} from '../../../src/core/i18n/public-language';
+import {usePresentation} from '../../../src/features/website/usePresentation';
 import Header from "./Header";
 import type { HomeCopy, Language, SectionId, Theme } from "../../data/home";
 
@@ -21,6 +23,7 @@ type Props = {
 };
 
 export default function PublicHeader(props: Props) {
+  const {navigation}=usePresentation();
   const pathname = usePathname();
   const contact = usePublicContact();
   const isProgramDetails = /^\/programs\/[^/]+\/?$/.test(pathname ?? "");
@@ -28,7 +31,7 @@ export default function PublicHeader(props: Props) {
   const actionLabel = props.language === "ar" ? "استفسر عن البرنامج" : "Ask about this program";
 
   return (
-    <Header {...props} showAction={isProgramDetails} actionHref={actionHref} actionLabel={actionLabel}
+    <Header {...props} navItems={navigation.partnerVisible?[...props.navItems,{id:'partners',label:navigation.partnerLabel[props.language],href:languageHref('/become-a-partner',props.language)}]:props.navItems} showAction={isProgramDetails} actionHref={actionHref} actionLabel={actionLabel}
       actionExternal={isProgramDetails && actionHref.startsWith("https://")} />
   );
 }

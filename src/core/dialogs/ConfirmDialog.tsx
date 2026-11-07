@@ -2,6 +2,8 @@
 
 import Button from "../../components/ui/Button";
 import { useLanguage } from "../i18n";
+import {useRef} from 'react';
+import {useModalFocus} from '../../features/admin-workspace/useModalFocus';
 
 type ConfirmDialogProps = {
   open: boolean;
@@ -26,6 +28,8 @@ export default function ConfirmDialog({
 }: ConfirmDialogProps) {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const dialogRef=useRef<HTMLElement>(null);
+  useModalFocus(open,dialogRef,onCancel,isLoading);
 
   const resolvedConfirmLabel =
     confirmLabel ??
@@ -56,6 +60,8 @@ export default function ConfirmDialog({
       }}
     >
       <section
+        ref={dialogRef}
+        tabIndex={-1}
         className="nr-confirm-dialog"
         role="alertdialog"
         aria-modal="true"

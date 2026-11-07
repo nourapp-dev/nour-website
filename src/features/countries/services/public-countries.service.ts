@@ -15,7 +15,13 @@ export type PublicCountry = {
   flagMediaId: string | null;
   flagUrl?: string;
 
-  publishedProgramsCount: number;
+  publishedProgramsCount: number | null;
+  countsError?: boolean;
+  flagsError?: boolean;
+  marketStatus?: string | null;
+  showOnMap?: boolean | null;
+  statusLabelAr?: string | null;
+  statusLabelEn?: string | null;
   hasPublishedPrograms: boolean;
 
   sortOrder: number;
@@ -36,6 +42,10 @@ type PublicCountryRow = {
   flag_media_id: string | null;
 
   sort_order: number;
+  market_status?: string | null;
+  show_on_map?: boolean | null;
+  status_label_ar?: string | null;
+  status_label_en?: string | null;
 };
 
 type ProgramCountryRow = {
@@ -56,39 +66,9 @@ const publicCountryColumns = `
   iso3,
   latitude,
   longitude,
-  flag_media_id,
+  flag_media_id,market_status,show_on_map,status_label_ar,status_label_en,
   sort_order
 `;
-
-const STANDARD_FLAG_CODES: Record<string, string> = {
-  sa: "SA",
-  "saudi arabia": "SA",
-  السعودية: "SA",
-  sd: "SD",
-  su: "SD",
-  sudan: "SD",
-  "sudan n": "SD",
-  السودان: "SD",
-  jo: "JO",
-  ju: "JO",
-  jordan: "JO",
-  jurdan: "JO",
-  الاردن: "JO",
-  الأردن: "JO",
-  es: "ES",
-  ss: "ES",
-  spain: "ES",
-  sbain: "ES",
-  اسبانيا: "ES",
-  إسبانيا: "ES",
-  ca: "CA",
-  canada: "CA",
-  كندا: "CA",
-  ng: "NG",
-  nj: "NG",
-  nigeria: "NG",
-  نيجيريا: "NG",
-};
 
 function normalizeCoordinate(value: number | string | null): number | null {
   if (value === null || value === undefined || value === "") {
@@ -100,20 +80,7 @@ function normalizeCoordinate(value: number | string | null): number | null {
   return Number.isFinite(parsedValue) ? parsedValue : null;
 }
 
-function normalizeMapLookup(value: string | null | undefined): string {
-  return (value ?? "").trim().toLocaleLowerCase("en-US");
-}
-
 function getCountryFlagCode(country: PublicCountryRow): string | undefined {
-  const lookupKeys = [country.iso2, country.name_en, country.name_ar]
-    .map(normalizeMapLookup)
-    .filter(Boolean);
-
-  for (const key of lookupKeys) {
-    const code = STANDARD_FLAG_CODES[key];
-    if (code) return code;
-  }
-
   const rawIso2 = (country.iso2 ?? "").trim().toUpperCase();
   return /^[A-Z]{2}$/.test(rawIso2) ? rawIso2 : undefined;
 }
@@ -213,8 +180,6 @@ export async function getPublicCountries(
     .select(publicCountryColumns)
     .eq("is_active", true)
     .is("deleted_at", null)
-    .not("latitude", "is", null)
-    .not("longitude", "is", null)
     .order("sort_order", {
       ascending: true,
     })
@@ -228,40 +193,37 @@ export async function getPublicCountries(
 
   const countryRows = (data ?? []) as PublicCountryRow[];
 
-  const validCountryRows = countryRows.filter((country) => {
-    const latitude = normalizeCoordinate(country.latitude);
-
-    const longitude = normalizeCoordinate(country.longitude);
-
-    return (
-      latitude !== null &&
-      longitude !== null &&
-      latitude >= -90 &&
-      latitude <= 90 &&
-      longitude >= -180 &&
-      longitude <= 180
-    );
-  });
+  // Keep published countries in lists even when they cannot be placed on the map.
+  const validCountryRows = countryRows;
 
   const mediaIds = validCountryRows
     .map((country) => country.flag_media_id)
     .filter((mediaId): mediaId is string => typeof mediaId === "string");
 
-  const [mediaMap, programCounts] = await Promise.all([
+  const [flagsResult, countsResult] = await Promise.allSettled([
     getCountryFlagsMap(supabase, mediaIds),
 
     getPublishedProgramCounts(supabase),
   ]);
 
+  const mediaMap =
+    flagsResult.status === "fulfilled"
+      ? flagsResult.value
+      : new Map<string, MediaRow>();
+  const programCounts =
+    countsResult.status === "fulfilled" ? countsResult.value : null;
   return validCountryRows.map((country) => {
-    const sourceLatitude = normalizeCoordinate(country.latitude) as number;
+    const sourceLatitude = normalizeCoordinate(country.latitude) ?? Number.NaN;
 
-    const sourceLongitude = normalizeCoordinate(country.longitude) as number;
+    const sourceLongitude =
+      normalizeCoordinate(country.longitude) ?? Number.NaN;
 
     const latitude = sourceLatitude;
     const longitude = sourceLongitude;
 
-    const programCount = programCounts.get(country.id) ?? 0;
+    const programCount = programCounts
+      ? (programCounts.get(country.id) ?? 0)
+      : null;
 
     const media = country.flag_media_id
       ? mediaMap.get(country.flag_media_id)
@@ -287,7 +249,13 @@ export async function getPublicCountries(
 
       publishedProgramsCount: programCount,
 
-      hasPublishedPrograms: programCount > 0,
+      hasPublishedPrograms: programCount !== null && programCount > 0,
+      countsError: countsResult.status === "rejected",
+      flagsError: flagsResult.status === "rejected",
+      marketStatus: country.market_status,
+      showOnMap: country.show_on_map,
+      statusLabelAr: country.status_label_ar,
+      statusLabelEn: country.status_label_en,
 
       sortOrder: country.sort_order,
     };

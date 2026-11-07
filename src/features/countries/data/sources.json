@@ -1,0 +1,25 @@
+{
+  "snapshot": "nour-country-directory-v1",
+  "generated": "2026-11-08",
+  "countries": 250,
+  "sha256": "427e4a839c46dabbf7e4a0ca7fe31dabd08520b252bca0dd557fc01a8bc609ef",
+  "sources": [
+    {
+      "package": "world-countries",
+      "version": "5.1.0",
+      "url": "https://github.com/mledoze/countries",
+      "license": "ODbL-1.0"
+    },
+    {
+      "package": "countries-and-timezones",
+      "version": "3.11.0",
+      "url": "https://github.com/manuelmhtr/countries-and-timezones",
+      "license": "MIT"
+    }
+  ],
+  "currencyNames": {
+    "provider": "Unicode CLDR via Intl.DisplayNames",
+    "icu": "78.3"
+  },
+  "notice": "Reference geography, not active Nour markets. Country and timezone arrays may have zero or multiple values. Directory data remains under its source data license."
+}

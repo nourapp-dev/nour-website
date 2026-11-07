@@ -2,6 +2,7 @@ export type ProgramHotelFormValue = {
   hotelId: string;
 
   nights: number;
+  occupancy?:number|null;
 
   roomTypeAr: string;
   roomTypeEn: string;

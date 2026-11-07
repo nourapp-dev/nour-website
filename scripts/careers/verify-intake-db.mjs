@@ -1,0 +1,36 @@
+﻿import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+if(!process.env.PARTNER_PGLITE_PATH)throw new Error('Set PARTNER_PGLITE_PATH to a local PGlite module');
+const {PGlite}=await import(pathToFileURL(process.env.PARTNER_PGLITE_PATH).href);
+const db=new PGlite();const sql=path=>readFileSync(path,'utf8').replace(/^\uFEFF/,'');
+try{
+ await db.exec(`create role anon;create role authenticated;create schema auth;create schema storage;
+ create table auth.users(id uuid primary key);
+ create function public.current_user_has_permission(code text) returns boolean language sql stable as $$select strpos(coalesce(current_setting('test.permissions',true),''),code)>0$$;
+ create table storage.buckets(id text primary key,public boolean);insert into storage.buckets values('application-files',true);
+ create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text);alter table storage.objects enable row level security;
+ create function storage.foldername(text) returns text[] language sql immutable as $$select string_to_array($1,'/')$$;
+ grant usage on schema public,storage to anon,authenticated;grant select,insert,delete on storage.objects to anon,authenticated;`);
+ await db.exec(sql('supabase/migrations/20260815000100_create_applications_module.sql'));
+ const legacy=(await db.query(`insert into public.job_applications(full_name,email,phone,employment_type,years_of_experience,cv_path) values('Legacy fixture','legacy@example.test','123','remote',0,'job-applications/legacy/cv.pdf') returning id`)).rows[0].id;
+ await db.exec(sql('supabase/migrations/20261106213449_talent_pool_intake.sql'));
+ const old=(await db.query('select * from public.job_applications where id=$1',[legacy])).rows[0];assert.equal(old.employment_type,'remote');assert.equal(old.work_mode,null);assert.equal(old.years_of_experience,0);assert.equal(old.career_area,null);
+ const key='e03ad97a-5052-4570-8b84-8d6c8f4a542a';
+ const row=(await db.query(`insert into public.job_applications(full_name,email,phone,employment_type,opportunity_type,work_mode,career_area,application_kind,portfolio_url,years_of_experience,submission_key,privacy_accepted) values('Fixture Person','test@example.test','+2348012345678','full_time','full_time','remote','technology_product','talent_pool','https://example.test/work',0,$1,true) returning *`,[key])).rows[0];
+ assert.equal(row.work_mode,'remote');assert.equal(row.employment_type,'full_time');assert.equal(row.opportunity_type,'full_time');assert.equal(row.years_of_experience,0);assert.equal(row.portfolio_url,'https://example.test/work');
+ await assert.rejects(db.query(`update public.job_applications set years_of_experience=-1 where id=$1`,[row.id]));
+ await assert.rejects(db.query(`update public.job_applications set opportunity_type='remote' where id=$1`,[row.id]));
+ await assert.rejects(db.query(`insert into public.job_applications(full_name,email,phone,employment_type,submission_key) values('duplicate','duplicate@example.test','123','other',$1)`,[key]));
+ await db.exec(`insert into storage.objects(bucket_id,name) values('application-files','job-applications/legacy/cv.pdf');set role anon;`);
+ await assert.rejects(db.query('select * from public.job_applications'),/permission denied/);
+ await assert.rejects(db.query(`insert into storage.objects(bucket_id,name) values('application-files','job-applications/bypass/cv.pdf')`),/row-level security/);
+ assert.equal((await db.query(`select * from storage.objects where bucket_id='application-files'`)).rows.length,0);
+ await db.query(`insert into storage.objects(bucket_id,name) values('application-files','partner-applications/existing-path/info.pdf')`);
+ await db.exec(`reset role;set role authenticated;set test.permissions='partners.view';`);
+ assert.equal((await db.query(`select * from storage.objects where name='job-applications/legacy/cv.pdf'`)).rows.length,0);
+ await db.exec(`set test.permissions='applications.view';`);
+ assert.equal((await db.query(`select * from storage.objects where name='job-applications/legacy/cv.pdf'`)).rows.length,1);
+ await db.exec('reset role');assert.equal((await db.query(`select public from storage.buckets where id='application-files'`)).rows[0].public,false);
+ console.log('PASS: additive talent fields, zero experience, independent preferences, unique retry key, legacy remote preservation, private bucket, CV upload bypass denied, partner uploads retained, anonymous/cross-module CV reads denied and authorized legacy CV access retained.');
+}finally{await db.close();}

@@ -1,0 +1,673 @@
+{
+  "language": "en",
+  "title": "International Partner Readiness and Approval Guide",
+  "version": "1.2",
+  "updatedAt": "2026-11-06",
+  "sections": [
+    {
+      "id": "start",
+      "title": "Overview",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Nour App  |  Unified Edition for All Countries"
+        },
+        {
+          "kind": "paragraph",
+          "text": "To the Business Owner, Director or Authorized Representative"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Thank you for your interest in partnering with Nour App. Use this pack to prepare the company and representative documents and financial accounts, and gather information on payment methods, local technical requirements, travel packages and visa service providers. Submit one indexed file for review."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Readiness is assessed against the country and actual business activities. Authority to sell or collect payments in Nour App's name begins only after review, contracting and a separate approval notice. This pack applies to any country; complete a separate annex for each country and each local jurisdiction with different requirements. Submission does not constitute market approval."
+        },
+        {
+          "kind": "heading",
+          "text": "How to Complete This Pack"
+        },
+        {
+          "kind": "paragraph",
+          "text": "1. Appoint one file coordinator and complete the company, representative and market scope details."
+        },
+        {
+          "kind": "paragraph",
+          "text": "2. Prepare documents under their legal names, with reference numbers and validity dates. Provide translations when requested."
+        },
+        {
+          "kind": "paragraph",
+          "text": "3. Explain any item marked not applicable. Record outstanding items, their owners and completion dates."
+        },
+        {
+          "kind": "paragraph",
+          "text": "4. Complete the country annex, then submit the attachment index and declaration through the channel specified by Nour App."
+        },
+        {
+          "kind": "table",
+          "rows": [
+            [
+              "Requirement Type",
+              "How to Address It"
+            ],
+            [
+              "Nour App requirement",
+              "A partner qualification condition; supporting evidence is reviewed before approval."
+            ],
+            [
+              "Local regulatory requirement",
+              "Identify the official source, its applicability to the activity and the responsible authority."
+            ],
+            [
+              "Conditional requirement",
+              "Complete when triggered, for example by a separate system or an additional collection account."
+            ]
+          ]
+        },
+        {
+          "kind": "paragraph",
+          "text": "Status options: Not started / In preparation / Submitted for review / Further information required / Approved / Not applicable, with reason."
+        }
+      ]
+    },
+    {
+      "id": "profile",
+      "title": "Company and Representative Details",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Complete these details using official documents. Identify the authorized file submitter and agreement signatory if they are different people."
+        },
+        {
+          "kind": "field",
+          "text": "Legal company name and trading name, if any"
+        },
+        {
+          "kind": "field",
+          "text": "Country of registration, registration number and legal form"
+        },
+        {
+          "kind": "field",
+          "text": "Registered address, operating address and website, if any"
+        },
+        {
+          "kind": "field",
+          "text": "Operating country and cities, regions or states targeted for sales, collection and advertising"
+        },
+        {
+          "kind": "field",
+          "text": "Partners or owners and ownership percentages, or reference to the ownership statement"
+        },
+        {
+          "kind": "field",
+          "text": "Director or authorized representative: name, role, authority scope and expiry date"
+        },
+        {
+          "kind": "field",
+          "text": "Authorization document reference and name of the authorized agreement signatory"
+        },
+        {
+          "kind": "field",
+          "text": "File coordinator's name, business email and contact number"
+        },
+        {
+          "kind": "field",
+          "text": "Finance, operations and technical contacts and official contact details"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Identity documents are requested only as needed for verification, based on ownership and role. Do not include full identity numbers in filenames or the general attachment index."
+        }
+      ]
+    },
+    {
+      "id": "legal",
+      "title": "Corporate and Regulatory Documents",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Prepare the documents below and match the company name across accounts and contracts. Explain any difference in names or entities and provide evidence of their relationship."
+        },
+        {
+          "kind": "table",
+          "rows": [
+            [
+              "Code",
+              "Requirement",
+              "Acceptable Evidence"
+            ],
+            [
+              "L01",
+              "Official commercial registration and constitutional documents",
+              "Clear, current copies, or equivalent documents for the legal form, with relevant amendments."
+            ],
+            [
+              "L02",
+              "Identity documents for the partner or partners, as applicable",
+              "Documents needed to verify the individuals listed in the ownership statement."
+            ],
+            [
+              "L03",
+              "Director or representative identification and authorization",
+              "Appropriate proof of identity and a resolution or authorization stating the role and signing authority."
+            ],
+            [
+              "L04",
+              "Licenses to conduct the activity",
+              "License, classification or accreditation documents showing the issuing authority, scope and validity."
+            ],
+            [
+              "L05",
+              "Additional requirements, when requested",
+              "Each additional request must state its reason, required evidence, deadline and requesting party."
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Review of Licensed Activities"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Ask a local specialist to establish whether the license covers package sales, travel, Umrah, online sales and payment collection. Attach evidence of the conclusion; company registration alone does not confirm authorization for every activity."
+        },
+        {
+          "kind": "field",
+          "text": "License numbers, issuing authorities, covered activities and expiry dates"
+        },
+        {
+          "kind": "field",
+          "text": "Unavailable documents, reasons and proposed alternatives"
+        },
+        {
+          "kind": "field",
+          "text": "Local reviewer's name, role, review date and written opinion reference"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Preparation owner: Partner or representative. Nour App reviewers: Partnerships and Legal. Record unresolved items for review; they do not constitute approval."
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "title": "Bank Accounts and Accounting System",
+      "blocks": [
+        {
+          "kind": "heading",
+          "text": "Open One or More Dedicated Business Bank Accounts"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Arrange a business account dedicated to the activity in the contracting entity's name. Additional accounts depend on currencies and approved needs. Provide account ownership evidence and transfer details, and identify the account for payment settlements."
+        },
+        {
+          "kind": "field",
+          "text": "Account holder, bank, account country, currency and ownership evidence reference"
+        },
+        {
+          "kind": "field",
+          "text": "Account and transfer details required by the bank for the country, such as IBAN or SWIFT"
+        },
+        {
+          "kind": "field",
+          "text": "Additional accounts, the purpose of each and settlement currency"
+        },
+        {
+          "kind": "heading",
+          "text": "Provide an Accounting System"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Identify the accounting system and its operator. It must track bookings, collections, invoices, refunds, commissions, amounts due to Nour App and financial discrepancies, and export reconciliation statements. Review integration scope and cost before committing to it."
+        },
+        {
+          "kind": "field",
+          "text": "Accounting system, provider, readiness status and finance lead"
+        },
+        {
+          "kind": "field",
+          "text": "Invoicing method, issuing entity and local tax obligations review reference"
+        },
+        {
+          "kind": "field",
+          "text": "Settlement statement process, transfers to Nour App, currencies and expected fees"
+        },
+        {
+          "kind": "heading",
+          "text": "Required Readiness Evidence"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Bank account confirmation, an account and currency list, and a sample accounting record using test data showing a sale, refund and settlement. Do not send passwords, verification codes or banking credentials."
+        },
+        {
+          "kind": "paragraph",
+          "text": "The contract must identify who sells to the customer, collects payment, issues invoices and makes refunds. A ready bank account does not itself authorize collection in Nour App's name."
+        }
+      ]
+    },
+    {
+      "id": "payments",
+      "title": "Local Payment Methods Assessment",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "List the payment methods most widely used by target customers in the country, with a source and date for each popularity assessment. Market availability does not establish provider acceptance of the partner's activity or readiness for integration with Nour App."
+        },
+        {
+          "kind": "table",
+          "rows": [
+            [
+              "Rank",
+              "Method and Provider",
+              "Evidence of Usage and Date",
+              "Offer or Attachment Reference"
+            ],
+            [
+              "1",
+              "________________",
+              "________________",
+              "________________"
+            ],
+            [
+              "2",
+              "________________",
+              "________________",
+              "________________"
+            ],
+            [
+              "3",
+              "________________",
+              "________________",
+              "________________"
+            ],
+            [
+              "4",
+              "________________",
+              "________________",
+              "________________"
+            ],
+            [
+              "5",
+              "________________",
+              "________________",
+              "________________"
+            ]
+          ]
+        },
+        {
+          "kind": "heading",
+          "text": "Assessment Card for Each Proposed Provider"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Repeat this card in a separate attachment for each provider. Use its official offer or correspondence and clearly identify unconfirmed information."
+        },
+        {
+          "kind": "field",
+          "text": "Payment provider, methods, currencies and countries from which customers are accepted"
+        },
+        {
+          "kind": "field",
+          "text": "Merchant account opening requirements and acceptance of travel or Umrah activity"
+        },
+        {
+          "kind": "field",
+          "text": "Setup, transaction, transfer, currency and subscription fees, if any"
+        },
+        {
+          "kind": "field",
+          "text": "Settlement time, reserves or fund holds, refund terms and payment dispute terms"
+        },
+        {
+          "kind": "field",
+          "text": "Integration method, provider documentation link, test environment and contact person"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Next step: The partner recommends options; Nour App approves their financial and technical suitability. The merchant account is then opened and payment, settlement and refund flows are tested under the agreed model."
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "title": "Technology, Cybersecurity and Data Requirements",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Obtain a documented assessment of official requirements relevant to the activity: domestic or overseas data storage, processing, access and transfers; cybersecurity; and technical registrations where applicable. Attach official sources and the local specialist's conclusions."
+        },
+        {
+          "kind": "table",
+          "rows": [
+            [
+              "Review Area",
+              "What to Document"
+            ],
+            [
+              "Storage and hosting",
+              "Restrictions on data or backup locations and the conditions applicable to the activity."
+            ],
+            [
+              "Transfers and overseas access",
+              "Conditions for transfers to Saudi Arabia or the hosting country, overseas access, and required safeguards or assessments."
+            ],
+            [
+              "Privacy and protection",
+              "Notices, consents, rights, retention periods and data officer or monitor requirements where applicable."
+            ],
+            [
+              "Security and incidents",
+              "Applicable official controls, notification authorities and deadlines, and required audits or approvals."
+            ],
+            [
+              "Platforms and integration",
+              "Platform registration or notification, or local integration and publication requirements, based on the actual activity."
+            ]
+          ]
+        },
+        {
+          "kind": "field",
+          "text": "Operating model: Nour App platform only / Separate partner website or system / Other integration"
+        },
+        {
+          "kind": "field",
+          "text": "Local reviewer's name, role, review date, report reference and official sources"
+        },
+        {
+          "kind": "field",
+          "text": "Assessment: Permitted under stated conditions / Further action required / Unresolved, with next action"
+        },
+        {
+          "kind": "heading",
+          "text": "Responsibilities"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The partner gathers local requirements and describes its systems and providers, if any. Nour App supplies hosting, processing location and data flow information needed for review and assigns a suitability review team. Record the hosting provider, server and backup countries, subcontractors and access permissions in a technical attachment."
+        },
+        {
+          "kind": "paragraph",
+          "text": "Do not purchase a local server automatically. Decide on hosting after documenting requirements and assessing Nour App's current infrastructure. Share technical secrets and credentials only through designated channels."
+        }
+      ]
+    },
+    {
+      "id": "market",
+      "title": "Market Packages and Visa Service Providers",
+      "blocks": [
+        {
+          "kind": "heading",
+          "text": "Sample Packages Available in the Market"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Provide two or three examples representative of the target market. Packages here means travel and Umrah offers. Use publicly available information or material shared with permission, recording the price date and validity. These examples are not approved Nour App offers."
+        },
+        {
+          "kind": "table",
+          "rows": [
+            [
+              "Sample Details",
+              "Required Information"
+            ],
+            [
+              "Package and market",
+              "Provider, package name, departure country and city, duration and dates."
+            ],
+            [
+              "Services",
+              "Hotels and category, transport, flights, visa, included services and exclusions."
+            ],
+            [
+              "Price and terms",
+              "Price, currency, pricing basis, taxes, cancellation, payment and availability."
+            ],
+            [
+              "Comparison evidence",
+              "Offer link or file, access date, reason for selection and partner's observations on market demand."
+            ]
+          ]
+        },
+        {
+          "kind": "field",
+          "text": "Package sample references and observations on price segments and customer needs"
+        },
+        {
+          "kind": "heading",
+          "text": "Identify Official or Accredited Visa Service Providers"
+        },
+        {
+          "kind": "paragraph",
+          "text": "List entities authorized to submit or process visa applications for the relevant route. Verify their status, service scope and accreditation evidence with the competent authority. The visa issuance decision remains with the competent authority."
+        },
+        {
+          "kind": "field",
+          "text": "Provider's legal name, operating country, license or accreditation number, issuer and validity"
+        },
+        {
+          "kind": "field",
+          "text": "Visa type, supported nationalities or residencies, authorization scope and verification evidence"
+        },
+        {
+          "kind": "field",
+          "text": "Contact, fees, estimated processing time, refusal and refund terms, and data exchange method"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Repeat these details for each proposed provider. Final selection or contracting is subject to Nour App review. Do not describe a provider as accredited without verifiable evidence."
+        }
+      ]
+    },
+    {
+      "id": "country",
+      "title": "Country Requirements and Market Scope Annex",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Complete this annex for every proposed country. If requirements differ within a country, prepare an additional copy for the relevant state, region or city. Determine applicability from the actual sales, collection and data activities, supported by official sources and specialist review."
+        },
+        {
+          "kind": "field",
+          "text": "Country, language, currency, time zone and company registration country"
+        },
+        {
+          "kind": "field",
+          "text": "Partner location and regions or states targeted for sales, advertising and customer service"
+        },
+        {
+          "kind": "field",
+          "text": "Customer-facing seller, collecting entity, invoice issuer and refund owner"
+        },
+        {
+          "kind": "table",
+          "rows": [
+            [
+              "Review Area",
+              "Local Decision and Supporting Evidence"
+            ],
+            [
+              "Market entry model",
+              "Whether and within what scope the partner may operate, and any registration or legal presence required for Nour App or the partner for the activity."
+            ],
+            [
+              "Activity licenses",
+              "Sales, travel, tourism, Umrah and visa services as relevant to the product, including required authorities and classifications."
+            ],
+            [
+              "Collection and invoicing",
+              "Accounts, payment acceptance, taxes, invoices, customer fund protection and international transfers."
+            ],
+            [
+              "Platform and customer",
+              "E-commerce, advertising, customer rights, cancellation, complaints and applicable technical registration or notification."
+            ],
+            [
+              "Data and security",
+              "Domestic and overseas storage and processing, overseas access, transfers, privacy and cybersecurity."
+            ]
+          ]
+        },
+        {
+          "kind": "field",
+          "text": "Local specialist's name, role, organization, review date and report reference"
+        },
+        {
+          "kind": "field",
+          "text": "References to the requirements register, attachments, approvals and exemptions, if any"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Record a documented result for each area: Applies / Does not apply, with reason / Review needed. Do not assume that every country requires a local company, server or separate app license, or that operation is permitted without verification."
+        }
+      ]
+    },
+    {
+      "id": "verify",
+      "title": "Local Requirements and Verification Register",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Repeat the following card in a separate attachment for each official requirement or review conclusion. Link it to the document code in the submission index. Clearly record unresolved items for a decision by authorized reviewers."
+        },
+        {
+          "kind": "field",
+          "text": "Card number, country, local jurisdiction and requirement area"
+        },
+        {
+          "kind": "field",
+          "text": "Official authority, law or instruction title, and relevant article or service"
+        },
+        {
+          "kind": "field",
+          "text": "Official source URL and date, access date or official written response reference"
+        },
+        {
+          "kind": "field",
+          "text": "Result: Applies / Does not apply, with reason / Review needed, and party responsible for compliance"
+        },
+        {
+          "kind": "field",
+          "text": "Required action or document, license or exemption number and validity, if applicable"
+        },
+        {
+          "kind": "field",
+          "text": "Preparation owner, target date, status and completion evidence reference"
+        },
+        {
+          "kind": "heading",
+          "text": "Nour App Market Review Outcome"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Nour App completes this section after reviewing the partner file. File readiness is separate from authorization to sell, collect payments and operate. Record geographic or service restrictions and the impact of outstanding items on approval."
+        },
+        {
+          "kind": "field",
+          "text": "Review outcome: Ready for approval / Further information required / Deferred, with reasons"
+        },
+        {
+          "kind": "field",
+          "text": "Proposed scope, countries or regions, services, sales and collection limits, and outstanding conditions"
+        },
+        {
+          "kind": "field",
+          "text": "Legal, financial, technical and operations reviewers, review dates and decision references"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Update the country annex when regulations, activities, market scope, collection arrangements or hosting change. Record the version and effective date and assess the impact before expanding operations. Final approval is issued separately from this pack."
+        }
+      ]
+    },
+    {
+      "id": "submit",
+      "title": "Submission and Representative Declaration",
+      "blocks": [
+        {
+          "kind": "heading",
+          "text": "Attachment Index"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Name each attachment using its code, company name, subject and version, without full identity numbers. Attach a separate register of actual filenames, dates, validity and status."
+        },
+        {
+          "kind": "table",
+          "rows": [
+            [
+              "Group",
+              "Required Attachments",
+              "Status or Reference"
+            ],
+            [
+              "P",
+              "Company, ownership, representative and contact details",
+              "________________"
+            ],
+            [
+              "L",
+              "Registration, constitutional documents, identification, authorization and licenses",
+              "________________"
+            ],
+            [
+              "F",
+              "Bank accounts, accounting system, invoicing and settlements",
+              "________________"
+            ],
+            [
+              "D",
+              "Payment methods list and provider offer assessment cards",
+              "________________"
+            ],
+            [
+              "T",
+              "Technical, cybersecurity, data and hosting requirements review",
+              "________________"
+            ],
+            [
+              "M",
+              "Market package samples, visa providers and accreditation evidence",
+              "________________"
+            ],
+            [
+              "C",
+              "Country annex, requirements register, sources and review outcome",
+              "________________"
+            ]
+          ]
+        },
+        {
+          "kind": "field",
+          "text": "File number, company name, submission coordinator and submission date"
+        },
+        {
+          "kind": "field",
+          "text": "Secure submission channel agreed with Nour App and attachment index reference"
+        },
+        {
+          "kind": "field",
+          "text": "Outstanding requirements, reasons, owners and completion dates"
+        },
+        {
+          "kind": "heading",
+          "text": "Submitter's Declaration"
+        },
+        {
+          "kind": "paragraph",
+          "text": "In the capacity stated in this pack, I declare that the information and attachments are accurate to the best of my knowledge, that I am authorized to submit them, and that I will inform Nour App of material changes. I understand that submitting or completing this file grants no approval, exclusivity, or authority to sell or collect in Nour App's name. Approval follows review and contracting through a separate notice defining the authorized scope."
+        },
+        {
+          "kind": "field",
+          "text": "Representative's name, role, date, signature and stamp, if applicable"
+        },
+        {
+          "kind": "paragraph",
+          "text": "For Nour App: Review the regulatory, financial, technical and operational findings and issue a request for further information or an acceptance outcome. Any additional request must state its reason, required evidence and deadline. Set the operating start window after readiness testing and closure of essential items."
+        }
+      ]
+    }
+  ]
+}

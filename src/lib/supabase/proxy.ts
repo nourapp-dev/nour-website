@@ -9,6 +9,8 @@ import {
 } from "../../features/auth/services/account-access";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { routePermission } from "../../features/admin-workspace/navigation";
+import { safeAdminNext } from "../../features/admin-workspace/contracts";
 
 async function readMaintenanceMode(
   supabase: ReturnType<typeof createServerClient>,
@@ -68,7 +70,7 @@ export async function updateSession(request: NextRequest) {
       pathname.startsWith("/api/bookings") ||
       next.cookies.getAll().length
     )
-      next.headers.set("Cache-Control", "private, no-store");
+      {next.headers.set("Cache-Control", "private, no-store");next.headers.set("X-Robots-Tag","noindex, nofollow");next.headers.set("Pragma","no-cache");next.headers.set("Expires","0");}
     return next;
   };
   const redirect = (path: string) =>
@@ -90,13 +92,16 @@ export async function updateSession(request: NextRequest) {
       "/admin/login/invite",
       "/admin/invite",
     ].includes(pathname);
-    const { data } = await supabase.auth.getUser();
+    const { data, error: sessionError } = await supabase.auth.getUser();
+    if (sessionError && (sessionError.name === "AuthRetryableFetchError" || (sessionError.status ?? 0) >= 500)) {
+      return finish(new NextResponse("Authentication service unavailable. خدمة الدخول غير متاحة مؤقتًا. أعد المحاولة.", {status:503,headers:{"Retry-After":"10"}}));
+    }
     let allowed = false;
     if (data.user) {
       try {
         allowed = await canAccessAdmin(supabase, data.user.id);
       } catch {
-        allowed = false;
+        return finish(new NextResponse("Unable to verify admin access. تعذر التحقق من صلاحية الإدارة. أعد المحاولة.",{status:503}));
       }
     }
     if (!publicAdmin && !allowed) {
@@ -107,10 +112,19 @@ export async function updateSession(request: NextRequest) {
             { status: data.user ? 403 : 401 },
           ),
         );
-      return redirect("/admin/login" + (data.user ? "?error=forbidden" : ""));
+      return redirect("/admin/login?next=" + encodeURIComponent(safeAdminNext(pathname+request.nextUrl.search)) + (data.user ? "&error=forbidden" : "&reason=session_required"));
     }
     if (pathname === "/admin/login" && allowed)
-      return redirect("/admin/dashboard");
+      return redirect(safeAdminNext(request.nextUrl.searchParams.get("next")));
+    if (!publicAdmin && allowed) {
+      const permissionModule = routePermission(pathname.replace(/^\/api\/admin\//,"/admin/"));
+      if(permissionModule){
+        const codes=pathname.includes("/website")?["website.edit","website.publish","settings.manage"]:["view","read","manage"].map(action=>`${permissionModule}.${action}`);
+        const checks = await Promise.all(codes.map(permission_code=>supabase.rpc("current_user_has_permission",{permission_code})));
+        if(checks.some(result=>result.error)) return finish(new NextResponse("Permission verification unavailable. تعذر التحقق من الصلاحيات.",{status:503}));
+        if(!checks.some(result=>result.data===true)) return finish(new NextResponse("Access denied. لا تملك صلاحية عرض هذا القسم.",{status:403}));
+      }
+    }
   } else if (pathname.startsWith("/account/")) {
     let user = null;
     try {

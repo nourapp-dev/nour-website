@@ -15,6 +15,11 @@ function getSupabase(client?: SupabaseClient) {
 }
 
 type JobApplicationRow = {
+  opportunity_type?: JobApplication["opportunityType"];
+  work_mode?: JobApplication["workMode"];
+  career_area?: JobApplication["careerArea"];
+  application_kind?: JobApplication["applicationKind"];
+  portfolio_url?: JobApplication["portfolioUrl"];
   id: JobApplication["id"];
   full_name: JobApplication["fullName"];
   email: JobApplication["email"];
@@ -41,6 +46,11 @@ type JobApplicationRow = {
 
 function mapRow(row: JobApplicationRow): JobApplication {
   return {
+    opportunityType: row.opportunity_type ?? null,
+    workMode: row.work_mode ?? null,
+    careerArea: row.career_area ?? null,
+    applicationKind: row.application_kind ?? null,
+    portfolioUrl: row.portfolio_url ?? null,
     id: row.id,
     fullName: row.full_name,
     email: row.email,

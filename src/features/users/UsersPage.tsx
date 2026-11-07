@@ -9,6 +9,7 @@ import {
 
 import { useLanguage } from "../../core/i18n";
 import { createClient } from "../../lib/supabase/client";
+import RolePanel from "../admin-workspace/RolePanel";
 
 import {
   deleteAdminUser,
@@ -148,6 +149,7 @@ export default function UsersPage() {
 
   return (
     <section className="nr-dashboard">
+      <RolePanel />
       <div className="nr-dashboard-heading">
         <div>
           <span className="nr-dashboard-kicker">

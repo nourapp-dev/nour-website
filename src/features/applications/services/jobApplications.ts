@@ -1,3 +1,4 @@
+import { cvMetadataError } from "../utils/talent-application";
 import { createClient } from "../../../lib/supabase/client";
 
 export type EmploymentType =
@@ -8,6 +9,12 @@ export type EmploymentType =
   | "other";
 
 export type JobApplicationInput = {
+  submissionKey?: string;
+  careerArea?: import("../utils/talent-application").CareerArea;
+  opportunityType?: import("../utils/talent-application").OpportunityType;
+  workMode?: import("../utils/talent-application").WorkMode;
+  portfolioUrl?: string;
+  applicationKind?: "talent_pool";
   fullName: string;
   email: string;
   phone: string;
@@ -27,13 +34,6 @@ export type SubmitJobApplicationResult = {
 };
 
 const CV_BUCKET = "application-files";
-const MAX_CV_SIZE_BYTES = 5 * 1024 * 1024;
-
-const ALLOWED_CV_TYPES = new Set([
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-]);
 
 function clean(value?: string) {
   const trimmed = value?.trim();
@@ -50,13 +50,7 @@ function sanitizeFileName(fileName: string) {
 }
 
 function validateCv(file: File) {
-  if (!ALLOWED_CV_TYPES.has(file.type)) {
-    throw new Error("صيغة السيرة الذاتية غير مدعومة. استخدم PDF أو DOC أو DOCX.");
-  }
-
-  if (file.size > MAX_CV_SIZE_BYTES) {
-    throw new Error("حجم السيرة الذاتية يجب ألا يتجاوز 5MB.");
-  }
+  if (cvMetadataError(file)) throw new JobSubmissionError("cv_invalid");
 }
 
 export async function submitJobApplication(
@@ -67,6 +61,16 @@ export async function submitJobApplication(
     throw new Error("يجب الموافقة على سياسة الخصوصية قبل إرسال الطلب.");
   }
 
+  if (values.submissionKey) {
+    if (cvFile) validateCv(cvFile);
+    const body = new FormData(); body.append("input", JSON.stringify(values));
+    if (cvFile) body.append("cv", cvFile);
+    const response = await fetch("/api/applications/join", { method: "POST", body, credentials: "same-origin" });
+    const result = await response.json().catch(() => null);
+    if (!response.ok) throw new JobSubmissionError(result?.code === "cv_invalid" ? "cv_invalid" : "not_registered");
+    if (typeof result?.id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(result.id)) throw new JobSubmissionError("not_registered");
+    return { id: result.id };
+  }
   const supabase = createClient();
   const applicationId = crypto.randomUUID();
 
@@ -128,4 +132,7 @@ export async function submitJobApplication(
   }
 
   return { id: applicationId };
+}
+export class JobSubmissionError extends Error {
+  constructor(public code: "cv_invalid" | "not_registered") { super(code); this.name = "JobSubmissionError"; }
 }

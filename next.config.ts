@@ -123,6 +123,7 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      {source:"/admin/website/:path*",headers:[{key:"Content-Security-Policy",value:contentSecurityPolicy.replace(/frame-ancestors [^;]+;/,"frame-ancestors 'self';").replace(/frame-src [^;]+;/,"frame-src 'self';")},{key:"X-Frame-Options",value:"SAMEORIGIN"},{key:"Surrogate-Control",value:"no-store"}]},
     ];
   },
 };

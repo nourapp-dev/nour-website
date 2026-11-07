@@ -1,4 +1,5 @@
 "use client";
+import {launchCopy} from '../../../src/core/config/launch-state';
 import type { HomeCopy, Language } from "../../data/home";
 import type { Presentation } from "../../../src/features/website/presentation";
 import { usePresentation } from "../../../src/features/website/usePresentation";
@@ -25,8 +26,8 @@ export default function CTA({
         <DownloadOrnament />
         <div className={styles.downloadInner}>
           <div>
-            <h2>{ar ? "التطبيق قريبًا" : "App coming soon"}</h2>
-            <p>{ar ? "تطبيق نور آب غير منشور حاليًا. سنعلن عن روابط التحميل بعد إطلاقه." : "The Nour app is not released yet. Download links will be announced after launch."}</p>
+            <h2>{launchCopy[language].appTitle}</h2>
+            <p>{launchCopy[language].appDescription}</p>
           </div>
 
         </div>

@@ -1,0 +1,116 @@
+.card {
+  --program-bg: #ffffff;
+  --program-text: #16324e;
+  --program-secondary: #425b73;
+  --program-border: #c5d2df;
+  min-width: 0;
+  border: 1px solid var(--program-border);
+  border-radius: 18px;
+  overflow: hidden;
+  background-color: var(--program-bg);
+  color: var(--program-text);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+.image {
+  aspect-ratio: 16/9;
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: var(--nr-bg, #edf2f8);
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+.card .image > span:not(.badge) {padding:20px;color:var(--program-secondary);}
+.image img {
+  object-fit: cover;
+}
+.badge {
+  position: absolute;
+  inset-inline-start: 12px;
+  top: 12px;
+  padding: 5px 10px;
+  background: #ffce28;
+  color: #16324e;
+  border-radius: 20px;
+  font-size: 12px;
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  flex: 1;
+}
+.body h3 {
+  font-size: 21px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.body p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.price {
+  display: grid;
+  gap: 5px;
+  margin-top: auto;
+}
+.price strong {
+  font-size: 23px;
+}
+.price small {
+  line-height: 1.7;
+  font-size: 12px;
+}
+.body a {
+  display: block;
+  text-align: center;
+  background: #146bdd;
+  color: white;
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 11px 16px;
+  text-decoration: none;
+  font-weight: 700;
+}
+.body a:focus-visible {
+  outline: 3px solid #ffce28;
+  outline-offset: 3px;
+}
+.compact .body {
+  padding: 14px;
+  flex: none;
+  gap: 8px;
+}
+.card.compact {height:auto;min-height:0;flex:none;width:100%;max-width:100%;}
+.compact .price {margin-top:0;}
+.card .body :is(h3,strong) {color:var(--program-text);}
+.card .body :is(p,small,span) {color:var(--program-secondary);}
+.card .body a {color:#fff;background:#146bdd;box-sizing:border-box;justify-content:center;}
+.card .body a:focus-visible {outline:3px solid #896300;outline-offset:3px;}
+:global(html[data-theme="dark"]) .card {
+  --program-bg:#132e48;
+  --program-text:#f5f8fc;
+  --program-secondary:#d0dce8;
+  --program-border:#6b859d;
+}
+:global(html[data-theme="dark"]) .card .body a:focus-visible {outline-color:#ffce28;}
+.compact h3 {
+  font-size: 17px;
+}
+.compact .price strong {
+  font-size: 18px;
+}

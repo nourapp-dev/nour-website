@@ -1,3 +1,10 @@
+import { defaultPages, type PageContent } from "./page-content";
+import {
+  defaultSections,
+  normalizeSections,
+  type TextSection,
+  type TextSectionKey,
+} from "./sections";
 import type { SupabaseClient } from "@supabase/supabase-js";
 export const PRESENTATION_KEY = "website.home_presentation";
 export const DRAFT_KEY = "website.home_presentation_draft";
@@ -11,7 +18,13 @@ export type AppScreen = {
   preview: boolean;
 };
 export type Presentation = {
+  programs: { ids: string[]; title: Bilingual; description: Bilingual };
+  pages: Record<"partner" | "careers", PageContent>;
+  navigation: { partnerVisible: boolean; partnerLabel: Bilingual };
+  sections: Record<TextSectionKey, TextSection>;
   hero: {
+    focusX?: number;
+    focusY?: number;
     mode: "phones" | "photo";
     frontImage: string;
     backImage: string;
@@ -43,7 +56,26 @@ export type Presentation = {
   };
 };
 export const defaultPresentation: Presentation = {
+  programs: {
+    ids: [],
+    title: {
+      ar: "رحلتك تبدأ من البرنامج المناسب",
+      en: "Your journey starts with the right program",
+    },
+    description: {
+      ar: "قارن بيانات الانطلاق والإقامة والخدمات المنشورة.",
+      en: "Compare published origins, stays and services.",
+    },
+  },
+  pages: defaultPages,
+  navigation: {
+    partnerVisible: true,
+    partnerLabel: { ar: "كن شريك نور آب", en: "Partner with Nour" },
+  },
+  sections: defaultSections,
   hero: {
+    focusX: 50,
+    focusY: 50,
     mode: "phones",
     frontImage: "/images/site/front-view.png",
     backImage: "/images/site/rotated-right.png",
@@ -182,8 +214,8 @@ export function safeLink(value: unknown): string {
   }
 }
 export function safeImage(value: unknown): string {
-  const link = safeLink(value);
-  if (!link) return "";
+  const link = typeof value === "string" ? value : "";
+  if (!link || /[\\\s\u0000-\u001f]/.test(link)) return "";
   if (
     link.startsWith("/images/") &&
     !link.includes("..") &&
@@ -195,6 +227,11 @@ export function safeImage(value: unknown): string {
     const supabase = process.env.NEXT_PUBLIC_SUPABASE_URL;
     return supabase &&
       u.origin === new URL(supabase).origin &&
+      !u.username &&
+      !u.password &&
+      (u.protocol === "https:" ||
+        (u.protocol === "http:" &&
+          ["localhost", "127.0.0.1"].includes(u.hostname))) &&
       u.pathname.startsWith("/storage/v1/object/public/media/")
       ? link
       : "";
@@ -245,7 +282,59 @@ export function normalizePresentation(value: unknown): Presentation {
     };
   });
   return {
+    programs: {
+      ids: [
+        ...new Set(
+          (Array.isArray(obj(root.programs).ids)
+            ? (obj(root.programs).ids as unknown[])
+            : []
+          ).filter(
+            (id): id is string =>
+              typeof id === "string" && /^[a-f0-9-]{36}$/i.test(id),
+          ),
+        ),
+      ].slice(0, 12),
+      title: pair(obj(root.programs).title, defaults.programs.title),
+      description: pair(
+        obj(root.programs).description,
+        defaults.programs.description,
+      ),
+    },
+    pages: Object.fromEntries(
+      (["partner", "careers"] as const).map((key) => {
+        const source = obj(obj(root.pages)[key]),
+          fallback = defaultPages[key];
+        return [
+          key,
+          {
+            title: pair(source.title, fallback.title),
+            emphasis: pair(source.emphasis, fallback.emphasis),
+            description: pair(source.description, fallback.description),
+            faqs: (Array.isArray(source.faqs) ? source.faqs : fallback.faqs)
+              .slice(0, 30)
+              .map((f, i) => {
+                const row = obj(f);
+                return {
+                  id: String(i),
+                  question: pair(row.question, { ar: "", en: "" }),
+                  answer: pair(row.answer, { ar: "", en: "" }),
+                };
+              }),
+          },
+        ];
+      }),
+    ) as Presentation["pages"],
+    navigation: {
+      partnerVisible: obj(root.navigation).partnerVisible !== false,
+      partnerLabel: pair(
+        obj(root.navigation).partnerLabel,
+        defaultPresentation.navigation.partnerLabel,
+      ),
+    },
+    sections: normalizeSections(root.sections),
     hero: {
+      focusX: Math.max(0, Math.min(100, Number(h.focusX ?? 50) || 0)),
+      focusY: Math.max(0, Math.min(100, Number(h.focusY ?? 50) || 0)),
       mode: h.mode === "photo" ? "photo" : "phones",
       frontImage: safeImage(h.frontImage) || defaults.hero.frontImage,
       backImage: safeImage(h.backImage) || defaults.hero.backImage,
@@ -278,7 +367,31 @@ export function normalizePresentation(value: unknown): Presentation {
   };
 }
 export function validatePresentation(value: Presentation): string | null {
-  for (const section of [value.hero, value.showcase, value.download])
+  for (const page of Object.values(value.pages))
+    if (
+      !page.title.ar.trim() ||
+      !page.title.en.trim() ||
+      page.faqs.some(
+        (f) =>
+          !f.question.ar.trim() ||
+          !f.question.en.trim() ||
+          !f.answer.ar.trim() ||
+          !f.answer.en.trim(),
+      )
+    )
+      return "أكمل عناوين الصفحات والأسئلة والأجوبة باللغتين / Complete bilingual page titles and FAQs.";
+  for (const section of Object.values(value.sections))
+    if (
+      section.visible &&
+      (!section.title.ar.trim() || !section.title.en.trim())
+    )
+      return "أكمل عناوين الأقسام الظاهرة باللغتين / Complete visible section titles in both languages.";
+  for (const section of [
+    value.hero,
+    value.showcase,
+    value.download,
+    value.programs,
+  ])
     if (!section.title.ar.trim() || !section.title.en.trim())
       return "أدخل العناوين بالعربية والإنجليزية / Enter Arabic and English titles.";
   for (const image of [value.hero.frontImage, value.hero.backImage])
@@ -311,9 +424,10 @@ export async function savePresentation(
     const error = validatePresentation(value);
     if (error) throw new Error(error);
   }
-  const { error } = await client.rpc("update_platform_setting", {
-    p_setting_key: publish ? PRESENTATION_KEY : DRAFT_KEY,
-    p_value_json: value,
-  });
-  if (error) throw error;
+  void client;
+  void value;
+  void publish;
+  throw new Error(
+    "Use the versioned website workflow through /api/admin/website.",
+  );
 }

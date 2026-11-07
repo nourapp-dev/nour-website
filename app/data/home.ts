@@ -3,7 +3,7 @@ import { WEBSITE_BOOKING_ENABLED } from "../../src/core/config/website-booking";
 
 export type Language = "ar" | "en";
 export type Theme = "light" | "dark";
-export type SectionId = "home" | "programs" | "journey" | "about" | "contact";
+export type SectionId = "home" | "programs" | "journey" | "about" | "contact" | "partners";
 
 export const sectionIds: SectionId[] = ["home", "programs", "journey", "about", "contact"];
 

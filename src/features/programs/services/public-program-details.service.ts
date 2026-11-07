@@ -1,3 +1,4 @@
+import {locationLabel,loadDisplayFacts,type ProgramDisplayFacts} from "../display";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type MediaRow = {
@@ -7,6 +8,7 @@ type MediaRow = {
 };
 
 type ProgramRow = {
+  visa_status:import("../labels").VisaStatus;
   id: string;
   title_ar: string;
   title_en: string;
@@ -43,6 +45,7 @@ type ProgramHotelRow = {
   program_id: string;
   hotel_id: string;
   nights: number;
+  occupancy?:number|null;
   room_type_ar: string | null;
   room_type_en: string | null;
   meal_plan_ar: string | null;
@@ -153,6 +156,7 @@ export type PublicProgramFlight = {
 
 
 export type PublicProgramHotel = {
+  occupancy?:number|null;
   relationId: string;
   hotelId: string;
 
@@ -192,6 +196,9 @@ export type PublicProgramHotel = {
 };
 
 export type PublicProgramDetails = {
+  visaStatus?:import("../labels").VisaStatus;
+  sectionErrors?:string[];
+  display?:ProgramDisplayFacts;displayError?:boolean;
   id: string;
 
   titleAr: string;
@@ -278,7 +285,7 @@ export async function getPublicProgramBySlug(
       summary_en,
       description_ar,
       description_en,
-      country_id,
+      country_id,visa_status,
       duration_days,
       duration_nights,
       base_price,
@@ -306,6 +313,7 @@ export async function getPublicProgramBySlug(
   }
 
   const program = programData as ProgramRow;
+  const sectionErrors:string[]=[];
 
   let country: CountryRow | null = null;
 
@@ -322,9 +330,7 @@ export async function getPublicProgramBySlug(
       .maybeSingle();
 
     if (countryError) {
-      throw new Error(
-        `تعذر تحميل دولة البرنامج: ${countryError.message}`,
-      );
+      sectionErrors.push("country");
     }
 
     country = countryData as CountryRow | null;
@@ -345,7 +351,7 @@ export async function getPublicProgramBySlug(
       id,
       program_id,
       hotel_id,
-      nights,
+      nights,occupancy,
       room_type_ar,
       room_type_en,
       meal_plan_ar,
@@ -362,9 +368,7 @@ export async function getPublicProgramBySlug(
     });
 
   if (relationError) {
-    throw new Error(
-      `تعذر تحميل فنادق البرنامج: ${relationError.message}`,
-    );
+    sectionErrors.push("hotels");
   }
 
   const relations =
@@ -404,9 +408,7 @@ export async function getPublicProgramBySlug(
       .is("deleted_at", null);
 
     if (hotelError) {
-      throw new Error(
-        `تعذر تحميل بيانات الفنادق: ${hotelError.message}`,
-      );
+      sectionErrors.push("hotels");
     }
 
     hotelRows = (hotelData ?? []) as HotelRow[];
@@ -439,9 +441,7 @@ export async function getPublicProgramBySlug(
       });
 
     if (galleryError) {
-      throw new Error(
-        `تعذر تحميل صور الفنادق: ${galleryError.message}`,
-      );
+      sectionErrors.push("media");
     }
 
     hotelMediaRows =
@@ -487,9 +487,7 @@ export async function getPublicProgramBySlug(
     });
 
   if (flightError) {
-    throw new Error(
-      `تعذر تحميل رحلات البرنامج: ${flightError.message}`,
-    );
+    sectionErrors.push("flights");
   }
 
   const flights: PublicProgramFlight[] =
@@ -564,9 +562,7 @@ export async function getPublicProgramBySlug(
       .is("deleted_at", null);
 
     if (mediaError) {
-      throw new Error(
-        `تعذر تحميل الوسائط: ${mediaError.message}`,
-      );
+      sectionErrors.push("media");
     }
 
     ((mediaData ?? []) as MediaRow[]).forEach(
@@ -652,7 +648,7 @@ export async function getPublicProgramBySlug(
               hotel.longitude,
             ),
 
-          nights: relation.nights,
+          nights: relation.nights,occupancy:relation.occupancy,
 
           roomTypeAr:
             relation.room_type_ar ?? "",
@@ -681,7 +677,9 @@ export async function getPublicProgramBySlug(
       ];
     });
 
+  let display:ProgramDisplayFacts|undefined;let displayError=false;try{display=(await loadDisplayFacts(supabase,[program.id])).get(program.id);}catch{displayError=true;}
   return {
+    visaStatus:program.visa_status,display,displayError,sectionErrors,
     id: program.id,
 
     titleAr: program.title_ar,
@@ -739,7 +737,7 @@ export async function getPublicProgramBySlug(
           )
         : null,
 
-    hotels,
+    hotels:hotels.sort((a,b)=>{const rank=(h:PublicProgramHotel)=>{const city=locationLabel(h.cityAr||h.cityEn,true);return city.includes('مكة')?0:city.includes('المدينة')?1:2;};return rank(a)-rank(b);}),
     flights,
   };
 }

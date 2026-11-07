@@ -14,6 +14,8 @@ export type ProgramStatus =
   | "dynamic";
   
 export type Program = {
+  visaStatus?:import("../labels").VisaStatus;
+  originCityId?:string|null;travelMode?:string|null;priceBasis?:string|null;taxStatus?:string|null;
   id: string;
 
   titleAr: string;
@@ -57,6 +59,8 @@ flightNotesEn: string;
 };
 
 export type ProgramFormValues = {
+  visaStatus?:string;
+  originCityId?:string;travelMode?:string;priceBasis?:string;taxStatus?:string;
   titleAr: string;
   titleEn: string;
 

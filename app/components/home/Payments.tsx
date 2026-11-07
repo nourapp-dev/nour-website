@@ -1,6 +1,8 @@
 "use client";
 
+import { launchCopy } from "../../../src/core/config/launch-state";
 import Image from "next/image";
+import { usePresentation } from "../../../src/features/website/usePresentation";
 import styles from "./Payments.module.css";
 import { motion, type Variants } from "framer-motion";
 import {
@@ -42,7 +44,6 @@ const cardVariants: Variants = {
   },
 };
 
-
 // Existing transparent assets have large internal margins. Frame the artwork in CSS
 // without altering provider colors, proportions or original image files.
 const logoFrames = {
@@ -54,7 +55,10 @@ const logoFrames = {
   Tamara: { x: 126, y: 50, width: 947, height: 300, display: 108 },
 } as const;
 
-function PaymentLogo({ method, isArabic }: {
+function PaymentLogo({
+  method,
+  isArabic,
+}: {
   method: (typeof paymentMethods)[number];
   isArabic: boolean;
 }) {
@@ -63,28 +67,39 @@ function PaymentLogo({ method, isArabic }: {
   const height = frame.height + 16;
   return (
     <div className="nr-payment-brand-logo">
-      <span className={method.nameEn === "Mada" ? styles.lightSurface : styles.logoSurface}>
-        <span className={styles.artwork} style={{ width: frame.display, aspectRatio: width + "/" + height }}>
-          <Image src={method.image} alt={isArabic ? method.nameAr : method.nameEn}
-            width={1200} height={400} sizes="300px"
+      <span
+        className={
+          method.nameEn === "Mada" ? styles.lightSurface : styles.logoSurface
+        }
+      >
+        <span
+          className={styles.artwork}
+          style={{ width: frame.display, aspectRatio: width + "/" + height }}
+        >
+          <Image
+            src={method.image}
+            alt={isArabic ? method.nameAr : method.nameEn}
+            width={1200}
+            height={400}
+            sizes="300px"
             style={{
-              position: "absolute", maxWidth: "none",
-              width: (1200 / width * 100) + "%", height: (400 / height * 100) + "%",
-              left: (-(frame.x - 8) / width * 100) + "%",
-              top: (-(frame.y - 8) / height * 100) + "%",
-            }} />
+              position: "absolute",
+              maxWidth: "none",
+              width: (1200 / width) * 100 + "%",
+              height: (400 / height) * 100 + "%",
+              left: (-(frame.x - 8) / width) * 100 + "%",
+              top: (-(frame.y - 8) / height) * 100 + "%",
+            }}
+          />
         </span>
       </span>
     </div>
   );
 }
 
-export default function Payments({
-  language,
-}: {
-  language: Language;
-}) {
+export default function Payments({ language }: { language: Language }) {
   const isArabic = language === "ar";
+  const content = usePresentation().sections.payments;
 
   const directMethods = paymentMethods.filter(
     (method) => method.type !== "installment",
@@ -94,6 +109,66 @@ export default function Payments({
     (method) => method.type === "installment",
   );
 
+  if (!WEBSITE_BOOKING_ENABLED)
+    return (
+      <section
+        id="payments"
+        className="nr-payments-before-launch"
+        dir={isArabic ? "rtl" : "ltr"}
+      >
+        <div className="nr-container">
+          <h2>{content.title[language]}</h2>
+          <p>{content.description[language]}</p>
+          <p>{launchCopy[language].paymentNotice}</p>
+          <div className="payment-logos">
+            {paymentMethods.map((method) => (
+              <figure key={method.nameEn}>
+                <Image
+                  src={method.image}
+                  alt={isArabic ? method.nameAr : method.nameEn}
+                  width={150}
+                  height={50}
+                  style={{ objectFit: "contain" }}
+                />
+                <figcaption>
+                  {isArabic ? method.nameAr : method.nameEn}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+        <style jsx>{`
+          .nr-payments-before-launch {
+            padding: 48px 0;
+            background: var(--nour-surface);
+            color: var(--nour-text-primary);
+          }
+          p {
+            max-width: 800px;
+            line-height: 1.9;
+          }
+          .payment-logos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+          }
+          figure {
+            margin: 0;
+            padding: 12px;
+            background: #fff;
+            color: #16324e;
+            border: 1px solid #dce5ee;
+            border-radius: 10px;
+          }
+          figcaption {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 6px;
+          }
+        `}</style>
+      </section>
+    );
   return (
     <section
       className={"nr-payments-premium " + styles.section}
@@ -102,8 +177,14 @@ export default function Payments({
       aria-labelledby="nr-payments-title"
     >
       <div className="nr-payments-pattern" aria-hidden="true" />
-      <div className="nr-payments-orb nr-payments-orb-blue" aria-hidden="true" />
-      <div className="nr-payments-orb nr-payments-orb-gold" aria-hidden="true" />
+      <div
+        className="nr-payments-orb nr-payments-orb-blue"
+        aria-hidden="true"
+      />
+      <div
+        className="nr-payments-orb nr-payments-orb-gold"
+        aria-hidden="true"
+      />
 
       <div className="nr-container nr-payments-inner">
         <motion.header
@@ -118,27 +199,21 @@ export default function Payments({
         >
           <span className="nr-payments-kicker">
             <CreditCard />
-            {isArabic
-              ? "وسائل الدفع"
-              : "Payment options"}
+            {isArabic ? "وسائل الدفع" : "Payment options"}
           </span>
 
-          <h2 id="nr-payments-title">
-            {isArabic
-              ? "وسائل الدفع"
-              : "Payment methods"}
-          </h2>
+          <h2 id="nr-payments-title">{content.title[language]}</h2>
 
-          <p>
-            {isArabic
-              ? "تعرّف على وسائل الدفع. تتحدد الخيارات المتاحة عند تفعيل الحجز حسب الدولة ومزوّد الدفع."
-              : "Explore payment methods. Available options will depend on the country and payment provider when booking opens."}
-          </p>
+          <p>{content.description[language]}</p>
         </motion.header>
 
         {!WEBSITE_BOOKING_ENABLED ? (
           <p className="nr-payments-availability" role="note">
-            <strong>{isArabic ? "الحجز والدفع عبر الموقع متوقفان حاليًا" : "Website booking and payment are currently paused"}</strong>
+            <strong>
+              {isArabic
+                ? "الحجز والدفع عبر الموقع متوقفان حاليًا"
+                : "Website booking and payment are currently paused"}
+            </strong>
             <span>
               {isArabic
                 ? "وسائل الدفع المعروضة للتعريف فقط؛ الدفع الإلكتروني غير متاح حاليًا عبر الموقع."
@@ -158,9 +233,7 @@ export default function Payments({
             <div className="nr-payments-group">
               <div className="nr-payments-group-heading">
                 <div>
-                  <span>
-                    {isArabic ? "الدفع المباشر" : "Direct payment"}
-                  </span>
+                  <span>{isArabic ? "الدفع المباشر" : "Direct payment"}</span>
                   <small>
                     {isArabic
                       ? "البطاقات والمحافظ الرقمية"
@@ -177,17 +250,13 @@ export default function Payments({
                     className="nr-payment-brand-card"
                     key={method.nameEn}
                     variants={cardVariants}
-
                   >
                     <PaymentLogo method={method} isArabic={isArabic} />
 
                     <div className="nr-payment-brand-meta">
                       <strong>
-                        {isArabic
-                          ? method.nameAr
-                          : method.nameEn}
+                        {isArabic ? method.nameAr : method.nameEn}
                       </strong>
-
                     </div>
                   </motion.article>
                 ))}
@@ -198,13 +267,9 @@ export default function Payments({
               <div className="nr-payments-group nr-payments-flex-group">
                 <div className="nr-payments-group-heading">
                   <div>
-                    <span>
-                      {isArabic ? "الدفع المرن" : "Flexible payment"}
-                    </span>
+                    <span>{isArabic ? "الدفع المرن" : "Flexible payment"}</span>
                     <small>
-                      {isArabic
-                        ? "خيارات التقسيط"
-                        : "Installment options"}
+                      {isArabic ? "خيارات التقسيط" : "Installment options"}
                     </small>
                   </div>
 
@@ -217,24 +282,22 @@ export default function Payments({
                       className="nr-payment-brand-card nr-payment-brand-flexible"
                       key={method.nameEn}
                       variants={cardVariants}
-
                     >
-
-
                       <PaymentLogo method={method} isArabic={isArabic} />
 
                       <div className="nr-payment-brand-meta">
                         <strong>
-                          {isArabic
-                            ? method.nameAr
-                            : method.nameEn}
+                          {isArabic ? method.nameAr : method.nameEn}
                         </strong>
-
                       </div>
                     </motion.article>
                   ))}
                 </div>
-                <p className={styles.terms}>{isArabic ? "عند تفعيل الحجز، تخضع خيارات التقسيط للأهلية والدولة وشروط مزوّد الدفع." : "When booking opens, installment options depend on eligibility, country and provider terms."}</p>
+                <p className={styles.terms}>
+                  {isArabic
+                    ? "عند تفعيل الحجز، تخضع خيارات التقسيط للأهلية والدولة وشروط مزوّد الدفع."
+                    : "When booking opens, installment options depend on eligibility, country and provider terms."}
+                </p>
               </div>
             ) : null}
           </motion.div>
@@ -280,7 +343,9 @@ export default function Payments({
 
             <div className="nr-payments-trust-list">
               <div>
-                <span><ShieldCheck /></span>
+                <span>
+                  <ShieldCheck />
+                </span>
                 <div>
                   <strong>
                     {isArabic ? "مزوّد الدفع" : "Payment provider"}
@@ -294,11 +359,11 @@ export default function Payments({
               </div>
 
               <div>
-                <span><ListChecks aria-hidden="true" /></span>
+                <span>
+                  <ListChecks aria-hidden="true" />
+                </span>
                 <div>
-                  <strong>
-                    {isArabic ? "خيارات واضحة" : "Clear options"}
-                  </strong>
+                  <strong>{isArabic ? "خيارات واضحة" : "Clear options"}</strong>
                   <small>
                     {isArabic
                       ? "اعرف وسيلة الدفع قبل الحجز"
@@ -308,11 +373,11 @@ export default function Payments({
               </div>
 
               <div>
-                <span><Clock3 /></span>
+                <span>
+                  <Clock3 />
+                </span>
                 <div>
-                  <strong>
-                    {isArabic ? "دفع مرن" : "Flexible payment"}
-                  </strong>
+                  <strong>{isArabic ? "دفع مرن" : "Flexible payment"}</strong>
                   <small>
                     {isArabic
                       ? "حسب التفعيل والأهلية والشروط"
@@ -333,8 +398,6 @@ export default function Payments({
           </motion.aside>
         </div>
       </div>
-
-
     </section>
   );
 }

@@ -1,16 +1,10 @@
 "use client";
 
+import {countLabel,stayNights} from "../../core/i18n/counts";
 import Link from "next/link";
-import {
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import Button from "../../components/ui/Button";
 import { useLanguage } from "../../core/i18n";
@@ -23,23 +17,20 @@ import {
   listTransports,
   saveProgramTransports,
 } from "../transports/services";
-import type {
-  ProgramTransportFormValue,
-} from "../transports/types/transport";
+import type { ProgramTransportFormValue } from "../transports/types/transport";
 import {
   getVisasForProgram,
   listVisas,
   saveProgramVisas,
 } from "../visas/services";
-import type {
-  ProgramVisaFormValue,
-} from "../visas/types/visa";
+import type { ProgramVisaFormValue } from "../visas/types/visa";
 
 import ProgramForm from "./forms/ProgramForm";
 import { departurePayloads, type DepartureDraft } from "./departure-drafts";
 import { createProgramDepartures } from "./services/program-departures.service";
 import {
   createProgram,
+  setProgramPublication,
   deleteProgram,
   getDeletedPrograms,
   getFlightsForProgram,
@@ -56,12 +47,11 @@ import type {
   ProgramHotelFormValue,
 } from "./types";
 
-type ProgramFormSubmitValues =
-  ProgramFormValues & {
-    transports: ProgramTransportFormValue[];
-    visas: ProgramVisaFormValue[];
-    departures: DepartureDraft[];
-  };
+type ProgramFormSubmitValues = ProgramFormValues & {
+  transports: ProgramTransportFormValue[];
+  visas: ProgramVisaFormValue[];
+  departures: DepartureDraft[];
+};
 
 type ProgramCountryOption = {
   id: string;
@@ -108,21 +98,14 @@ type ProgramVisaOption = {
   isActive: boolean;
 };
 
-type ProgramStatusFilter =
-  | "all"
-  | "published"
-  | "draft"
-  | "inactive";
+type ProgramStatusFilter = "all" | "published" | "draft" | "inactive";
 
-type ProgramSortOption =
-  | "display"
-  | "newest"
-  | "priceAsc"
-  | "priceDesc";
+type ProgramSortOption = "display" | "newest" | "priceAsc" | "priceDesc";
 
 const PROGRAMS_PER_PAGE = 6;
 
 export default function ProgramsPage() {
+  const queryClient = useQueryClient();
   const { language } = useLanguage();
   const { showToast } = useToast();
 
@@ -135,90 +118,63 @@ export default function ProgramsPage() {
     return createClient();
   }, []);
 
-  const [isCreateOpen, setIsCreateOpen] =
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const [isTrashOpen, setIsTrashOpen] = useState(false);
+
+  const [restoringProgramId, setRestoringProgramId] = useState<string | null>(
+    null,
+  );
+
+  const [permanentlyDeletingProgramId, setPermanentlyDeletingProgramId] =
+    useState<string | null>(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [deletingProgramId, setDeletingProgramId] = useState<string | null>(
+    null,
+  );
+
+  const [editingProgram, setEditingProgram] = useState<Program | null>(null);
+
+  const [editingProgramHotels, setEditingProgramHotels] = useState<
+    ProgramHotelFormValue[]
+  >([]);
+
+  const [editingProgramFlights, setEditingProgramFlights] = useState<
+    ProgramFlightFormValue[]
+  >([]);
+
+  const [editingProgramTransports, setEditingProgramTransports] = useState<
+    ProgramTransportFormValue[]
+  >([]);
+
+  const [editingProgramVisas, setEditingProgramVisas] = useState<
+    ProgramVisaFormValue[]
+  >([]);
+
+  const [isEditingHotelsLoading, setIsEditingHotelsLoading] = useState(false);
+
+  const [isEditingFlightsLoading, setIsEditingFlightsLoading] = useState(false);
+
+  const [isEditingTransportsLoading, setIsEditingTransportsLoading] =
     useState(false);
 
-  const [isTrashOpen, setIsTrashOpen] =
-    useState(false);
+  const [isEditingVisasLoading, setIsEditingVisasLoading] = useState(false);
 
-  const [
-    restoringProgramId,
-    setRestoringProgramId,
-  ] = useState<string | null>(null);
+  const [formError, setFormError] = useState("");
 
-  const [
-    permanentlyDeletingProgramId,
-    setPermanentlyDeletingProgramId,
-  ] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState("");
 
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [statusFilter, setStatusFilter] = useState<ProgramStatusFilter>("all");
 
-  const [
-    deletingProgramId,
-    setDeletingProgramId,
-  ] = useState<string | null>(null);
+  const [countryFilter, setCountryFilter] = useState(
+    searchParams.get("country") || "all",
+  );
 
-  const [editingProgram, setEditingProgram] =
-    useState<Program | null>(null);
+  const [sortBy, setSortBy] = useState<ProgramSortOption>("display");
 
-  const [
-    editingProgramHotels,
-    setEditingProgramHotels,
-  ] = useState<ProgramHotelFormValue[]>([]);
-
-  const [
-    editingProgramFlights,
-    setEditingProgramFlights,
-  ] = useState<ProgramFlightFormValue[]>([]);
-
-  const [
-    editingProgramTransports,
-    setEditingProgramTransports,
-  ] = useState<ProgramTransportFormValue[]>([]);
-
-  const [
-    editingProgramVisas,
-    setEditingProgramVisas,
-  ] = useState<ProgramVisaFormValue[]>([]);
-
-  const [
-    isEditingHotelsLoading,
-    setIsEditingHotelsLoading,
-  ] = useState(false);
-
-  const [
-    isEditingFlightsLoading,
-    setIsEditingFlightsLoading,
-  ] = useState(false);
-
-  const [
-    isEditingTransportsLoading,
-    setIsEditingTransportsLoading,
-  ] = useState(false);
-
-  const [
-    isEditingVisasLoading,
-    setIsEditingVisasLoading,
-  ] = useState(false);
-
-  const [formError, setFormError] =
-    useState("");
-
-  const [searchValue, setSearchValue] =
-    useState("");
-
-  const [statusFilter, setStatusFilter] =
-    useState<ProgramStatusFilter>("all");
-
-  const [countryFilter, setCountryFilter] =
-    useState("all");
-
-  const [sortBy, setSortBy] =
-    useState<ProgramSortOption>("display");
-
-  const [currentPage, setCurrentPage] =
-    useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     data: currentUser,
@@ -248,11 +204,7 @@ export default function ProgramsPage() {
     isLoading: isPermissionsLoading,
     isError: isPermissionsError,
   } = useQuery({
-    queryKey: [
-      "programs",
-      "permissions",
-      currentUser?.id ?? "anonymous",
-    ],
+    queryKey: ["programs", "permissions", currentUser?.id ?? "anonymous"],
     enabled: Boolean(currentUser?.id),
     queryFn: async () => {
       const permissionKeys = [
@@ -289,14 +241,10 @@ export default function ProgramsPage() {
     refetchOnWindowFocus: true,
   });
 
-  const canCreate =
-    permissions?.["programs.create"] ?? false;
-  const canUpdate =
-    permissions?.["programs.update"] ?? false;
-  const canPublish =
-    permissions?.["programs.publish"] ?? false;
-  const canDelete =
-    permissions?.["programs.delete"] ?? false;
+  const canCreate = permissions?.["programs.create"] ?? false;
+  const canUpdate = permissions?.["programs.update"] ?? false;
+  const canPublish = permissions?.["programs.publish"] ?? false;
+  const canDelete = permissions?.["programs.delete"] ?? false;
 
   const {
     data: countriesData = [],
@@ -305,8 +253,7 @@ export default function ProgramsPage() {
     error: countriesError,
   } = useQuery(countriesQuery(supabase));
 
-  const countries =
-    countriesData as ProgramCountryOption[];
+  const countries = countriesData as ProgramCountryOption[];
 
   const {
     data: hotelsData = [],
@@ -314,23 +261,17 @@ export default function ProgramsPage() {
     isError: isHotelsError,
     error: hotelsError,
   } = useQuery({
-    queryKey: [
-      "hotels",
-      "program-options",
-      currentUser?.id ?? "anonymous",
-    ],
+    queryKey: ["hotels", "program-options", currentUser?.id ?? "anonymous"],
     queryFn: () => listHotels(supabase),
     enabled: Boolean(currentUser?.id),
     staleTime: 0,
     refetchOnMount: "always",
   });
 
-  const hotels =
-    hotelsData as ProgramHotelOption[];
+  const hotels = hotelsData as ProgramHotelOption[];
 
   const activeHotels = hotels.filter(
-    (hotel: ProgramHotelOption) =>
-      hotel.status === "active",
+    (hotel: ProgramHotelOption) => hotel.status === "active",
   );
 
   const {
@@ -339,23 +280,17 @@ export default function ProgramsPage() {
     isError: isTransportsError,
     error: transportsError,
   } = useQuery({
-    queryKey: [
-      "transports",
-      "program-options",
-      currentUser?.id ?? "anonymous",
-    ],
+    queryKey: ["transports", "program-options", currentUser?.id ?? "anonymous"],
     queryFn: () => listTransports(supabase),
     enabled: Boolean(currentUser?.id),
     staleTime: 0,
     refetchOnMount: "always",
   });
 
-  const transports =
-    transportsData as ProgramTransportOption[];
+  const transports = transportsData as ProgramTransportOption[];
 
   const activeTransports = transports.filter(
-    (transport: ProgramTransportOption) =>
-      transport.isActive,
+    (transport: ProgramTransportOption) => transport.isActive,
   );
 
   const {
@@ -364,24 +299,16 @@ export default function ProgramsPage() {
     isError: isVisasError,
     error: visasError,
   } = useQuery({
-    queryKey: [
-      "visas",
-      "program-options",
-      currentUser?.id ?? "anonymous",
-    ],
+    queryKey: ["visas", "program-options", currentUser?.id ?? "anonymous"],
     queryFn: () => listVisas(supabase),
     enabled: Boolean(currentUser?.id),
     staleTime: 0,
     refetchOnMount: "always",
   });
 
-  const visas =
-    visasData as ProgramVisaOption[];
+  const visas = visasData as ProgramVisaOption[];
 
-  const activeVisas = visas.filter(
-    (visa: ProgramVisaOption) =>
-      visa.isActive,
-  );
+  const activeVisas = visas.filter((visa: ProgramVisaOption) => visa.isActive);
 
   const {
     data: programs = [],
@@ -391,11 +318,7 @@ export default function ProgramsPage() {
     error: programsError,
     refetch: refetchPrograms,
   } = useQuery({
-    queryKey: [
-      "programs",
-      "list",
-      currentUser?.id ?? "anonymous",
-    ],
+    queryKey: ["programs", "list", currentUser?.id ?? "anonymous"],
     queryFn: () => getPrograms(supabase),
     enabled: Boolean(currentUser?.id),
   });
@@ -407,109 +330,68 @@ export default function ProgramsPage() {
     error: deletedProgramsError,
     refetch: refetchDeletedPrograms,
   } = useQuery({
-    queryKey: [
-      "programs",
-      "deleted",
-      currentUser?.id ?? "anonymous",
-    ],
-    queryFn: () =>
-      getDeletedPrograms(supabase),
-    enabled:
-      Boolean(currentUser?.id) &&
-      isTrashOpen &&
-      canDelete,
+    queryKey: ["programs", "deleted", currentUser?.id ?? "anonymous"],
+    queryFn: () => getDeletedPrograms(supabase),
+    enabled: Boolean(currentUser?.id) && isTrashOpen && canDelete,
   });
 
-  const filteredPrograms = programs.filter(
-    (program) => {
-      const search = searchValue
-        .trim()
-        .toLowerCase();
+  const filteredPrograms = programs.filter((program) => {
+    const search = searchValue.trim().toLowerCase();
 
-      const matchesSearch =
-        !search ||
-        program.titleAr
-          .toLowerCase()
-          .includes(search) ||
-        program.titleEn
-          .toLowerCase()
-          .includes(search) ||
-        program.slug
-          .toLowerCase()
-          .includes(search) ||
-        program.summaryAr
-          .toLowerCase()
-          .includes(search) ||
-        program.summaryEn
-          .toLowerCase()
-          .includes(search);
+    const matchesSearch =
+      !search ||
+      program.titleAr.toLowerCase().includes(search) ||
+      program.titleEn.toLowerCase().includes(search) ||
+      program.slug.toLowerCase().includes(search) ||
+      program.summaryAr.toLowerCase().includes(search) ||
+      program.summaryEn.toLowerCase().includes(search);
 
-      const matchesStatus =
-        statusFilter === "all" ||
-        program.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "all" || program.status === statusFilter;
 
-      const matchesCountry =
-        countryFilter === "all" ||
-        program.countryId === countryFilter;
+    const matchesCountry =
+      countryFilter === "all" || program.countryId === countryFilter;
 
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesCountry
-      );
+    return matchesSearch && matchesStatus && matchesCountry;
+  });
+
+  const sortedPrograms: Program[] = [...filteredPrograms].sort(
+    (firstProgram, secondProgram) => {
+      if (sortBy === "newest") {
+        return (
+          new Date(secondProgram.createdAt).getTime() -
+          new Date(firstProgram.createdAt).getTime()
+        );
+      }
+
+      if (sortBy === "priceAsc") {
+        return firstProgram.basePrice - secondProgram.basePrice;
+      }
+
+      if (sortBy === "priceDesc") {
+        return secondProgram.basePrice - firstProgram.basePrice;
+      }
+
+      return firstProgram.sortOrder - secondProgram.sortOrder;
     },
   );
 
-  const sortedPrograms: Program[] = [
-    ...filteredPrograms,
-  ].sort((firstProgram, secondProgram) => {
-    if (sortBy === "newest") {
-      return (
-        new Date(
-          secondProgram.createdAt,
-        ).getTime() -
-        new Date(
-          firstProgram.createdAt,
-        ).getTime()
-      );
-    }
-
-    if (sortBy === "priceAsc") {
-      return (
-        firstProgram.basePrice -
-        secondProgram.basePrice
-      );
-    }
-
-    if (sortBy === "priceDesc") {
-      return (
-        secondProgram.basePrice -
-        firstProgram.basePrice
-      );
-    }
-
-    return (
-      firstProgram.sortOrder -
-      secondProgram.sortOrder
-    );
-  });
-
   const totalPages = Math.max(
     1,
-    Math.ceil(
-      sortedPrograms.length /
-        PROGRAMS_PER_PAGE,
-    ),
+    Math.ceil(sortedPrograms.length / PROGRAMS_PER_PAGE),
   );
 
-  const paginatedPrograms: Program[] =
-    sortedPrograms.slice(
-      (currentPage - 1) *
-        PROGRAMS_PER_PAGE,
-      currentPage * PROGRAMS_PER_PAGE,
-    );
+  const paginatedPrograms: Program[] = sortedPrograms.slice(
+    (currentPage - 1) * PROGRAMS_PER_PAGE,
+    currentPage * PROGRAMS_PER_PAGE,
+  );
 
-  const filterKey = JSON.stringify([searchValue, statusFilter, countryFilter, sortBy]);
+  const filterKey = JSON.stringify([
+    searchValue,
+    statusFilter,
+    countryFilter,
+    sortBy,
+  ]);
   const [previousFilterKey, setPreviousFilterKey] = useState(filterKey);
   if (filterKey !== previousFilterKey || currentPage > totalPages) {
     setPreviousFilterKey(filterKey);
@@ -517,17 +399,12 @@ export default function ProgramsPage() {
   }
 
   useEffect(() => {
-    if (
-      !isProgramsSuccess ||
-      !editProgramId ||
-      !canUpdate
-    ) {
+    if (!isProgramsSuccess || !editProgramId || !canUpdate) {
       return;
     }
 
     const programToEdit = programs.find(
-      (program) =>
-        program.id === editProgramId,
+      (program) => program.id === editProgramId,
     );
 
     if (!programToEdit) {
@@ -536,12 +413,7 @@ export default function ProgramsPage() {
 
     void openEditDialog(programToEdit);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    editProgramId,
-    isProgramsSuccess,
-    programs,
-    canUpdate,
-  ]);
+  }, [editProgramId, isProgramsSuccess, programs, canUpdate]);
 
   function openCreateDialog() {
     if (!canCreate) {
@@ -575,9 +447,7 @@ export default function ProgramsPage() {
     }
   }
 
-  async function openEditDialog(
-    program: Program,
-  ) {
+  async function openEditDialog(program: Program) {
     if (!canUpdate) {
       return;
     }
@@ -589,42 +459,25 @@ export default function ProgramsPage() {
     setIsEditingVisasLoading(true);
 
     try {
-      const [
-        linkedHotels,
-        linkedFlights,
-        linkedTransports,
-        linkedVisas,
-      ] = await Promise.all([
-        getHotelsForProgram(
-          supabase,
-          program.id,
-        ),
-        getFlightsForProgram(
-          supabase,
-          program.id,
-        ),
-        getTransportsForProgram(
-          supabase,
-          program.id,
-        ),
-        getVisasForProgram(
-          supabase,
-          program.id,
-        ),
-      ]);
+      const [linkedHotels, linkedFlights, linkedTransports, linkedVisas] =
+        await Promise.all([
+          getHotelsForProgram(supabase, program.id),
+          getFlightsForProgram(supabase, program.id),
+          getTransportsForProgram(supabase, program.id),
+          getVisasForProgram(supabase, program.id),
+        ]);
 
       setEditingProgramHotels(
         linkedHotels.map((hotel) => ({
           hotelId: hotel.hotelId,
           nights: hotel.nights,
+          occupancy: hotel.occupancy,
           roomTypeAr: hotel.roomTypeAr,
           roomTypeEn: hotel.roomTypeEn,
           mealPlanAr: hotel.mealPlanAr,
           mealPlanEn: hotel.mealPlanEn,
-          checkInDate:
-            hotel.checkInDate ?? "",
-          checkOutDate:
-            hotel.checkOutDate ?? "",
+          checkInDate: hotel.checkInDate ?? "",
+          checkOutDate: hotel.checkOutDate ?? "",
           notesAr: hotel.notesAr,
           notesEn: hotel.notesEn,
           sortOrder: hotel.sortOrder,
@@ -634,48 +487,24 @@ export default function ProgramsPage() {
       setEditingProgramFlights(
         linkedFlights.map((flight) => ({
           direction: flight.direction,
-          airlineNameAr:
-            flight.airlineNameAr,
-          airlineNameEn:
-            flight.airlineNameEn,
-          flightNumber:
-            flight.flightNumber,
-          departureAirportAr:
-            flight.departureAirportAr,
-          departureAirportEn:
-            flight.departureAirportEn,
-          arrivalAirportAr:
-            flight.arrivalAirportAr,
-          arrivalAirportEn:
-            flight.arrivalAirportEn,
-          departureAt:
-            flight.departureAt
-              ? flight.departureAt.slice(
-                  0,
-                  16,
-                )
-              : "",
-          arrivalAt:
-            flight.arrivalAt
-              ? flight.arrivalAt.slice(
-                  0,
-                  16,
-                )
-              : "",
-          flightType:
-            flight.flightType,
-          transitAirportAr:
-            flight.transitAirportAr,
-          transitAirportEn:
-            flight.transitAirportEn,
-          transitDurationMinutes:
-            flight.transitDurationMinutes,
-          cabinClassAr:
-            flight.cabinClassAr,
-          cabinClassEn:
-            flight.cabinClassEn,
-          baggageAllowanceKg:
-            flight.baggageAllowanceKg,
+          airlineNameAr: flight.airlineNameAr,
+          airlineNameEn: flight.airlineNameEn,
+          flightNumber: flight.flightNumber,
+          departureAirportAr: flight.departureAirportAr,
+          departureAirportEn: flight.departureAirportEn,
+          arrivalAirportAr: flight.arrivalAirportAr,
+          arrivalAirportEn: flight.arrivalAirportEn,
+          departureAt: flight.departureAt
+            ? flight.departureAt.slice(0, 16)
+            : "",
+          arrivalAt: flight.arrivalAt ? flight.arrivalAt.slice(0, 16) : "",
+          flightType: flight.flightType,
+          transitAirportAr: flight.transitAirportAr,
+          transitAirportEn: flight.transitAirportEn,
+          transitDurationMinutes: flight.transitDurationMinutes,
+          cabinClassAr: flight.cabinClassAr,
+          cabinClassEn: flight.cabinClassEn,
+          baggageAllowanceKg: flight.baggageAllowanceKg,
           notesAr: flight.notesAr,
           notesEn: flight.notesEn,
           sortOrder: flight.sortOrder,
@@ -694,8 +523,7 @@ export default function ProgramsPage() {
           pickupDatetime: transport.pickupDatetime
             ? transport.pickupDatetime.slice(0, 16)
             : "",
-          estimatedDurationMinutes:
-            transport.estimatedDurationMinutes,
+          estimatedDurationMinutes: transport.estimatedDurationMinutes,
           notesAr: transport.notesAr ?? "",
           notesEn: transport.notesEn ?? "",
           isIncluded: transport.isIncluded,
@@ -741,11 +569,8 @@ export default function ProgramsPage() {
     }
   }
 
-  async function handleCreateProgram(
-    values: ProgramFormSubmitValues,
-  ) {
-    const hasRequiredPermission =
-      editingProgram ? canUpdate : canCreate;
+  async function handleCreateProgram(values: ProgramFormSubmitValues) {
+    const hasRequiredPermission = editingProgram ? canUpdate : canCreate;
 
     if (!hasRequiredPermission) {
       showToast({
@@ -760,8 +585,7 @@ export default function ProgramsPage() {
     setFormError("");
     setIsSubmitting(true);
 
-    const wasEditing =
-      editingProgram !== null;
+    const wasEditing = editingProgram !== null;
     let persistedProgram: Program | null = null;
 
     try {
@@ -772,49 +596,63 @@ export default function ProgramsPage() {
         ...programValues
       } = values;
 
+      const desiredStatus = programValues.status;
+      if (editingProgram?.status === "published")
+        await setProgramPublication(
+          supabase,
+          editingProgram.id,
+          "draft",
+          editingProgram.isActive,
+        );
+      const draftValues = {
+        ...programValues,
+        status:
+          desiredStatus === "published" ? ("draft" as const) : desiredStatus,
+      };
       let savedProgramId: string;
 
       if (editingProgram) {
-        const updatedProgram =
-          await updateProgram(
-            supabase,
-            editingProgram.id,
-            programValues,
-            editingProgram.coverMediaId,
-          );
+        const updatedProgram = await updateProgram(
+          supabase,
+          editingProgram.id,
+          draftValues,
+          editingProgram.coverMediaId,
+        );
 
-        savedProgramId =
-          updatedProgram?.id ??
-          editingProgram.id;
+        savedProgramId = updatedProgram?.id ?? editingProgram.id;
       } else {
-        const createdProgram =
-          await createProgram(
-            supabase,
-            programValues,
-            (program) => { persistedProgram = program; },
-          );
+        const createdProgram = await createProgram(
+          supabase,
+          draftValues,
+          (program) => {
+            persistedProgram = program;
+          },
+        );
 
-        savedProgramId =
-          createdProgram.id;
+        savedProgramId = createdProgram.id;
       }
 
       await Promise.all([
-        saveProgramTransports(
-          supabase,
-          savedProgramId,
-          programTransports,
-        ),
-        saveProgramVisas(
-          supabase,
-          savedProgramId,
-          programVisas,
-        ),
+        saveProgramTransports(supabase, savedProgramId, programTransports),
+        saveProgramVisas(supabase, savedProgramId, programVisas),
       ]);
 
       if (!wasEditing && departures.length) {
-        await createProgramDepartures(supabase, savedProgramId, departurePayloads(departures));
+        await createProgramDepartures(
+          supabase,
+          savedProgramId,
+          departurePayloads(departures),
+        );
       }
 
+      if (desiredStatus === "published")
+        await setProgramPublication(
+          supabase,
+          savedProgramId,
+          "published",
+          programValues.isActive,
+        );
+      await queryClient.invalidateQueries({ queryKey: ["public"] });
       await refetchPrograms();
 
       setEditingProgram(null);
@@ -852,8 +690,14 @@ export default function ProgramsPage() {
         setIsCreateOpen(false);
         void refetchPrograms();
         showToast({
-          title: isArabic ? "حُفظ البرنامج ولم تكتمل بعض التفاصيل" : "Program saved; some details could not be saved",
-          description: (isArabic ? "راجع البرنامج ومواعيده قبل النشر. " : "Review the program and departures before publishing. ") + message,
+          title: isArabic
+            ? "حُفظ البرنامج ولم تكتمل بعض التفاصيل"
+            : "Program saved; some details could not be saved",
+          description:
+            (isArabic
+              ? "راجع البرنامج ومواعيده قبل النشر. "
+              : "Review the program and departures before publishing. ") +
+            message,
           variant: "error",
         });
         router.push(`/admin/programs/${saved.id}/departures`);
@@ -877,9 +721,7 @@ export default function ProgramsPage() {
     }
   }
 
-  async function handleDeleteProgram(
-    programId: string,
-  ) {
+  async function handleDeleteProgram(programId: string) {
     if (!canDelete) {
       return;
     }
@@ -897,10 +739,7 @@ export default function ProgramsPage() {
     setDeletingProgramId(programId);
 
     try {
-      await deleteProgram(
-        supabase,
-        programId,
-      );
+      await deleteProgram(supabase, programId);
 
       await refetchPrograms();
 
@@ -918,15 +757,10 @@ export default function ProgramsPage() {
             ? "تعذر حذف البرنامج."
             : "Unable to delete the program.";
 
-      console.error(
-        "DELETE PROGRAM ERROR:",
-        error,
-      );
+      console.error("DELETE PROGRAM ERROR:", error);
 
       showToast({
-        title: isArabic
-          ? "تعذر حذف البرنامج"
-          : "Unable to delete program",
+        title: isArabic ? "تعذر حذف البرنامج" : "Unable to delete program",
         description: message,
         variant: "error",
       });
@@ -935,9 +769,7 @@ export default function ProgramsPage() {
     }
   }
 
-  async function handleRestoreProgram(
-    programId: string,
-  ) {
+  async function handleRestoreProgram(programId: string) {
     if (!canDelete) {
       return;
     }
@@ -945,15 +777,9 @@ export default function ProgramsPage() {
     setRestoringProgramId(programId);
 
     try {
-      await restoreProgram(
-        supabase,
-        programId,
-      );
+      await restoreProgram(supabase, programId);
 
-      await Promise.all([
-        refetchPrograms(),
-        refetchDeletedPrograms(),
-      ]);
+      await Promise.all([refetchPrograms(), refetchDeletedPrograms()]);
 
       showToast({
         title: isArabic
@@ -970,9 +796,7 @@ export default function ProgramsPage() {
             : "Unable to restore the program.";
 
       showToast({
-        title: isArabic
-          ? "تعذر استعادة البرنامج"
-          : "Unable to restore program",
+        title: isArabic ? "تعذر استعادة البرنامج" : "Unable to restore program",
         description: message,
         variant: "error",
       });
@@ -981,9 +805,7 @@ export default function ProgramsPage() {
     }
   }
 
-  async function handlePermanentDeleteProgram(
-    programId: string,
-  ) {
+  async function handlePermanentDeleteProgram(programId: string) {
     if (!canDelete) {
       return;
     }
@@ -998,15 +820,10 @@ export default function ProgramsPage() {
       return;
     }
 
-    setPermanentlyDeletingProgramId(
-      programId,
-    );
+    setPermanentlyDeletingProgramId(programId);
 
     try {
-      await permanentlyDeleteProgram(
-        supabase,
-        programId,
-      );
+      await permanentlyDeleteProgram(supabase, programId);
 
       await refetchDeletedPrograms();
 
@@ -1025,16 +842,12 @@ export default function ProgramsPage() {
             : "Unable to permanently delete the program.";
 
       showToast({
-        title: isArabic
-          ? "تعذر الحذف النهائي"
-          : "Unable to permanently delete",
+        title: isArabic ? "تعذر الحذف النهائي" : "Unable to permanently delete",
         description: message,
         variant: "error",
       });
     } finally {
-      setPermanentlyDeletingProgramId(
-        null,
-      );
+      setPermanentlyDeletingProgramId(null);
     }
   }
 
@@ -1051,16 +864,10 @@ export default function ProgramsPage() {
       <div className="nr-dashboard-heading">
         <div>
           <span className="nr-dashboard-kicker">
-            {isArabic
-              ? "إدارة المحتوى"
-              : "Content Management"}
+            {isArabic ? "إدارة المحتوى" : "Content Management"}
           </span>
 
-          <h1>
-            {isArabic
-              ? "البرامج"
-              : "Programs"}
-          </h1>
+          <h1>{isArabic ? "البرامج" : "Programs"}</h1>
 
           <p>
             {isArabic
@@ -1085,13 +892,8 @@ export default function ProgramsPage() {
             ) : null}
 
             {canCreate ? (
-              <Button
-                type="button"
-                onClick={openCreateDialog}
-              >
-                {isArabic
-                  ? "إضافة برنامج"
-                  : "Add Program"}
+              <Button type="button" onClick={openCreateDialog}>
+                {isArabic ? "إضافة برنامج" : "Add Program"}
               </Button>
             ) : null}
           </div>
@@ -1104,9 +906,7 @@ export default function ProgramsPage() {
           className="nr-input nr-programs-search"
           value={searchValue}
           onChange={(event) => {
-            setSearchValue(
-              event.target.value,
-            );
+            setSearchValue(event.target.value);
           }}
           placeholder={
             isArabic
@@ -1125,25 +925,16 @@ export default function ProgramsPage() {
           className="nr-input nr-programs-filter"
           value={countryFilter}
           onChange={(event) => {
-            setCountryFilter(
-              event.target.value,
-            );
+            setCountryFilter(event.target.value);
           }}
         >
           <option value="all">
-            {isArabic
-              ? "جميع الدول"
-              : "All countries"}
+            {isArabic ? "جميع الدول" : "All countries"}
           </option>
 
           {countries.map((country: ProgramCountryOption) => (
-            <option
-              key={country.id}
-              value={country.id}
-            >
-              {isArabic
-                ? country.nameAr
-                : country.nameEn}
+            <option key={country.id} value={country.id}>
+              {isArabic ? country.nameAr : country.nameEn}
             </option>
           ))}
         </select>
@@ -1152,69 +943,41 @@ export default function ProgramsPage() {
           className="nr-input nr-programs-filter"
           value={statusFilter}
           onChange={(event) => {
-            setStatusFilter(
-              event.target
-                .value as ProgramStatusFilter,
-            );
+            setStatusFilter(event.target.value as ProgramStatusFilter);
           }}
         >
           <option value="all">
-            {isArabic
-              ? "جميع الحالات"
-              : "All statuses"}
+            {isArabic ? "جميع الحالات" : "All statuses"}
           </option>
 
-          <option value="published">
-            {isArabic
-              ? "منشور"
-              : "Published"}
-          </option>
+          <option value="published">{isArabic ? "منشور" : "Published"}</option>
 
-          <option value="draft">
-            {isArabic
-              ? "مسودة"
-              : "Draft"}
-          </option>
+          <option value="draft">{isArabic ? "مسودة" : "Draft"}</option>
 
-          <option value="inactive">
-            {isArabic
-              ? "غير نشط"
-              : "Inactive"}
-          </option>
+          <option value="inactive">{isArabic ? "غير نشط" : "Inactive"}</option>
         </select>
 
         <select
           className="nr-input nr-programs-filter"
           value={sortBy}
           onChange={(event) => {
-            setSortBy(
-              event.target
-                .value as ProgramSortOption,
-            );
+            setSortBy(event.target.value as ProgramSortOption);
           }}
         >
           <option value="display">
-            {isArabic
-              ? "ترتيب الظهور"
-              : "Display order"}
+            {isArabic ? "ترتيب الظهور" : "Display order"}
           </option>
 
           <option value="newest">
-            {isArabic
-              ? "الأحدث أولًا"
-              : "Newest first"}
+            {isArabic ? "الأحدث أولًا" : "Newest first"}
           </option>
 
           <option value="priceAsc">
-            {isArabic
-              ? "السعر: من الأقل"
-              : "Price: low to high"}
+            {isArabic ? "السعر: من الأقل" : "Price: low to high"}
           </option>
 
           <option value="priceDesc">
-            {isArabic
-              ? "السعر: من الأعلى"
-              : "Price: high to low"}
+            {isArabic ? "السعر: من الأعلى" : "Price: high to low"}
           </option>
         </select>
 
@@ -1229,24 +992,17 @@ export default function ProgramsPage() {
             sortBy === "display"
           }
         >
-          {isArabic
-            ? "إعادة تعيين الفلاتر"
-            : "Reset Filters"}
+          {isArabic ? "إعادة تعيين الفلاتر" : "Reset Filters"}
         </button>
       </div>
 
-      {isCurrentUserLoading ||
-      isPermissionsLoading ||
-      isProgramsLoading ? (
+      {isCurrentUserLoading || isPermissionsLoading || isProgramsLoading ? (
         <div className="nr-state">
           <strong>
-            {isArabic
-              ? "جاري تحميل البرامج..."
-              : "Loading programs..."}
+            {isArabic ? "جاري تحميل البرامج..." : "Loading programs..."}
           </strong>
         </div>
-      ) : isCurrentUserError ||
-      isPermissionsError ? (
+      ) : isCurrentUserError || isPermissionsError ? (
         <div className="nr-state">
           <strong>
             {isArabic
@@ -1263,9 +1019,7 @@ export default function ProgramsPage() {
       ) : isProgramsError ? (
         <div className="nr-state">
           <strong>
-            {isArabic
-              ? "تعذر تحميل البرامج"
-              : "Unable to load programs"}
+            {isArabic ? "تعذر تحميل البرامج" : "Unable to load programs"}
           </strong>
 
           <p>
@@ -1279,9 +1033,7 @@ export default function ProgramsPage() {
       ) : sortedPrograms.length === 0 ? (
         <div className="nr-state">
           <strong>
-            {isArabic
-              ? "لا توجد برامج مطابقة"
-              : "No matching programs"}
+            {isArabic ? "لا توجد برامج مطابقة" : "No matching programs"}
           </strong>
 
           <p>
@@ -1293,140 +1045,100 @@ export default function ProgramsPage() {
       ) : (
         <>
           <div className="nr-programs-grid">
-            {paginatedPrograms.map(
-              (program: Program) => (
-                <article
-                  key={program.id}
-                  className="nr-program-card"
-                >
-                  {program.coverUrl ? (
-                    <div className="nr-program-card-cover">
-                      <img
-                        src={program.coverUrl}
-                        alt={
-                          isArabic
-                            ? program.titleAr
-                            : program.titleEn
-                        }
-                      />
-                    </div>
-                  ) : null}
+            {paginatedPrograms.map((program: Program) => (
+              <article key={program.id} className="nr-program-card">
+                {program.coverUrl ? (
+                  <div className="nr-program-card-cover">
+                    <img
+                      src={program.coverUrl}
+                      alt={isArabic ? program.titleAr : program.titleEn}
+                    />
+                  </div>
+                ) : null}
 
-                  <div className="nr-program-card-header">
-                    <div>
-                      <span className="nr-dashboard-kicker">
-                        {program.status ===
-                        "published"
+                <div className="nr-program-card-header">
+                  <div>
+                    <span className="nr-dashboard-kicker">
+                      {program.status === "published"
+                        ? isArabic
+                          ? "منشور"
+                          : "Published"
+                        : program.status === "draft"
                           ? isArabic
-                            ? "منشور"
-                            : "Published"
-                          : program.status ===
-                              "draft"
-                            ? isArabic
-                              ? "مسودة"
-                              : "Draft"
-                            : isArabic
-                              ? "غير نشط"
-                              : "Inactive"}
+                            ? "مسودة"
+                            : "Draft"
+                          : isArabic
+                            ? "غير نشط"
+                            : "Inactive"}
+                    </span>
+
+                    <h2>{isArabic ? program.titleAr : program.titleEn}</h2>
+                  </div>
+
+                  <div className="nr-program-card-actions">
+                    {program.isFeatured ? (
+                      <span className="nr-program-featured">
+                        {isArabic ? "مميز" : "Featured"}
                       </span>
+                    ) : null}
 
-                      <h2>
-                        {isArabic
-                          ? program.titleAr
-                          : program.titleEn}
-                      </h2>
-                    </div>
+                    <Link
+                      href={`/admin/programs/${program.id}`}
+                      className="nr-program-action"
+                    >
+                      {isArabic ? "عرض التفاصيل" : "View Details"}
+                    </Link>
 
-                    <div className="nr-program-card-actions">
-                      {program.isFeatured ? (
-                        <span className="nr-program-featured">
-                          {isArabic
-                            ? "مميز"
-                            : "Featured"}
-                        </span>
-                      ) : null}
-
-                      <Link
-                        href={`/admin/programs/${program.id}`}
-                        className="nr-program-action"
+                    {canUpdate ? (
+                      <button
+                        type="button"
+                        className="nr-program-action nr-program-action-edit"
+                        onClick={() => {
+                          void openEditDialog(program);
+                        }}
                       >
-                        {isArabic
-                          ? "عرض التفاصيل"
-                          : "View Details"}
-                      </Link>
+                        {isArabic ? "تعديل" : "Edit"}
+                      </button>
+                    ) : null}
 
-                      {canUpdate ? (
-                        <button
-                          type="button"
-                          className="nr-program-action nr-program-action-edit"
-                          onClick={() => {
-                            void openEditDialog(
-                              program,
-                            );
-                          }}
-                        >
-                          {isArabic
-                            ? "تعديل"
-                            : "Edit"}
-                        </button>
-                      ) : null}
-
-                      {canDelete ? (
-                        <button
-                          type="button"
-                          className="nr-program-action nr-program-action-delete"
-                          onClick={() => {
-                            void handleDeleteProgram(
-                              program.id,
-                            );
-                          }}
-                          disabled={
-                            deletingProgramId ===
-                            program.id
-                          }
-                        >
-                          {deletingProgramId ===
-                          program.id
-                            ? isArabic
-                              ? "جاري الحذف..."
-                              : "Deleting..."
-                            : isArabic
-                              ? "حذف"
-                              : "Delete"}
-                        </button>
-                      ) : null}
-                    </div>
+                    {canDelete ? (
+                      <button
+                        type="button"
+                        className="nr-program-action nr-program-action-delete"
+                        onClick={() => {
+                          void handleDeleteProgram(program.id);
+                        }}
+                        disabled={deletingProgramId === program.id}
+                      >
+                        {deletingProgramId === program.id
+                          ? isArabic
+                            ? "جاري الحذف..."
+                            : "Deleting..."
+                          : isArabic
+                            ? "حذف"
+                            : "Delete"}
+                      </button>
+                    ) : null}
                   </div>
+                </div>
 
-                  <p>
-                    {isArabic
-                      ? program.summaryAr
-                      : program.summaryEn}
-                  </p>
+                <p>{isArabic ? program.summaryAr : program.summaryEn}</p>
 
-                  <div className="nr-program-card-meta">
-                    <span>
-                      {program.durationDays}{" "}
-                      {isArabic
-                        ? "أيام"
-                        : "days"}
-                    </span>
+                <div className="nr-program-card-meta">
+                  <span>
+                    {countLabel(program.durationDays,"day",language)}
+                  </span>
 
-                    <span>
-                      {program.durationNights}{" "}
-                      {isArabic
-                        ? "ليالٍ"
-                        : "nights"}
-                    </span>
+                  <span>
+                    {stayNights(program.durationNights,language)}
+                  </span>
 
-                    <strong>
-                      {program.basePrice}{" "}
-                      {program.currencyCode}
-                    </strong>
-                  </div>
-                </article>
-              ),
-            )}
+                  <strong>
+                    {program.basePrice} {program.currencyCode}
+                  </strong>
+                </div>
+              </article>
+            ))}
           </div>
 
           {totalPages > 1 ? (
@@ -1435,15 +1147,11 @@ export default function ProgramsPage() {
                 type="button"
                 className="nr-program-action"
                 onClick={() => {
-                  setCurrentPage((page) =>
-                    Math.max(1, page - 1),
-                  );
+                  setCurrentPage((page) => Math.max(1, page - 1));
                 }}
                 disabled={currentPage === 1}
               >
-                {isArabic
-                  ? "السابق"
-                  : "Previous"}
+                {isArabic ? "السابق" : "Previous"}
               </button>
 
               <span>
@@ -1456,20 +1164,11 @@ export default function ProgramsPage() {
                 type="button"
                 className="nr-program-action"
                 onClick={() => {
-                  setCurrentPage((page) =>
-                    Math.min(
-                      totalPages,
-                      page + 1,
-                    ),
-                  );
+                  setCurrentPage((page) => Math.min(totalPages, page + 1));
                 }}
-                disabled={
-                  currentPage === totalPages
-                }
+                disabled={currentPage === totalPages}
               >
-                {isArabic
-                  ? "التالي"
-                  : "Next"}
+                {isArabic ? "التالي" : "Next"}
               </button>
             </div>
           ) : null}
@@ -1496,15 +1195,11 @@ export default function ProgramsPage() {
             <div className="nr-modal-header">
               <div>
                 <span className="nr-dashboard-kicker">
-                  {isArabic
-                    ? "إدارة البرامج"
-                    : "Program Management"}
+                  {isArabic ? "إدارة البرامج" : "Program Management"}
                 </span>
 
                 <h2 id="program-trash-title">
-                  {isArabic
-                    ? "سلة المحذوفات"
-                    : "Recycle Bin"}
+                  {isArabic ? "سلة المحذوفات" : "Recycle Bin"}
                 </h2>
 
                 <p>
@@ -1520,11 +1215,7 @@ export default function ProgramsPage() {
                 onClick={() => {
                   setIsTrashOpen(false);
                 }}
-                aria-label={
-                  isArabic
-                    ? "إغلاق النافذة"
-                    : "Close dialog"
-                }
+                aria-label={isArabic ? "إغلاق النافذة" : "Close dialog"}
               >
                 ×
               </button>
@@ -1557,9 +1248,7 @@ export default function ProgramsPage() {
             ) : deletedPrograms.length === 0 ? (
               <div className="nr-state">
                 <strong>
-                  {isArabic
-                    ? "سلة المحذوفات فارغة"
-                    : "Recycle bin is empty"}
+                  {isArabic ? "سلة المحذوفات فارغة" : "Recycle bin is empty"}
                 </strong>
 
                 <p>
@@ -1570,83 +1259,63 @@ export default function ProgramsPage() {
               </div>
             ) : (
               <div className="nr-program-trash-list">
-                {deletedPrograms.map(
-                  (program: Program) => (
-                    <article
-                      key={program.id}
-                      className="nr-program-trash-item"
-                    >
-                      <div>
-                        <span className="nr-dashboard-kicker">
-                          {program.slug}
-                        </span>
+                {deletedPrograms.map((program: Program) => (
+                  <article key={program.id} className="nr-program-trash-item">
+                    <div>
+                      <span className="nr-dashboard-kicker">
+                        {program.slug}
+                      </span>
 
-                        <h3>
-                          {isArabic
-                            ? program.titleAr
-                            : program.titleEn}
-                        </h3>
+                      <h3>{isArabic ? program.titleAr : program.titleEn}</h3>
 
-                        <p>
-                          {program.basePrice}{" "}
-                          {program.currencyCode}
-                        </p>
-                      </div>
+                      <p>
+                        {program.basePrice} {program.currencyCode}
+                      </p>
+                    </div>
 
-                      <div className="nr-program-trash-actions">
-                        <button
-                          type="button"
-                          className="nr-program-action nr-program-action-edit"
-                          onClick={() => {
-                            void handleRestoreProgram(
-                              program.id,
-                            );
-                          }}
-                          disabled={
-                            restoringProgramId ===
-                              program.id ||
-                            permanentlyDeletingProgramId ===
-                              program.id
-                          }
-                        >
-                          {restoringProgramId ===
-                          program.id
-                            ? isArabic
-                              ? "جاري الاستعادة..."
-                              : "Restoring..."
-                            : isArabic
-                              ? "استعادة"
-                              : "Restore"}
-                        </button>
+                    <div className="nr-program-trash-actions">
+                      <button
+                        type="button"
+                        className="nr-program-action nr-program-action-edit"
+                        onClick={() => {
+                          void handleRestoreProgram(program.id);
+                        }}
+                        disabled={
+                          restoringProgramId === program.id ||
+                          permanentlyDeletingProgramId === program.id
+                        }
+                      >
+                        {restoringProgramId === program.id
+                          ? isArabic
+                            ? "جاري الاستعادة..."
+                            : "Restoring..."
+                          : isArabic
+                            ? "استعادة"
+                            : "Restore"}
+                      </button>
 
-                        <button
-                          type="button"
-                          className="nr-program-action nr-program-action-delete"
-                          onClick={() => {
-                            void handlePermanentDeleteProgram(
-                              program.id,
-                            );
-                          }}
-                          disabled={
-                            permanentlyDeletingProgramId ===
-                              program.id ||
-                            restoringProgramId ===
-                              program.id
-                          }
-                        >
-                          {permanentlyDeletingProgramId ===
-                          program.id
-                            ? isArabic
-                              ? "جاري الحذف..."
-                              : "Deleting..."
-                            : isArabic
-                              ? "حذف نهائي"
-                              : "Delete Permanently"}
-                        </button>
-                      </div>
-                    </article>
-                  ),
-                )}
+                      <button
+                        type="button"
+                        className="nr-program-action nr-program-action-delete"
+                        onClick={() => {
+                          void handlePermanentDeleteProgram(program.id);
+                        }}
+                        disabled={
+                          permanentlyDeletingProgramId === program.id ||
+                          restoringProgramId === program.id
+                        }
+                      >
+                        {permanentlyDeletingProgramId === program.id
+                          ? isArabic
+                            ? "جاري الحذف..."
+                            : "Deleting..."
+                          : isArabic
+                            ? "حذف نهائي"
+                            : "Delete Permanently"}
+                      </button>
+                    </div>
+                  </article>
+                ))}
               </div>
             )}
           </section>
@@ -1654,8 +1323,7 @@ export default function ProgramsPage() {
       ) : null}
 
       {isCreateOpen &&
-      ((editingProgram && canUpdate) ||
-        (!editingProgram && canCreate)) ? (
+      ((editingProgram && canUpdate) || (!editingProgram && canCreate)) ? (
         <div
           className="nr-modal-backdrop"
           role="presentation"
@@ -1673,9 +1341,7 @@ export default function ProgramsPage() {
             <div className="nr-modal-header">
               <div>
                 <span className="nr-dashboard-kicker">
-                  {isArabic
-                    ? "إدارة البرامج"
-                    : "Program Management"}
+                  {isArabic ? "إدارة البرامج" : "Program Management"}
                 </span>
 
                 <h2 id="create-program-title">
@@ -1699,11 +1365,7 @@ export default function ProgramsPage() {
                 type="button"
                 className="nr-modal-close"
                 onClick={closeCreateDialog}
-                aria-label={
-                  isArabic
-                    ? "إغلاق النافذة"
-                    : "Close dialog"
-                }
+                aria-label={isArabic ? "إغلاق النافذة" : "Close dialog"}
                 disabled={isSubmitting}
               >
                 ×
@@ -1751,14 +1413,10 @@ export default function ProgramsPage() {
             ) : null}
 
             {formError ? (
-              <p className="nr-admin-login-error">
-                {formError}
-              </p>
+              <p className="nr-admin-login-error">{formError}</p>
             ) : null}
 
-            {editingProgram &&
-            canUpdate &&
-            !canPublish ? (
+            {editingProgram && canUpdate && !canPublish ? (
               <p className="nr-admin-login-error">
                 {isArabic
                   ? "يمكنك تعديل بيانات البرنامج، لكن نشره يتطلب صلاحية النشر."
@@ -1767,21 +1425,21 @@ export default function ProgramsPage() {
             ) : null}
 
             <ProgramForm
+              programId={editingProgram?.id}
+              currentCoverUrl={editingProgram?.coverUrl}
               isCreating={!editingProgram}
-              visas={activeVisas.map(
-                (visa: ProgramVisaOption) => ({
-                  id: visa.id,
-                  nameAr: visa.nameAr,
-                  nameEn: visa.nameEn,
-                  visaType: visa.visaType,
-                  processingType: visa.processingType,
-                  processingTimeDays: visa.processingTimeDays,
-                  validityDays: visa.validityDays,
-                  maxStayDays: visa.maxStayDays,
-                  basePrice: visa.basePrice,
-                  currencyCode: visa.currencyCode,
-                }),
-              )}
+              visas={activeVisas.map((visa: ProgramVisaOption) => ({
+                id: visa.id,
+                nameAr: visa.nameAr,
+                nameEn: visa.nameEn,
+                visaType: visa.visaType,
+                processingType: visa.processingType,
+                processingTimeDays: visa.processingTimeDays,
+                validityDays: visa.validityDays,
+                maxStayDays: visa.maxStayDays,
+                basePrice: visa.basePrice,
+                currencyCode: visa.currencyCode,
+              }))}
               transports={activeTransports.map(
                 (transport: ProgramTransportOption) => ({
                   id: transport.id,
@@ -1797,81 +1455,54 @@ export default function ProgramsPage() {
                   capacity: transport.capacity,
                 }),
               )}
-              hotels={activeHotels.map(
-                (hotel: ProgramHotelOption) => ({
-                  id: hotel.id,
-                  nameAr: hotel.nameAr,
-                  nameEn: hotel.nameEn,
-                  cityAr: hotel.cityAr,
-                  cityEn: hotel.cityEn,
-                  stars: hotel.stars,
-                }),
-              )}
-              countries={countries.map(
-                (country: ProgramCountryOption) => ({
-                  id: country.id,
-                  nameAr:
-                    country.nameAr,
-                  nameEn:
-                    country.nameEn,
-                }),
-              )}
+              hotels={activeHotels.map((hotel: ProgramHotelOption) => ({
+                id: hotel.id,
+                nameAr: hotel.nameAr,
+                nameEn: hotel.nameEn,
+                cityAr: hotel.cityAr,
+                cityEn: hotel.cityEn,
+                stars: hotel.stars,
+              }))}
+              countries={countries.map((country: ProgramCountryOption) => ({
+                id: country.id,
+                nameAr: country.nameAr,
+                nameEn: country.nameEn,
+              }))}
               initialValues={
                 editingProgram
                   ? {
-                      titleAr:
-                        editingProgram.titleAr,
-                      titleEn:
-                        editingProgram.titleEn,
-                      slug:
-                        editingProgram.slug,
-                      summaryAr:
-                        editingProgram.summaryAr,
-                      summaryEn:
-                        editingProgram.summaryEn,
-                      descriptionAr:
-                        editingProgram.descriptionAr,
-                      descriptionEn:
-                        editingProgram.descriptionEn,
-                      countryId:
-                        editingProgram.countryId ??
-                        "",
-                      durationDays:
-                        editingProgram.durationDays,
-                      durationNights:
-                        editingProgram.durationNights,
-                      basePrice:
-                        editingProgram.basePrice,
-                      currencyCode:
-                        editingProgram.currencyCode,
-                      flightInclusion:
-                        editingProgram.flightInclusion,
-                      flightNotesAr:
-                        editingProgram.flightNotesAr,
-                      flightNotesEn:
-                        editingProgram.flightNotesEn,
-                      status:
-                        editingProgram.status,
-                      isFeatured:
-                        editingProgram.isFeatured,
-                      isActive:
-                        editingProgram.isActive,
-                      sortOrder:
-                        editingProgram.sortOrder,
-                      hotels:
-                        editingProgramHotels,
-                      flights:
-                        editingProgramFlights,
-                      transports:
-                        editingProgramTransports,
-                      visas:
-                        editingProgramVisas,
+                      originCityId: editingProgram.originCityId ?? "",
+                      travelMode: editingProgram.travelMode ?? "",
+                      priceBasis: editingProgram.priceBasis ?? "",
+                      taxStatus: editingProgram.taxStatus ?? "",
+                      visaStatus: editingProgram.visaStatus ?? "",
+                      titleAr: editingProgram.titleAr,
+                      titleEn: editingProgram.titleEn,
+                      slug: editingProgram.slug,
+                      summaryAr: editingProgram.summaryAr,
+                      summaryEn: editingProgram.summaryEn,
+                      descriptionAr: editingProgram.descriptionAr,
+                      descriptionEn: editingProgram.descriptionEn,
+                      countryId: editingProgram.countryId ?? "",
+                      durationDays: editingProgram.durationDays,
+                      durationNights: editingProgram.durationNights,
+                      basePrice: editingProgram.basePrice,
+                      currencyCode: editingProgram.currencyCode,
+                      flightInclusion: editingProgram.flightInclusion,
+                      flightNotesAr: editingProgram.flightNotesAr,
+                      flightNotesEn: editingProgram.flightNotesEn,
+                      status: editingProgram.status,
+                      isFeatured: editingProgram.isFeatured,
+                      isActive: editingProgram.isActive,
+                      sortOrder: editingProgram.sortOrder,
+                      hotels: editingProgramHotels,
+                      flights: editingProgramFlights,
+                      transports: editingProgramTransports,
+                      visas: editingProgramVisas,
                     }
                   : undefined
               }
-              onSubmit={
-                handleCreateProgram
-              }
+              onSubmit={handleCreateProgram}
               isSubmitting={
                 isSubmitting ||
                 isCountriesLoading ||

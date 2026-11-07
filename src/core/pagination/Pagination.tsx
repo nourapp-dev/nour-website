@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "../i18n";
+import {useId} from 'react';
 
 type PaginationProps = {
   currentPage: number;
@@ -21,6 +22,7 @@ export default function Pagination({
 }: PaginationProps) {
   const { language } = useLanguage();
   const isArabic = language === "ar";
+  const pageSizeId=useId();
 
   const canGoPrevious = currentPage > 1;
   const canGoNext = currentPage < totalPages;
@@ -35,12 +37,12 @@ export default function Pagination({
       }
     >
       <div className="nr-pagination-size">
-        <label htmlFor="pagination-page-size">
+        <label htmlFor={pageSizeId}>
           {isArabic ? "عدد الصفوف" : "Rows per page"}
         </label>
 
         <select
-          id="pagination-page-size"
+          id={pageSizeId}
           className="nr-pagination-select"
           value={pageSize}
           onChange={(event) => {
