@@ -25,6 +25,111 @@ const program = {
 };
 const result = (data, extra = {}) => ({ data, isLoading: false, isPending: false, isError: false, refetch() {}, ...extra });
 
+for(const language of ['ar','en'])for(const theme of ['light','dark'])test(`${language} ${theme}: programme title, isolated price and short no-stay state retain their semantics`,async()=>{
+ const title='Very long programme title '.repeat(12);const fixture={...program,titleAr:title,titleEn:title,durationNights:0,summaryAr:'UNWANTED LONG DESCRIPTION',summaryEn:'UNWANTED LONG DESCRIPTION'};
+ await withUI('src/features/programs/components/ProgramCard.tsx',{props:{program:fixture,language}},async()=>{
+  document.documentElement.dataset.theme=theme;
+  const css=document.createElement('style');css.textContent=(readFileSync(resolve(repo,'src/styles/public-content.module.css'),'utf8')+'\n'+readFileSync(resolve(repo,'src/features/programs/components/ProgramCard.module.css'),'utf8')).replaceAll(':global(html[data-theme="dark"])','html[data-theme="dark"]');document.head.append(css);
+  const heading=document.querySelector('h3');assert.equal(heading.textContent,title);assert.equal(heading.title,title);assert.equal(window.getComputedStyle(heading).getPropertyValue('-webkit-line-clamp'),'2');
+  const amount=document.querySelector('.amount');assert.equal(amount.dir,'ltr');assert.equal(amount.querySelectorAll('bdi').length,2);assert.equal(amount.lastElementChild.textContent,'SAR');assert.equal(window.getComputedStyle(amount).direction,'ltr');
+  assert.doesNotMatch(document.body.textContent,/UNWANTED LONG DESCRIPTION/);assert.match(document.querySelector('.summary').textContent,language==='ar'?/دون إقامة فندقية/:/No hotel stay/);
+ });
+});
+
+for(const language of ['ar','en'])for(const theme of ['light','dark'])test(`${language} ${theme}: article card reserves image space and separates metadata, clamped copy and action`,async()=>{
+ const title='A long article title '.repeat(10),article={id:'test',slug:'test',title_ar:title,title_en:title,image:'',excerpt_ar:'ملخص اختبار '.repeat(20),excerpt_en:'Test excerpt '.repeat(20),article_categories:{id:'c',name_ar:'تصنيف',name_en:'Category'},published_at:'2026-01-08T10:00:00Z'};
+ await withUI('src/features/articles/ArticleCard.tsx',{props:{article,language}},async()=>{
+  document.documentElement.dataset.theme=theme;const css=document.createElement('style');css.textContent=(readFileSync(resolve(repo,'src/styles/public-content.module.css'),'utf8')+'\n'+readFileSync(resolve(repo,'src/features/articles/ArticleCard.module.css'),'utf8')).replaceAll(':global(html[data-theme="dark"])','html[data-theme="dark"]');document.head.append(css);
+  assert.equal(window.getComputedStyle(document.querySelector('.image')).aspectRatio,'16/9');assert.equal(window.getComputedStyle(document.querySelector('h3')).getPropertyValue('-webkit-line-clamp'),'2');assert.equal(document.querySelector('h3').title,title);assert.equal(window.getComputedStyle(document.querySelector('.excerpt')).getPropertyValue('-webkit-line-clamp'),'3');
+  assert.ok(document.querySelector('.meta time'));assert.equal(document.querySelectorAll('article a').length,1);assert.match(document.querySelector('article a').textContent,language==='ar'?/قراءة المقال/:/Read article/);assert.equal(document.querySelector('.meta a'),null);
+ });
+});
+
+for(const language of ['ar','en'])for(const theme of ['light','dark'])for(const width of [390,768,1024,1440])test(`${language} ${theme} ${width}: map card owns its palette and compact layout`,async()=>{
+ const facts={travelMode:'bus',priceBasis:'per_person',taxStatus:'included',origins:[{nameAr:'مدينة لا تتكرر',nameEn:'Do not repeat city'}],departures:[],stays:[],transports:[],actualFlightCount:0};
+ await withUI('src/features/programs/components/ProgramCard.tsx',{props:{language,compact:true,program:{...program,titleAr:'عنوان طويل '.repeat(20),titleEn:'Long title '.repeat(20),display:facts}}},async()=>{
+  document.documentElement.dataset.theme=theme;const root=document.getElementById('root');root.className='panel details';root.style.width=width+'px';
+  const css=document.createElement('style');const card=(readFileSync(resolve(repo,'src/styles/public-content.module.css'),'utf8')+'\n'+readFileSync(resolve(repo,'src/features/programs/components/ProgramCard.module.css'),'utf8')).replaceAll(':global(html[data-theme="dark"])','html[data-theme="dark"]');css.textContent=card+'\n'+readFileSync(resolve(repo,'app/components/home/why-nour/NourWorldMap.module.css'),'utf8');document.head.append(css);
+  const article=document.querySelector('article');const style=window.getComputedStyle(article);
+  const resolveColor=(element,property)=>{let color=window.getComputedStyle(element).getPropertyValue(property);if(color.startsWith('var(')){const key=color.slice(4,-1);let current=element;while(current){const value=window.getComputedStyle(current).getPropertyValue(key);if(value)return value.trim();current=current.parentElement;}}return color;};
+  const luminance=color=>{let c=color.startsWith('#')?color.slice(1).match(/../g).map(v=>parseInt(v,16)):color.match(/[\d.]+/g).slice(0,3).map(Number);return c.map(v=>{const s=v/255;return s<=.04045?s/12.92:((s+.055)/1.055)**2.4;}).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);};
+  const bg=luminance(resolveColor(article,'background-color'));
+  for(const element of article.querySelectorAll('h3,p,small,strong')){const fg=luminance(resolveColor(element,'color'));assert.ok((Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05)>=4.5,JSON.stringify({tag:element.tagName,color:resolveColor(element,'color'),bg:resolveColor(article,'background-color'),fg,bg}));}
+  const a=article.querySelector('a'),fg=luminance(resolveColor(a,'color')),abg=luminance(resolveColor(a,'background-color'));assert.ok((Math.max(fg,abg)+.05)/(Math.min(fg,abg)+.05)>=4.5,JSON.stringify({foreground:resolveColor(a,"color"),background:resolveColor(a,"background-color"),fg,abg}));
+  assert.equal(style.height,'auto');assert.equal(style.minHeight,'0px');assert.equal(article.classList.contains('nr-all-programs-card'),false);assert.equal(window.getComputedStyle(article.querySelector('.body')).flexGrow,'0');assert.equal(window.getComputedStyle(article.querySelector('h3')).overflowWrap,'anywhere');
+  assert.equal(article.querySelector('img'),null);assert.doesNotMatch(article.textContent,/Do not repeat city|مدينة لا تتكرر/);assert.equal(article.querySelectorAll('a').length,1);
+ });
+});
+
+for(const language of ['ar','en'])test(language+': non-applicable visa is hidden while excluded and unknown remain distinct',async()=>{
+ let status='not_applicable';const state={language,query:({queryKey})=>result(['transports','visas'].includes(queryKey.at(-1))?[]:{...program,visaStatus:status})};
+ await withUI('app/programs/[slug]/ProgramDetailsClient.tsx',state,async({render})=>{
+  assert.equal(document.querySelector('#visas'),null);assert.equal(document.querySelector('a[href="#visas"]'),null);
+  status='excluded';await render();assert.match(document.querySelector('#visas').textContent,language==='ar'?/غير مشمولة/:/not included/);
+  status=null;await render();assert.match(document.querySelector('#visas').textContent,language==='ar'?/غير محددة/:/unspecified/);assert.ok(document.querySelector('a[href="#visas"]'));
+ });
+});
+
+test('missing full-card cover has a stable 16:9 placeholder and compact form leaves other cards intact',async()=>{
+ await withUI('src/features/programs/components/ProgramCard.tsx',{props:{program:{...program,coverUrl:null},language:'en'}},async()=>{
+  assert.match(document.querySelector('.image').textContent,/image unavailable/);assert.equal(document.querySelector('article').classList.contains('compact'),false);assert.ok(document.querySelector('.summary'));assert.ok(document.querySelector('.nr-all-programs-card'));
+ });
+});
+
+for(const language of ['ar','en'])test(language+': article service failure can retry and is distinct from an unpublished article',async()=>{
+ let retries=0;const state={language,query:()=>result(undefined,{isError:true,refetch:()=>retries++})};
+ await withUI('app/articles/[slug]/ArticleDetailsClient.tsx',state,async({click,render})=>{
+  assert.ok(document.querySelector('[role="alert"]'));assert.doesNotMatch(document.body.textContent,/404/);await click(document.querySelector('button'));assert.equal(retries,1);
+  state.query=()=>result(null);await render();assert.match(document.body.textContent,/404/);assert.equal(document.querySelector('[role="alert"]'),null);
+ });
+});
+
+test('related article cards require the same actual category and do not invent author/date metadata',async()=>{
+ const a={id:'a',slug:'a',title_ar:'مقال',title_en:'Current article',content_en:'Local content',excerpt_en:'Excerpt',category_id:'c',article_categories:{id:'c',name_en:'Category',name_ar:'تصنيف'},image:'',published_at:null};
+ const related=[a,{...a,id:'b',slug:'b',title_en:'Same category'},{...a,id:'x',slug:'x',title_en:'Different category',category_id:'other'}];
+ await withUI('app/articles/[slug]/ArticleDetailsClient.tsx',{language:'en',query:({queryKey})=>result(queryKey[1]==='article'?a:related)},async()=>{
+  assert.equal(document.querySelectorAll('.public-article-card').length,1);assert.match(document.querySelector('.public-article-card').textContent,/Same category/);assert.doesNotMatch(document.body.textContent,/Different category/);assert.equal(document.querySelector('time'),null);
+ });
+});
+
+test('homepage program selection uses ordered references and never revives unpublished selections',async()=>{
+ const content=structuredClone(defaultPresentation);content.programs.ids=['two','missing',program.id];
+ await withUI('app/components/home/ProgramsPreview.tsx',{props:{language:'en'},catalog:result([program,{...program,id:'two',slug:'two',titleEn:'Second selected program'}])},async()=>{
+  assert.deepEqual([...document.querySelectorAll('article h3')].map(h=>h.textContent),['Second selected program','Sample Umrah']);
+  assert.equal(document.querySelectorAll('article').length,2);
+ },name=>name.endsWith('usePresentation')?{usePresentation:()=>content}:undefined);
+});
+
+for(const language of ['ar','en']) test(language+': shared card shows stored price facts and honest no-date state with a reversible list URL',async()=>{
+ const display={travelMode:'bus',priceBasis:'per_person',taxStatus:'included',origins:[{id:'r',nameAr:'الرياض',nameEn:'Riyadh'}],departures:[{startAt:'2020-01-01',status:'scheduled'}],stays:[],transports:[],actualFlightCount:0};
+ await withUI('src/features/programs/components/ProgramCard.tsx',{props:{program:{...program,display},language,returnTo:'/programs?country=sa&city=r&q=test&page=2&sort=price_asc'}},async()=>{
+  assert.match(document.body.textContent,language==='ar'?/لا توجد مواعيد قادمة منشورة/:/No upcoming published departures/);
+  assert.match(document.body.textContent,language==='ar'?/للفرد.*شامل الضريبة/:/per person.*Tax included/);
+  assert.equal(document.querySelectorAll('article a').length,1);assert.equal(document.querySelectorAll('article button').length,0);
+  const link=new URL(document.querySelector('article a').href);const from=new URL(link.searchParams.get('from'),'https://nour.test');
+  assert.equal(from.searchParams.get('page'),'2');assert.equal(from.searchParams.get('city'),'r');assert.equal(from.searchParams.get('lang'),language);
+ });
+});
+
+test('catalogue currency/price/page filters persist through a details link and clearing is atomic',async()=>{
+ const many=Array.from({length:12},(_,i)=>({...program,id:String(i),slug:'sample-'+i,basePrice:100+i}));
+ const state={url:'https://nour.test/programs?lang=en&currency=SAR&min=100&max=150&page=2',catalog:result(many)};
+ await withUI('app/programs/ProgramCatalogClient.tsx',state,async({click,render})=>{
+  assert.equal(document.querySelectorAll('.nr-all-programs-card').length,3);
+  assert.match(document.querySelector('[aria-label="Active filters"]').textContent,/Currency: SAR/);
+  assert.equal(new URL(new URL(document.querySelector('.nr-all-programs-card a').href).searchParams.get('from'),'https://nour.test').searchParams.get('page'),'2');
+  const clear=[...document.querySelectorAll('button')].find(b=>/^Reset$|Clear all|Clear filters/.test(b.textContent));assert.ok(clear);await click(clear);await render();
+  assert.equal(window.location.search,'?lang=en');assert.equal(document.querySelectorAll('.nr-all-programs-card').length,9);
+ });
+});
+
+test('a bus program hides the flight section even if legacy free text claims dynamic flight pricing',async()=>{
+ const display={travelMode:'bus',priceBasis:null,taxStatus:null,origins:[],departures:[],stays:[],transports:[],actualFlightCount:0};
+ await withUI('app/programs/[slug]/ProgramDetailsClient.tsx',{language:'en',query:({queryKey})=>result(['transports','visas'].includes(queryKey.at(-1))?[]:{...program,flightInclusion:'dynamic',display})},async()=>{
+  assert.equal(document.querySelector('#flights'),null);assert.equal(document.querySelector('a[href="#flights"]'),null);assert.match(document.body.textContent,/Bus/);
+ });
+});
+
 function loader(mocks, dom) {
   const cache = new Map();
   function load(path) {
@@ -38,7 +143,7 @@ function loader(mocks, dom) {
     }).outputText;
     vm.runInNewContext(source, {
       module: loaded, exports: loaded.exports, console, URL, URLSearchParams, AbortSignal, process,
-      window: dom?.window, document: dom?.window.document, CustomEvent: dom?.window.CustomEvent,
+      window: dom?.window, document: dom?.window.document, get localStorage(){return dom?.window.localStorage;}, CustomEvent: dom?.window.CustomEvent,
       MutationObserver: dom?.window.MutationObserver,
       IntersectionObserver: dom?.window.IntersectionObserver,
       require(name) {
@@ -77,12 +182,13 @@ async function withUI(file, state, run, extraMocks = () => undefined) {
   const load = loader(name => {
     const custom = extraMocks(name);
     if (custom !== undefined) return custom;
+    if(name.endsWith("usePresentation"))return {usePresentation:()=>structuredClone(defaultPresentation)};
     if (name === "framer-motion") return { motion, AnimatePresence: ({ children }) => children, useReducedMotion: () => state.reduceMotion ?? false, useMotionValue: () => ({ set() {} }), useSpring: () => 0, useTransform: () => 0 };
     if (name === "styled-jsx/css") return { __esModule: true, default: { global: (strings, ...values) => String.raw({ raw: strings }, ...values) } };
     if (name.endsWith(".module.css")) return { __esModule: true, default: new Proxy({}, { get: (_, key) => String(key) }) };
     if (name === "next/dynamic") return { __esModule: true, default: () => () => React.createElement("div", { "data-testid": "geographic-map" }) };
     if (name.endsWith("usePublicContact")) return { __esModule: true, default: () => ({ phoneLabel: "Contact", phoneHref: "tel:+000", whatsappHref: "#contact" }) };
-    if (name === "next/image") return { __esModule: true, default: ({ src, alt }) => React.createElement("img", { src, alt }) };
+    if (name === "next/image") return { __esModule: true, default: ({ src, alt, onError }) => React.createElement("img", { src, alt, onError }) };
     if (name === "next/link") return { __esModule: true, default: ({ children, ...props }) => React.createElement("a", props, children) };
     if (name === "next/navigation") return {
       usePathname: () => dom.window.location.pathname,
@@ -340,12 +446,12 @@ test("clearing the city preserves other filters and language", async () => {
   const state = { url: "https://nour.test/programs?city=c&country=sa&duration=short&lang=en", catalog: result([program]), query: () => result({ cities: [{ id: "c", name_en: "City" }], departures: [{ origin_city_id: "c", program_id: program.id }] }) };
   await withUI("app/programs/ProgramCatalogClient.tsx", state, async ({ click, select, render }) => {
     await click(document.querySelector('[aria-controls="program-filter-panel"]'));
-    await select(document.querySelectorAll("#program-filter-panel select")[2], "excluded");
+    await select(document.querySelectorAll("#program-filter-panel select")[2], "all");
     await click([...document.querySelectorAll("button")].find(button => button.textContent === "Clear city filter")); await render();
     const query = new URLSearchParams(window.location.search);
     assert.equal(query.has("city"), false);
     assert.equal(query.get("country"), "sa"); assert.equal(query.get("duration"), "short"); assert.equal(query.get("lang"), "en");
-    assert.equal(document.querySelectorAll("#program-filter-panel select")[2].value, "excluded");
+    assert.equal(document.querySelectorAll("#program-filter-panel select")[2].value, "all");
     assert.equal(document.querySelectorAll(".nr-all-programs-card").length, 1);
   });
 });
@@ -355,10 +461,10 @@ test("Escape closes filters and restores keyboard focus without clearing selecti
     const toggle = document.querySelector('[aria-controls="program-filter-panel"]');
     await click(toggle);
     const field = document.querySelectorAll("#program-filter-panel select")[2];
-    await select(field, "excluded"); field.focus();
+    await select(field, "bus"); field.focus();
     await act(async () => field.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape", bubbles: true })));
     assert.equal(document.querySelector("#program-filter-panel").hidden, true);
-    assert.equal(document.activeElement, toggle); assert.equal(field.value, "excluded");
+    assert.equal(document.activeElement, toggle); assert.equal(field.value, "bus");
   });
 });
 
@@ -546,21 +652,22 @@ for (const language of ["ar", "en"]) test(language + ": map origins select real 
     ? result(mapCatalog) : result(undefined, { isError: true, refetch: () => retries++ }) };
   await withUI("app/components/home/why-nour/NourWorldMap.tsx", state, async ({ click, select }) => {
     const origins = document.querySelector(".locations");
-    assert.match(origins.textContent, language === "ar" ? /1 برامج منشورة/ : /1 published programs/);
+    assert.match(origins.textContent, language === "ar" ? /برنامج واحد منشور/ : /1 published program/);
     assert.doesNotMatch(origins.textContent, /2 published programs|2 برامج منشورة/);
-    assert.ok(origins.compareDocumentPosition(document.querySelector(".layout")) & 4);
+    assert.ok(document.querySelector("aside").contains(origins));
     await click(origins.querySelector("button"));
-    assert.equal(origins.querySelector("button").getAttribute("aria-pressed"), "true");
-    assert.equal(document.querySelector('a[href*="/programs/sample"]').getAttribute("href"), "/programs/sample?lang=" + language);
-    assert.equal(document.querySelector('a[href*="city="]').getAttribute("href"), "/programs?city=riyadh&lang=" + language);
+    assert.ok(document.querySelector("aside h3"));
+    const detailLink=new URL(document.querySelector('a[href*="/programs/sample"]').href);assert.equal(detailLink.searchParams.get("lang"),language);assert.equal(new URL(detailLink.searchParams.get("from"),"https://nour.test").searchParams.get("city"),"riyadh");
+    assert.equal(new URL(document.querySelector('a[href*="city="]').href).searchParams.get("city"), "riyadh");
     await select(document.querySelector("select"), "d1");
     assert.match(document.querySelector(".pickups").textContent, language === "ar" ? /تعذر تحميل/ : /could not be loaded/);
     assert.ok(document.querySelector('a[href*="/programs/sample"]'));
     await click(document.querySelector(".pickups button")); assert.equal(retries, 1);
-    await click(origins.querySelectorAll("button")[1]);
+    await click(document.querySelector("aside > button"));
+    await click(document.querySelectorAll(".locations button")[1]);
     assert.match(document.querySelector("aside").textContent, language === "ar" ? /لا توجد برامج منشورة/ : /No published programs/);
     assert.match(document.querySelector("aside").textContent, language === "ar" ? /غير محدد على الخريطة/ : /coordinates are missing/);
-    assert.equal(document.querySelector("aside a"), null);
+    assert.equal(document.querySelector('aside a[href*="/programs/sample"]'), null);
     await click([...document.querySelectorAll(".tabs button")][1]);
     await click(document.querySelector(".locations button"));
     assert.equal(document.querySelector('a[href*="country="]').getAttribute("href"), "/programs?country=eg&lang=" + language);
@@ -605,7 +712,7 @@ test("map catalog distinguishes pending, error with retry, and an empty response
     assert.equal(document.querySelector(".locations"), null);
     await click(document.querySelector("aside button")); assert.equal(retries, 1);
     state.query = () => result({ countries: [], cities: [], programs: [], departures: [] }); await render();
-    assert.match(document.querySelector("aside").textContent, /No active origins/);
+    assert.match(document.querySelector("aside").textContent, /No published origins/);
     assert.equal(document.querySelector("aside button"), null);
   });
 });
@@ -1037,13 +1144,13 @@ test("privacy banner stays out of account and admin screens", async () => {
 
 
 for (const language of ["ar", "en"]) {
-  test(language + ": payment cards preserve provider identities, shared terms and paused payment notice", async () => {
+  test(language + ": payment cards preserve provider identities and editable copy without an operational notice", async () => {
     await withUI("app/components/home/Payments.tsx", {props:{language}}, async () => {
       assert.equal(document.getElementById("payments").dir, language === "ar" ? "rtl" : "ltr");
-      const cards = [...document.querySelectorAll(".nr-payment-brand-card")];
+      const cards = [...document.querySelectorAll(".payment-logos figure")];
       assert.equal(cards.length,6);
       for (const card of cards) {
-        const name = card.querySelector("strong").textContent.trim();
+        const name = card.querySelector("figcaption").textContent.trim();
         assert.equal(card.querySelector("img").alt, name);
         assert.equal(card.querySelectorAll("a,button").length,0);
         assert.equal(card.querySelector(".nr-payment-brand-meta span"),null);
@@ -1054,11 +1161,9 @@ for (const language of ["ar", "en"]) {
         "/images/payments/tabby.png", "/images/payments/tamara.png",
       ]);
       assert.equal(document.querySelectorAll(".nr-payment-flex-badge").length,0);
-      assert.match(document.querySelector(".nr-payments-flex-group").textContent,
-        language === "ar" ? /تخضع خيارات التقسيط للأهلية/ : /installment options depend on eligibility/);
-      assert.match(document.querySelector(".nr-payments-availability").textContent,
-        language === "ar" ? /الحجز والدفع عبر الموقع متوقفان حاليًا/ : /Website booking and payment are currently paused/);
-      assert.match(document.getElementById("nr-payments-title").textContent, language === "ar" ? /وسائل الدفع/ : /Payment methods/);
+      assert.equal(document.querySelector("#payments a, #payments button"), null);
+      assert.doesNotMatch(document.querySelector("#payments").textContent, /الحجز والدفع عبر الموقع متوقفان حاليًا|الشعارات تعريفية فقط|Website booking and payment are (currently )?paused|Logos are informational only/);
+      assert.match(document.querySelector("#payments h2").textContent, language === "ar" ? /وسائل الدفع/ : /Payment methods/);
     });
   });
 }
@@ -1183,7 +1288,7 @@ test("English result count distinguishes zero, one and multiple programs after f
 for (const language of ["ar", "en"]) for (const theme of ["light", "dark"]) {
   test(language + " " + theme + ": all flight inclusion notices have readable titles and notes", async () => {
     let inclusion="excluded";
-    const state={language, query:({queryKey})=>result(["transports","visas"].includes(queryKey.at(-1))?[]:{...program,flightInclusion:inclusion,flightNotesAr:"تفاصيل الطيران",flightNotesEn:"Flight details"})};
+    const state={language, query:({queryKey})=>result(["transports","visas"].includes(queryKey.at(-1))?[]:{...program,flightInclusion:inclusion,flightNotesAr:"تفاصيل الطيران",flightNotesEn:"Flight details",display:{travelMode:"air",origins:[],departures:[],stays:[],transports:[],actualFlightCount:1},flights:[{id:"real",departureAirportEn:"RUH",arrivalAirportEn:"JED",departureAt:"2099-01-01T09:00:00Z",arrivalAt:"2099-01-01T11:00:00Z"}]})};
     await withUI("app/programs/[slug]/ProgramDetailsClient.tsx",state,async ({render})=>{
       document.documentElement.dataset.theme=theme; document.getElementById("root").className="programs-shell";
       const css=document.createElement("style");css.textContent=readFileSync(resolve(repo,"app/programs/programs-ui.css"),"utf8");document.body.append(css);
@@ -1248,3 +1353,24 @@ for (const language of ["ar", "en"]) for (const theme of ["light", "dark"]) {
     });
   });
 }
+
+for(const language of ['ar','en'])test(language+': international country drills into cities and list/map use the same selection after refetch',async()=>{
+ const data=structuredClone(mapCatalog);data.cities.push({id:'cairo',country_id:'eg',name_ar:'القاهرة',name_en:'Cairo',latitude:30,longitude:31});data.departures.push({id:'de',origin_city_id:'cairo',program_id:'egypt',start_at:'2099-01-01T10:00:00Z'});
+ let notify;const state={props:{language},IntersectionObserver:class{constructor(fn){notify=fn;}observe(){}disconnect(){}},query:()=>result(data)};
+ await withUI('app/components/home/why-nour/NourWorldMap.tsx',state,async({click,render})=>{
+  await act(async()=>notify([{isIntersecting:true}]));await click(document.querySelectorAll('.tabs button')[1]);await click(document.querySelector('.locations button'));
+  const city=document.querySelector('.locations button');assert.match(city.textContent,/Cairo|القاهرة/);await click(city);const before=document.querySelector('aside').textContent;assert.ok(document.querySelector('a[href*="city=cairo"]'));
+  await click(document.querySelector('[data-map-point="cairo"]'));assert.equal(document.querySelector('aside').textContent,before);await render();assert.equal(document.querySelector("aside").textContent,before);
+ },name=>name==='next/dynamic'?{__esModule:true,default:()=>props=>React.createElement('div',null,props.points.filter(p=>!p.destination).map(p=>React.createElement('button',{key:p.id,'data-map-point':p.id,onClick:()=>props.onSelect(p.id)},p.name)))}:undefined);
+});
+test('map resource failure preserves locations and reports unavailable counts instead of successful zero',async()=>{
+ const data={...mapCatalog,programs:[],departures:[],errors:['programs','departures']};let retried=0;
+ await withUI('app/components/home/why-nour/NourWorldMap.tsx',{props:{language:'en'},query:()=>result(data,{refetch:()=>retried++})},async({click})=>{
+  assert.match(document.querySelector('.locations').textContent,/counts unavailable/);assert.doesNotMatch(document.querySelector('.locations').textContent,/No published programs/);await click(document.querySelector('[role=alert] button'));assert.equal(retried,1);await click(document.querySelector('.locations button'));assert.match(document.querySelector('aside').textContent,/could not be loaded/);
+ });
+});
+
+for(const [name,file] of [['services','Services'],['map','why-nour/NourWorldMap'],['journey','Journey'],['why','WhyNour'],['payments','Payments'],['priorities','NourStatistics']])test(name+': actual home component renders edited bilingual section content',async()=>{
+ const {copy}=await import('../app/data/home.ts');const presentation=structuredClone(defaultPresentation);presentation.sections[name].title={ar:'عنوان مسودة فعلي',en:'Actual draft heading'};presentation.sections[name].description={ar:'وصف مسودة فعلي',en:'Actual draft description'};
+ for(const language of ['ar','en'])await withUI('app/components/home/'+file+'.tsx',{props:{language,t:copy[language]},query:()=>result(mapCatalog)},async()=>{assert.equal(document.querySelector('h2').textContent,language==='ar'?'عنوان مسودة فعلي':'Actual draft heading');assert.match(document.body.textContent,language==='ar'?/وصف مسودة فعلي/:/Actual draft description/);},module=>module.endsWith('usePresentation')?{usePresentation:()=>presentation}:undefined);
+});

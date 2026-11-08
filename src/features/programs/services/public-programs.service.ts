@@ -1,6 +1,8 @@
+import {loadDisplayFacts,type ProgramDisplayFacts} from "../display";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type MediaRow = {
+  alt_ar?:string|null;alt_en?:string|null;
   bucket: string;
   path: string;
 };
@@ -31,6 +33,8 @@ type ProgramRow = {
 };
 
 export type PublicProgram = {
+  coverAltAr?:string;coverAltEn?:string;
+  display?:ProgramDisplayFacts;displayError?:boolean;
   id: string;
   titleAr: string;
   titleEn: string;
@@ -160,6 +164,7 @@ export async function getPublicPrograms(
   const supabaseUrl =
     process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 
+  let facts=new Map<string,ProgramDisplayFacts>();let displayError=false;try{facts=await loadDisplayFacts(supabase,rows.map(p=>p.id));}catch{displayError=true;}
   return rows.map((program) => {
     const country = program.country_id
       ? countryMap.get(program.country_id)
@@ -170,6 +175,7 @@ export async function getPublicPrograms(
 
     return {
       id: program.id,
+      display:facts.get(program.id),displayError,
       titleAr: program.title_ar,
       titleEn: program.title_en,
       slug: program.slug,
@@ -193,6 +199,7 @@ export async function getPublicPrograms(
       flightInclusion:
         program.flight_inclusion ??
         "dynamic",
+      coverAltAr:coverMedia?.alt_ar??undefined,coverAltEn:coverMedia?.alt_en??undefined,
       coverUrl:
         coverMedia && supabaseUrl
           ? createPublicMediaUrl(

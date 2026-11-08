@@ -8,10 +8,14 @@ import {
   storeLink,
   validatePresentation,
   savePresentation,
-  PRESENTATION_KEY,
-  DRAFT_KEY,
 } from "../src/features/website/presentation.ts";
 const config = () => structuredClone(defaultPresentation);
+
+test('page copy, FAQ and ordered program references normalize without duplicating catalogue facts',()=>{
+ const value=config();const a='10000000-0000-4000-8000-000000000001',b='10000000-0000-4000-8000-000000000002';
+ value.programs.ids=[b,a,b,'invalid'];value.pages.partner.title.en='Edited partner';value.pages.careers.faqs[0].answer.en='Edited answer';value.navigation.partnerVisible=false;
+ const actual=normalizePresentation(value);assert.deepEqual(actual.programs.ids,[b,a]);assert.equal(actual.pages.partner.title.en,'Edited partner');assert.equal(actual.pages.careers.faqs[0].answer.en,'Edited answer');assert.equal(actual.navigation.partnerVisible,false);assert.equal('basePrice' in actual.programs,false);
+});
 test("empty configuration uses defaults and leaves the hero photo and store links empty", () => {
   const result = normalizePresentation({});
   assert.equal(result.hero.image, "");
@@ -107,20 +111,11 @@ test("malformed public configuration is normalized safely", () => {
   });
   assert.equal(result.hero.href, "");
 });
-test("saving a draft never writes the published setting; publishing uses a single RPC", async () => {
-  const calls = [];
-  const client = {
-    async rpc(name, args) {
-      calls.push({ name, args });
-      return { error: null };
-    },
-  };
-  await savePresentation(client, config(), false);
-  assert.equal(calls[0].args.p_setting_key, DRAFT_KEY);
-  await savePresentation(client, config(), true);
-  assert.equal(calls[1].args.p_setting_key, PRESENTATION_KEY);
-  assert.equal(calls.length, 2);
-  assert.ok(calls.every((c) => c.name === "update_platform_setting"));
+test('legacy generic presentation writer refuses writes; use versioned workflow',async()=>{
+ let calls=0;const client={rpc:async()=>{calls++;return {error:null};}};
+ await assert.rejects(savePresentation(client,config(),false),/versioned website workflow/);
+ await assert.rejects(savePresentation(client,config(),true),/versioned website workflow/);
+ assert.equal(calls,0);
 });
 test("invalid publishing stops before network writes and permission failures propagate", async () => {
   let calls = 0;
@@ -136,9 +131,9 @@ test("invalid publishing stops before network writes and permission failures pro
   assert.equal(calls, 0);
   await assert.rejects(
     savePresentation(client, config(), true),
-    /permission denied/,
+    /versioned website workflow/,
   );
-  assert.equal(calls, 1);
+  assert.equal(calls, 0);
 });
 
 

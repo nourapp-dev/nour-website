@@ -1,18 +1,13 @@
 "use client";
+import CountryRelations from "../CountryRelations";
+import { marketLabel } from "../directory";
 
 import { useState } from "react";
 
 import Badge from "../../../components/ui/Badge";
 import Button from "../../../components/ui/Button";
-import {
-  Table,
-  TableHeader,
-  TableToolbar,
-} from "../../../components/ui/table";
-import {
-  getAdminTranslations,
-  useLanguage,
-} from "../../../core/i18n";
+import { Table, TableHeader, TableToolbar } from "../../../components/ui/table";
+import { getAdminTranslations, useLanguage } from "../../../core/i18n";
 
 import type { Country } from "../types";
 
@@ -51,8 +46,7 @@ export default function CountriesTable({
 
   const hasSearchValue = searchValue.trim().length > 0;
   const isArabic = language === "ar";
-  const canManageCountries =
-    canUpdate || canPublish || canDelete;
+  const canManageCountries = canUpdate || canPublish || canDelete;
 
   function openDeleteConfirmation(country: Country) {
     if (!canDelete) return;
@@ -86,15 +80,9 @@ export default function CountriesTable({
             className="nr-input"
             type="search"
             value={searchValue}
-            onChange={(event) =>
-              onSearchChange(event.target.value)
-            }
+            onChange={(event) => onSearchChange(event.target.value)}
             placeholder={t.countries.searchPlaceholder}
-            aria-label={
-              isArabic
-                ? "البحث عن دولة"
-                : "Search for a country"
-            }
+            aria-label={isArabic ? "البحث عن دولة" : "Search for a country"}
           />
         }
       />
@@ -140,29 +128,32 @@ export default function CountriesTable({
 
                     <div className="nr-country-name-copy">
                       <strong>
-                        {isArabic
-                          ? country.nameAr
-                          : country.nameEn}
+                        {isArabic ? country.nameAr : country.nameEn}
                       </strong>
                       <small>
-                        {isArabic
-                          ? country.nameEn
-                          : country.nameAr}
+                        {isArabic ? country.nameEn : country.nameAr}
                       </small>
                     </div>
                   </div>
                 </td>
 
-                <td>{country.iso2}</td>
+                <td>
+                  {country.iso2}
+                  <CountryRelations countryId={country.id} />
+                </td>
                 <td>{country.currencyCode}</td>
-                <td>{country.timezone}</td>
+                <td>
+                  {country.timezone}
+                  <small>
+                    {marketLabel(country.marketStatus, language)} ·{" "}
+                    {marketLabel(country.publicationStatus, language)}
+                  </small>
+                </td>
 
                 <td>
                   <Badge
                     variant={
-                      country.status === "active"
-                        ? "success"
-                        : "neutral"
+                      country.status === "active" ? "success" : "neutral"
                     }
                   >
                     {country.status === "active"
@@ -192,9 +183,7 @@ export default function CountriesTable({
                         <Button
                           type="button"
                           variant={
-                            country.status === "active"
-                              ? "outline"
-                              : "primary"
+                            country.status === "active" ? "outline" : "primary"
                           }
                           disabled={isStatusUpdating}
                           onClick={() => onToggleStatus(country)}
@@ -214,9 +203,7 @@ export default function CountriesTable({
                           type="button"
                           variant="danger"
                           disabled={isDeleting}
-                          onClick={() =>
-                            openDeleteConfirmation(country)
-                          }
+                          onClick={() => openDeleteConfirmation(country)}
                         >
                           {isArabic ? "حذف" : "Delete"}
                         </Button>
@@ -268,9 +255,7 @@ export default function CountriesTable({
               onClick={closeDeleteConfirmation}
               disabled={isDeleting}
               aria-label={
-                isArabic
-                  ? "إغلاق نافذة التأكيد"
-                  : "Close confirmation dialog"
+                isArabic ? "إغلاق نافذة التأكيد" : "Close confirmation dialog"
               }
             >
               ×
@@ -281,9 +266,7 @@ export default function CountriesTable({
             </div>
 
             <h3 id="delete-country-title">
-              {isArabic
-                ? "تأكيد حذف الدولة"
-                : "Confirm country deletion"}
+              {isArabic ? "تأكيد حذف الدولة" : "Confirm country deletion"}
             </h3>
 
             <p id="delete-country-description">

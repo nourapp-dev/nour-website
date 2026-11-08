@@ -1,4 +1,6 @@
 "use client";
+import {useLanguage} from "../../../core/i18n";
+import { useDraftGuard,useUnsaved } from "../../admin-workspace/useUnsaved";
 
 import {
   ChangeEvent,
@@ -75,9 +77,10 @@ export default function HotelForm({
   existingCoverUrl,
   existingGallery = [],
   isSubmitting = false,
-  submitLabel = "حفظ الفندق",
+  submitLabel,
   onSubmit,
 }: Props) {
+  const {language}=useLanguage();const ar=language==='ar';
   const initialFormValues =
     useMemo<HotelFormValues>(
       () => ({
@@ -94,6 +97,8 @@ export default function HotelForm({
     useState<HotelFormValues>(
       initialFormValues,
     );
+  const markDraftSaved = useDraftGuard(values, ar ? 'لديك تعديلات غير محفوظة. هل تريد المغادرة؟' : 'You have unsaved changes. Leave?');
+
 
   const [coverPreview, setCoverPreview] =
     useState<string | null>(
@@ -110,6 +115,7 @@ export default function HotelForm({
 
   const [error, setError] =
     useState<string | null>(null);
+  useUnsaved(removedGalleryIds.length>0,ar?'لديك تغييرات غير محفوظة في المعرض. هل تريد المغادرة؟':'You have unsaved gallery changes. Leave?');
 
   function setField<
     K extends keyof HotelFormValues,
@@ -225,7 +231,7 @@ export default function HotelForm({
       !values.nameEn.trim()
     ) {
       setError(
-        "اسم الفندق بالعربية والإنجليزية مطلوب.",
+        (ar ? "اسم الفندق بالعربية والإنجليزية مطلوب." : "Hotel name in Arabic and English is required."),
       );
 
       return;
@@ -236,7 +242,7 @@ export default function HotelForm({
       values.stars > 5
     ) {
       setError(
-        "عدد النجوم يجب أن يكون بين 1 و5.",
+        (ar ? "عدد النجوم يجب أن يكون بين 1 و5." : "Star rating must be between 1 and 5."),
       );
 
       return;
@@ -250,7 +256,7 @@ export default function HotelForm({
       )
     ) {
       setError(
-        "خط العرض يجب أن يكون بين -90 و90.",
+        (ar ? "خط العرض يجب أن يكون بين -90 و90." : "Latitude must be between -90 and 90."),
       );
 
       return;
@@ -264,7 +270,7 @@ export default function HotelForm({
       )
     ) {
       setError(
-        "خط الطول يجب أن يكون بين -180 و180.",
+        (ar ? "خط الطول يجب أن يكون بين -180 و180." : "Longitude must be between -180 and 180."),
       );
 
       return;
@@ -272,7 +278,7 @@ export default function HotelForm({
 
     if (values.sortOrder < 0) {
       setError(
-        "ترتيب الظهور لا يمكن أن يكون أقل من صفر.",
+        (ar ? "ترتيب الظهور لا يمكن أن يكون أقل من صفر." : "Display order cannot be negative."),
       );
 
       return;
@@ -285,11 +291,13 @@ export default function HotelForm({
           removedGalleryIds,
         },
       );
+    markDraftSaved();
+    setRemovedGalleryIds([]);
     } catch (submitError) {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "تعذر حفظ الفندق.",
+          : (ar ? "تعذر حفظ الفندق." : "Unable to save hotel."),
       );
     }
   }
@@ -313,22 +321,15 @@ export default function HotelForm({
           <span>01</span>
 
           <div>
-            <h3>
-              المعلومات الأساسية
-            </h3>
+            <h3>{ar ? "المعلومات الأساسية" : "Basic information"}</h3>
 
-            <p>
-              اسم الفندق والمدينة
-              والتصنيف.
-            </p>
+            <p>{ar ? "اسم الفندق والمدينة\r\n              والتصنيف." : "Hotel name, city and rating."}</p>
           </div>
         </div>
 
         <div className="nour-hotel-form__grid">
           <label>
-            <span>
-              اسم الفندق بالعربية
-            </span>
+            <span>{ar ? "اسم الفندق بالعربية" : "Hotel name in Arabic"}</span>
 
             <input
               value={values.nameAr}
@@ -338,7 +339,7 @@ export default function HotelForm({
                   event.target.value,
                 )
               }
-              placeholder="مثال: فندق نور مكة"
+              placeholder={ar ? "مثال: فندق نور مكة" : "Example: Nour Makkah Hotel"}
               required
             />
           </label>
@@ -362,9 +363,7 @@ export default function HotelForm({
           </label>
 
           <label>
-            <span>
-              المدينة بالعربية
-            </span>
+            <span>{ar ? "المدينة بالعربية" : "City in Arabic"}</span>
 
             <input
               value={values.cityAr}
@@ -374,7 +373,7 @@ export default function HotelForm({
                   event.target.value,
                 )
               }
-              placeholder="مكة المكرمة"
+              placeholder={ar ? "مكة المكرمة" : "Makkah"}
             />
           </label>
 
@@ -396,9 +395,7 @@ export default function HotelForm({
           </label>
 
           <label>
-            <span>
-              عدد النجوم
-            </span>
+            <span>{ar ? "عدد النجوم" : "Star rating"}</span>
 
             <select
               value={values.stars}
@@ -434,9 +431,7 @@ export default function HotelForm({
           </label>
 
           <label>
-            <span>
-              ترتيب الظهور
-            </span>
+            <span>{ar ? "ترتيب الظهور" : "Display order"}</span>
 
             <input
               type="number"
@@ -463,22 +458,15 @@ export default function HotelForm({
           <span>02</span>
 
           <div>
-            <h3>
-              الوصف والعنوان
-            </h3>
+            <h3>{ar ? "الوصف والعنوان" : "Description and address"}</h3>
 
-            <p>
-              محتوى الفندق الذي سيظهر
-              للزائر.
-            </p>
+            <p>{ar ? "محتوى الفندق الذي سيظهر\r\n              للزائر." : "Hotel content displayed to visitors."}</p>
           </div>
         </div>
 
         <div className="nour-hotel-form__grid">
           <label className="nour-hotel-form__wide">
-            <span>
-              وصف الفندق بالعربية
-            </span>
+            <span>{ar ? "وصف الفندق بالعربية" : "Hotel description in Arabic"}</span>
 
             <textarea
               rows={5}
@@ -514,9 +502,7 @@ export default function HotelForm({
           </label>
 
           <label>
-            <span>
-              العنوان بالعربية
-            </span>
+            <span>{ar ? "العنوان بالعربية" : "Address in Arabic"}</span>
 
             <input
               value={values.addressAr}
@@ -552,22 +538,15 @@ export default function HotelForm({
           <span>03</span>
 
           <div>
-            <h3>
-              الموقع الجغرافي
-            </h3>
+            <h3>{ar ? "الموقع الجغرافي" : "Location"}</h3>
 
-            <p>
-              إحداثيات الفندق لاستخدامها
-              لاحقًا في الخرائط.
-            </p>
+            <p>{ar ? "إحداثيات الفندق لاستخدامها\r\n              لاحقًا في الخرائط." : "Hotel coordinates for maps."}</p>
           </div>
         </div>
 
         <div className="nour-hotel-form__grid">
           <label>
-            <span>
-              خط العرض
-            </span>
+            <span>{ar ? "خط العرض" : "Latitude"}</span>
 
             <input
               type="number"
@@ -590,9 +569,7 @@ export default function HotelForm({
           </label>
 
           <label>
-            <span>
-              خط الطول
-            </span>
+            <span>{ar ? "خط الطول" : "Longitude"}</span>
 
             <input
               type="number"
@@ -621,14 +598,9 @@ export default function HotelForm({
           <span>04</span>
 
           <div>
-            <h3>
-              صورة الغلاف
-            </h3>
+            <h3>{ar ? "صورة الغلاف" : "Cover image"}</h3>
 
-            <p>
-              الصورة الأساسية التي ستظهر
-              في بطاقة الفندق.
-            </p>
+            <p>{ar ? "الصورة الأساسية التي ستظهر\r\n              في بطاقة الفندق." : "Main image displayed in the hotel card."}</p>
           </div>
         </div>
 
@@ -641,13 +613,9 @@ export default function HotelForm({
             }
           />
 
-          <strong>
-            اختر صورة الغلاف
-          </strong>
+          <strong>{ar ? "اختر صورة الغلاف" : "Choose cover image"}</strong>
 
-          <small>
-            JPG, PNG أو WebP
-          </small>
+          <small>{ar ? "JPG, PNG أو WebP" : "JPG, PNG or WebP"}</small>
         </label>
 
         {coverPreview ? (
@@ -666,14 +634,9 @@ export default function HotelForm({
           <span>05</span>
 
           <div>
-            <h3>
-              معرض صور الفندق
-            </h3>
+            <h3>{ar ? "معرض صور الفندق" : "Hotel gallery"}</h3>
 
-            <p>
-              يمكنك إضافة عدة صور للغرف
-              والمرافق والفندق.
-            </p>
+            <p>{ar ? "يمكنك إضافة عدة صور للغرف\r\n              والمرافق والفندق." : "Add room, facility and hotel images."}</p>
           </div>
         </div>
 
@@ -687,14 +650,9 @@ export default function HotelForm({
             }
           />
 
-          <strong>
-            اختر صور المعرض
-          </strong>
+          <strong>{ar ? "اختر صور المعرض" : "Choose gallery images"}</strong>
 
-          <small>
-            يمكنك اختيار عدة صور
-            دفعة واحدة
-          </small>
+          <small>{ar ? "يمكنك اختيار عدة صور\r\n            دفعة واحدة" : "Select multiple images at once"}</small>
         </label>
 
         {existingGallery.length >
@@ -734,9 +692,7 @@ export default function HotelForm({
                             image.id,
                           )
                         }
-                      >
-                        استعادة
-                      </button>
+                      >{ar ? "استعادة" : "Restore"}</button>
                     ) : (
                       <button
                         type="button"
@@ -745,9 +701,7 @@ export default function HotelForm({
                             image.id,
                           )
                         }
-                      >
-                        إزالة
-                      </button>
+                      >{ar ? "إزالة" : "Remove"}</button>
                     )}
                   </article>
                 );
@@ -777,9 +731,7 @@ export default function HotelForm({
                         index,
                       )
                     }
-                  >
-                    إزالة
-                  </button>
+                  >{ar ? "إزالة" : "Remove"}</button>
                 </article>
               ),
             )}
@@ -792,14 +744,9 @@ export default function HotelForm({
           <span>06</span>
 
           <div>
-            <h3>
-              حالة الفندق
-            </h3>
+            <h3>{ar ? "حالة الفندق" : "Hotel status"}</h3>
 
-            <p>
-              التحكم بظهور الفندق
-              واستخدامه داخل البرامج.
-            </p>
+            <p>{ar ? "التحكم بظهور الفندق\r\n              واستخدامه داخل البرامج." : "Control hotel visibility and its use in programs."}</p>
           </div>
         </div>
 
@@ -815,9 +762,7 @@ export default function HotelForm({
             }
           />
 
-          <span>
-            الفندق مفعّل
-          </span>
+          <span>{ar ? "الفندق مفعّل" : "Hotel is active"}</span>
         </label>
       </section>
 

@@ -12,6 +12,8 @@ type CoverMediaRow = {
 };
 
 type ProgramRow = {
+  visa_status:import("../labels").VisaStatus;
+  origin_city_id:string|null;travel_mode:string|null;price_basis:string|null;tax_status:string|null;
   id: string;
   title_ar: string;
   title_en: string;
@@ -74,7 +76,7 @@ function mapProgram(row: ProgramRow): Program {
   const coverMedia = getCoverMedia(row.cover_media);
 
   return {
-    id: row.id,
+    id: row.id,visaStatus:row.visa_status,originCityId:row.origin_city_id,travelMode:row.travel_mode,priceBasis:row.price_basis,taxStatus:row.tax_status,
     titleAr: row.title_ar,
     titleEn: row.title_en,
     slug: row.slug,
@@ -115,7 +117,7 @@ const programSelect = `
   summary_en,
   description_ar,
   description_en,
-  country_id,
+  country_id,visa_status,origin_city_id,travel_mode,price_basis,tax_status,
   duration_days,
   duration_nights,
   base_price,
@@ -155,6 +157,7 @@ export async function createProgram(
       description_ar: values.descriptionAr.trim(),
       description_en: values.descriptionEn.trim(),
       country_id: values.countryId || null,
+      visa_status:values.visaStatus===undefined?undefined:values.visaStatus||null,origin_city_id:values.originCityId===undefined?undefined:values.originCityId||null,travel_mode:values.travelMode===undefined?undefined:values.travelMode||null,price_basis:values.priceBasis===undefined?undefined:values.priceBasis||null,tax_status:values.taxStatus===undefined?undefined:values.taxStatus||null,
       duration_days: values.durationDays,
       duration_nights: values.durationNights,
       base_price: values.basePrice,
@@ -232,6 +235,7 @@ export async function updateProgram(
       description_ar: values.descriptionAr.trim(),
       description_en: values.descriptionEn.trim(),
       country_id: values.countryId || null,
+      visa_status:values.visaStatus===undefined?undefined:values.visaStatus||null,origin_city_id:values.originCityId===undefined?undefined:values.originCityId||null,travel_mode:values.travelMode===undefined?undefined:values.travelMode||null,price_basis:values.priceBasis===undefined?undefined:values.priceBasis||null,tax_status:values.taxStatus===undefined?undefined:values.taxStatus||null,
       duration_days: values.durationDays,
       duration_nights: values.durationNights,
       base_price: values.basePrice,

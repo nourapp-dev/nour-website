@@ -1,60 +1,76 @@
-/* Original section rules, scoped without increasing selector specificity. */
-:where(.section) :global(.nr-payments-availability) {   display: grid;   gap: 6px;   margin: 0 0 24px;   padding: 16px 20px;   border: 1px solid var(--nr-border);   border-inline-start: 4px solid #ffc313;   border-radius: 14px;   background: var(--nr-card);   color: var(--nr-text);   font-size: 14px;   line-height: 1.7; }   :global(.nr-payments-premium):where(.section) {   position: relative;   overflow: hidden;   padding: 94px 0 100px;   background:     radial-gradient(       circle at 10% 20%,       rgba(23, 111, 232, 0.11),       transparent 24%     ),     radial-gradient(       circle at 92% 78%,       rgba(255, 195, 19, 0.1),       transparent 23%     ),     linear-gradient(       180deg,       color-mix(in srgb, var(--nr-soft) 86%, #ffffff),       color-mix(in srgb, var(--nr-bg) 96%, #eef6ff)     );   scroll-margin-top: 105px; }   :where(.section) :global(.nr-payments-pattern) {   position: absolute;   inset: 0;   pointer-events: none;   opacity: 0.22;   background-image:     linear-gradient(       rgba(23, 111, 232, 0.04) 1px,       transparent 1px     ),     linear-gradient(       90deg,       rgba(23, 111, 232, 0.04) 1px,       transparent 1px     );   background-size: 52px 52px;   mask-image: linear-gradient(     to bottom,     transparent,     #000 15%,     #000 86%,     transparent   ); }   :where(.section) :global(.nr-payments-orb) {   position: absolute;   width: 360px;   height: 360px;   border-radius: 50%;   pointer-events: none;   filter: blur(28px); }   :where(.section) :global(.nr-payments-orb-blue) {   inset-inline-start: -190px;   top: -170px;   background: rgba(23, 111, 232, 0.14); }   :where(.section) :global(.nr-payments-orb-gold) {   inset-inline-end: -190px;   bottom: -190px;   background: rgba(255, 195, 19, 0.13); }   :where(.section) :global(.nr-payments-inner) {   position: relative;   z-index: 2; }   :where(.section) :global(.nr-payments-heading) {   width: min(900px, 100%);   margin: 0 auto 40px;   text-align: center; }   :where(.section) :global(.nr-payments-kicker) {   display: inline-flex;   min-height: 36px;   align-items: center;   gap: 8px;   padding-inline: 15px;   border: 1px solid rgba(23, 111, 232, 0.15);   border-radius: 999px;   color: var(--nr-blue);   background: color-mix(     in srgb,     var(--nr-card) 86%,     rgba(23, 111, 232, 0.08)   );   box-shadow: 0 12px 28px rgba(23, 111, 232, 0.08);   font-size: 12px;   font-weight: 900;   backdrop-filter: blur(12px); }   :where(.section) :global(.nr-payments-kicker svg) {   width: 17px;   height: 17px;   color: var(--nr-gold); }   :where(.section) :global(.nr-payments-heading h2) {   margin: 18px auto 14px;   color: var(--nr-text);   font-size: clamp(36px, 4.4vw, 56px);   line-height: 1.15;   letter-spacing: -0.025em;   text-wrap: balance; }   :where(.section) :global(.nr-payments-heading p) {   max-width: 760px;   margin: 0 auto;   color: var(--nr-muted);   font-size: 15px;   line-height: 1.82; }   :where(.section) :global(.nr-payments-layout) {   display: grid;   grid-template-columns: minmax(0, 1.45fr) minmax(310px, 0.7fr);   gap: 18px;   align-items: stretch; }   :where(.section) :global(.nr-payments-methods-panel), :where(.section) :global(.nr-payments-trust-panel) {   border: 1px solid var(--nr-border);   border-radius: 28px;   background:     linear-gradient(       145deg,       color-mix(in srgb, var(--nr-card) 94%, transparent),       color-mix(in srgb, var(--nr-card) 83%, transparent)     );   box-shadow:     0 24px 60px rgba(18, 67, 130, 0.08),     inset 0 1px 0 rgba(255, 255, 255, 0.4);   backdrop-filter: blur(18px);   -webkit-backdrop-filter: blur(18px); }   :where(.section) :global(.nr-payments-methods-panel) {   padding: 22px; }   :where(.section) :global(.nr-payments-group + .nr-payments-group) {   margin-top: 18px;   padding-top: 18px;   border-top: 1px solid var(--nr-border); }   :where(.section) :global(.nr-payments-group-heading) {   display: flex;   align-items: center;   justify-content: space-between;   gap: 16px;   margin-bottom: 14px; }   :where(.section) :global(.nr-payments-group-heading span), :where(.section) :global(.nr-payments-group-heading small) {   display: block; }   :where(.section) :global(.nr-payments-group-heading span) {   color: var(--nr-text);   font-size: 14px;   font-weight: 900; }   :where(.section) :global(.nr-payments-group-heading small) {   margin-top: 3px;   color: var(--nr-muted);   font-size: 9px;   line-height: 1.5; }   :where(.section) :global(.nr-payments-group-heading > svg) {   width: 22px;   height: 22px;   color: var(--nr-blue); }   :where(.section) :global(.nr-payments-flex-group   .nr-payments-group-heading   > svg) {   color: var(--nr-gold); }   :where(.section) :global(.nr-payments-logo-grid) {   display: grid;   grid-template-columns: repeat(2, minmax(0, 1fr));   gap: 10px; }   :where(.section) :global(.nr-payment-brand-card) {   position: relative;   min-height: 112px;   display: grid;   grid-template-columns: 98px minmax(0, 1fr);   align-items: center;   gap: 14px;   padding: 13px;   overflow: hidden;   border: 1px solid var(--nr-border);   border-radius: 18px;   background: color-mix(in srgb, var(--nr-card) 82%, transparent);   transition:     border-color 0.22s ease,     box-shadow 0.22s ease; }   :where(.section) :global(.nr-payment-brand-card:hover) {   border-color: rgba(23, 111, 232, 0.25);   box-shadow: 0 16px 34px rgba(18, 67, 130, 0.09); }   :where(.section) :global(.nr-payment-brand-flexible:hover) {   border-color: rgba(255, 195, 19, 0.38); }   :where(.section) :global(.nr-payment-brand-logo) {   min-height: 72px;   display: grid;   place-items: center;   padding: 10px;   border: 1px solid color-mix(in srgb, var(--nr-border) 88%, transparent);   border-radius: 14px;   background: #ffffff; }   :where(.section) :global(.nr-payment-brand-logo img) {   width: 100%;   max-width: 118px;   height: 48px;   object-fit: contain; }   :where(.section) :global(.nr-payment-brand-meta) {   min-width: 0; }   :where(.section) :global(.nr-payment-brand-meta strong), :where(.section) :global(.nr-payment-brand-meta span) {   display: block; }   :where(.section) :global(.nr-payment-brand-meta strong) {   color: var(--nr-text);   font-size: 13px;   line-height: 1.5; }   :where(.section) :global(.nr-payment-brand-meta span) {   margin-top: 4px;   color: var(--nr-muted);   font-size: 9px;   line-height: 1.45; }   :where(.section) :global(.nr-payment-flex-badge) {   position: absolute;   top: 8px;   inset-inline-end: 8px;   z-index: 2;   min-height: 23px;   display: inline-flex;   align-items: center;   padding-inline: 8px;   border: 1px solid rgba(255, 195, 19, 0.28);   border-radius: 999px;   color: #9b7200;   background: rgba(255, 195, 19, 0.11);   font-size: 7px;   font-weight: 900; }   :where(.section) :global(.nr-payments-trust-panel) {   position: relative;   overflow: hidden;   padding: 27px; }   :where(.section) :global(.nr-payments-trust-panel::before) {   content: "";   position: absolute;   width: 190px;   height: 190px;   inset-inline-end: -105px;   top: -105px;   border-radius: 50%;   background: rgba(23, 111, 232, 0.1); }   :where(.section) :global(.nr-payments-trust-icon) {   position: relative;   z-index: 2;   width: 58px;   height: 58px;   display: grid;   place-items: center;   border: 1px solid rgba(23, 111, 232, 0.16);   border-radius: 18px;   color: var(--nr-blue);   background: color-mix(     in srgb,     var(--nr-blue) 9%,     var(--nr-card)   );   box-shadow: 0 14px 32px rgba(23, 111, 232, 0.11); }   :where(.section) :global(.nr-payments-trust-icon svg) {   width: 26px;   height: 26px; }   :where(.section) :global(.nr-payments-trust-eyebrow) {   position: relative;   z-index: 2;   display: block;   margin-top: 20px;   color: var(--nr-blue);   font-size: 9px;   font-weight: 900; }   :where(.section) :global(.nr-payments-trust-panel h3) {   position: relative;   z-index: 2;   margin: 8px 0 10px;   color: var(--nr-text);   font-size: clamp(24px, 2.4vw, 34px);   line-height: 1.25;   text-wrap: balance; }   :where(.section) :global(.nr-payments-trust-panel > p) {   position: relative;   z-index: 2;   margin: 0;   color: var(--nr-muted);   font-size: 12px;   line-height: 1.75; }   :where(.section) :global(.nr-payments-trust-list) {   position: relative;   z-index: 2;   display: grid;   gap: 9px;   margin-top: 22px; }   :where(.section) :global(.nr-payments-trust-list > div) {   display: grid;   grid-template-columns: 40px minmax(0, 1fr);   align-items: center;   gap: 10px;   padding: 10px 0;   border-bottom: 1px solid var(--nr-border); }   :where(.section) :global(.nr-payments-trust-list > div:last-child) {   border-bottom: 0; }   :where(.section) :global(.nr-payments-trust-list > div > span) {   width: 40px;   height: 40px;   display: grid;   place-items: center;   border-radius: 12px;   color: var(--nr-blue);   background: color-mix(in srgb, var(--nr-blue) 8%, var(--nr-card)); }   :where(.section) :global(.nr-payments-trust-list svg) {   width: 19px;   height: 19px; }   :where(.section) :global(.nr-payments-trust-list strong), :where(.section) :global(.nr-payments-trust-list small) {   display: block; }   :where(.section) :global(.nr-payments-trust-list strong) {   color: var(--nr-text);   font-size: 11px; }   :where(.section) :global(.nr-payments-trust-list small) {   margin-top: 2px;   color: var(--nr-muted);   font-size: 8px;   line-height: 1.45; }   :where(.section) :global(.nr-payments-security-note) {   position: relative;   z-index: 2;   display: flex;   align-items: flex-start;   gap: 8px;   margin-top: 17px;   padding: 11px 12px;   border: 1px solid rgba(38, 215, 149, 0.17);   border-radius: 13px;   color: #1b7657;   background: rgba(38, 215, 149, 0.07);   font-size: 8px;   line-height: 1.5;   font-weight: 800; }   :where(.section) :global(.nr-payments-security-note svg) {   width: 15px;   height: 15px;   flex: 0 0 auto;   margin-top: 1px; }   :global(html[data-theme="dark"]) :global(.nr-payments-premium):where(.section) {   background:     radial-gradient(       circle at 10% 20%,       rgba(23, 111, 232, 0.16),       transparent 24%     ),     radial-gradient(       circle at 92% 78%,       rgba(255, 195, 19, 0.08),       transparent 23%     ),     linear-gradient(180deg, #07182c, #0a213d); }   :global(html[data-theme="dark"]) :where(.section) :global(.nr-payments-methods-panel), :global(html[data-theme="dark"]) :where(.section) :global(.nr-payments-trust-panel) {   background:     linear-gradient(       145deg,       rgba(255, 255, 255, 0.07),       rgba(255, 255, 255, 0.035)     );   border-color: rgba(255, 255, 255, 0.1);   box-shadow:     0 24px 62px rgba(0, 0, 0, 0.23),     inset 0 1px 0 rgba(255, 255, 255, 0.035); }   :global(html[data-theme="dark"]) :where(.section) :global(.nr-payment-brand-card) {   background: rgba(255, 255, 255, 0.035);   border-color: rgba(255, 255, 255, 0.08); }   :global(html[data-theme="dark"]) :where(.section) :global(.nr-payment-brand-logo) {   border-color: rgba(255, 255, 255, 0.08); }   :global(html[data-theme="dark"]) :where(.section) :global(.nr-payments-security-note) {   color: #8ce9c4; }   @media (max-width: 1000px) {   :where(.section) :global(.nr-payments-layout) {     grid-template-columns: 1fr;   }     :where(.section) :global(.nr-payments-trust-panel) {     display: grid;     grid-template-columns: auto minmax(0, 1fr);     column-gap: 18px;   }     :where(.section) :global(.nr-payments-trust-icon) {     grid-row: span 3;   }     :where(.section) :global(.nr-payments-trust-eyebrow),   :where(.section) :global(.nr-payments-trust-panel h3),   :where(.section) :global(.nr-payments-trust-panel > p) {     grid-column: 2;   }     :where(.section) :global(.nr-payments-trust-list),   :where(.section) :global(.nr-payments-security-note) {     grid-column: 1 / -1;   } }   @media (max-width: 680px) {   :global(.nr-payments-premium):where(.section) {     padding: 68px 0 74px;   }     :where(.section) :global(.nr-payments-heading) {     margin-bottom: 30px;   }     :where(.section) :global(.nr-payments-heading h2) {     font-size: clamp(32px, 9.5vw, 42px);   }     :where(.section) :global(.nr-payments-heading p) {     font-size: 14px;   }     :where(.section) :global(.nr-payments-methods-panel) {     padding: 14px;     border-radius: 22px;   }     :where(.section) :global(.nr-payments-logo-grid) {     grid-template-columns: 1fr;     gap: 8px;   }     :where(.section) :global(.nr-payment-brand-card) {     min-height: 96px;     grid-template-columns: 82px minmax(0, 1fr);     gap: 11px;     padding: 10px;   }     :where(.section) :global(.nr-payment-brand-logo) {     min-height: 64px;     padding: 8px;   }     :where(.section) :global(.nr-payment-brand-logo img) {     height: 42px;   }     :where(.section) :global(.nr-payments-trust-panel) {     display: block;     padding: 21px;     border-radius: 22px;   }     :where(.section) :global(.nr-payments-trust-eyebrow) {     margin-top: 16px;   }     :where(.section) :global(.nr-payments-trust-panel h3) {     font-size: 26px;   } }   @media (max-width: 420px) {   :where(.section) :global(.nr-payments-heading h2) {     font-size: clamp(30px, 9vw, 37px);   }     :where(.section) :global(.nr-payment-brand-card) {     grid-template-columns: 76px minmax(0, 1fr);   }     :where(.section) :global(.nr-payment-brand-meta strong) {     font-size: 12px;   } }   @media (prefers-reduced-motion: reduce) {   :where(.section) :global(.nr-payment-brand-card) {     transition: none !important;   } }
-
-/* Card layout refinements retain their higher specificity. */
-.section :global(.nr-payment-brand-card) {
-  min-height: 88px;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: 16px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  transition: none;
+.section {
+  padding: 32px 0 48px;
+  background: var(--public-surface);
+  scroll-margin-top: 108px;
 }
-.section :global(.nr-payment-brand-card):hover {
-  border-color: var(--nr-border);
-  box-shadow: none;
+.heading {
+  margin-bottom: 24px;
+  max-width: 850px;
 }
-.section :global(.nr-payment-brand-logo) {
-  min-height: 52px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
 }
-.logoSurface, .lightSurface {
+.logoCard {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 18px 12px 12px;
+  border: 1px solid var(--public-border);
+  border-radius: 14px;
+  background: var(--public-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.logoCard :global(.nr-payment-brand-logo) {
   display: grid;
   place-items: center;
   width: 120px;
-  min-height: 52px;
+  max-width: 100%;
+  min-width: 0;
 }
+.logoCard figcaption {
+  font:
+    500 0.875rem/1.6 var(--font-cairo),
+    sans-serif;
+  color: var(--public-secondary);
+  text-align: center;
+}
+.logoSurface,
 .lightSurface {
-  width: 116px;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 120px;
+  height: 64px;
   background: #fff;
   border-radius: 8px;
 }
 .artwork {
-  position: relative;
+  max-width: 100%;
   display: block;
+  position: relative;
   overflow: hidden;
   flex-shrink: 0;
 }
-.section :global(.nr-payment-brand-logo) img { object-fit: fill; }
-.section :global(.nr-payment-brand-meta) strong { font-size: 16px; line-height: 1.6; overflow-wrap: anywhere; }
-.section :global(.nr-payments-group-heading) span { font-size: 17px; line-height: 1.6; }
-.section :global(.nr-payments-group-heading) small { font-size: 14px; line-height: 1.7; }
-.section :global(.nr-payments-logo-grid) { gap: 12px; }
-.terms { margin: 14px 0 0; font-size: 14px; line-height: 1.8; color: var(--nr-muted); }
-@media (max-width: 680px) {
-  .section :global(.nr-payments-logo-grid) { grid-template-columns: minmax(0, 1fr); }
-  .section :global(.nr-payment-brand-card) {
-    min-height: 82px;
-    grid-template-columns: 120px minmax(0, 1fr);
-    padding: 12px;
-    gap: 14px;
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-@media (max-width: 360px) {
-  .section :global(.nr-payments-methods-panel) { padding: 12px; }
-  .section :global(.nr-payment-brand-card) { gap: 8px; padding-inline: 8px; }
-  .section :global(.nr-payment-brand-meta) strong { font-size: 15px; }
+@media (max-width: 520px) {
+  .section {
+    padding: 24px 0 36px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .logoCard {
+    padding: 14px 8px 10px;
+  }
 }

@@ -1,193 +1,171 @@
 "use client";
-
-import { useMemo, useState } from "react";
+import { useRef, useState, Suspense } from "react";
+import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signInAdmin } from "../../../src/features/auth/services/auth.service";
-import { useRouter } from "next/navigation";
 import { createClient } from "../../../src/lib/supabase/client";
-
+import { useLanguage } from "../../../src/core/i18n";
+import { useTheme } from "../../../src/core/theme";
+import { safeAdminNext } from "../../../src/features/admin-workspace/contracts";
 export default function AdminLoginPage() {
+  return (
+    <Suspense>
+      <AdminLoginForm />
+    </Suspense>
+  );
+}
+function AdminLoginForm() {
+  const params = useSearchParams();
+  const { language, toggleLanguage } = useLanguage();
+  const ar = language === "ar";
+  const { toggleTheme } = useTheme();
   const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
+  const lock = useRef(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const [shown, setShown] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  async function submit(event: React.FormEvent) {
     event.preventDefault();
-    setErrorMessage("");
-    setIsSubmitting(true);
-
+    if (lock.current) return;
+    lock.current = true;
+    setBusy(true);
+    setError("");
     try {
-      await signInAdmin(supabase, { email, password });
-    } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "تعذر تسجيل الدخول.",
+      await signInAdmin(createClient("admin"), { email, password });
+      const next = safeAdminNext(
+        new URLSearchParams(window.location.search).get("next"),
       );
-      setIsSubmitting(false);
-      return;
+      setPassword("");
+      router.replace(next);
+      router.refresh();
+    } catch (error) {
+      const code =
+        error && typeof error === "object" && "message" in error
+          ? String(error.message)
+          : "";
+      setError(
+        code === "admin_access_required"
+          ? ar
+            ? "هذا الحساب لا يملك صلاحية الإدارة."
+            : "This account does not have administrative access."
+          : /fetch|network|connection/i.test(code)
+            ? ar
+              ? "تعذر الاتصال بخدمة الدخول. تحقق من الاتصال وحاول مجددًا."
+              : "Unable to connect to authentication. Check your connection and retry."
+            : ar
+              ? "تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور."
+              : "Unable to sign in. Check your email and password.",
+      );
+    } finally {
+      lock.current = false;
+      setBusy(false);
     }
-
-    router.replace("/admin/dashboard");
-    router.refresh();
   }
-
   return (
-    <main className="nr-auth-page" dir="rtl">
-      <section className="nr-auth-card">
-        <div className="nr-auth-brand">
-          <div className="nr-auth-logo">NR</div>
-          <div>
-            <span>NourApp Platform</span>
-            <strong>تسجيل دخول الإدارة</strong>
-          </div>
+    <main className="aw-login">
+      <section className="aw-login-card">
+        <div className="aw-login-tools">
+          <button onClick={toggleLanguage}>{ar ? "EN" : "عربي"}</button>
+          <button onClick={toggleTheme}>{ar ? "المظهر" : "Appearance"}</button>
         </div>
-
-        <div className="nr-auth-heading">
-          <span>لوحة الإدارة</span>
-          <h1>مرحبًا بعودتك</h1>
-          <p>سجّل الدخول باستخدام حسابك الإداري للوصول إلى لوحة نور آب.</p>
-        </div>
-
-        <form className="nr-auth-form" onSubmit={handleSubmit}>
+        <Image
+          src="/images/site/v-logo.png"
+          alt="Nour App"
+          width={64}
+          height={64}
+          priority
+        />
+        <p className="aw-eyebrow">
+          NOUR APP · {ar ? "الإدارة" : "ADMINISTRATION"}
+        </p>
+        <h1>{ar ? "مرحبًا بعودتك" : "Welcome back"}</h1>
+        <p>
+          {ar
+            ? "سجّل الدخول إلى مساحة عمل نور آب."
+            : "Sign in to your Nour App workspace."}
+        </p>
+        {params.get("error") === "forbidden" && (
+          <p className="aw-error" role="alert">
+            {ar
+              ? "هذا الحساب لا يملك صلاحية الإدارة. تواصل مع مسؤول النظام."
+              : "This account does not have administrative access. Contact your system administrator."}
+          </p>
+        )}
+        {params.get("reason") === "session_required" && (
+          <p className="aw-muted" role="status">
+            {ar
+              ? "يلزم تسجيل الدخول لمتابعة المسار المطلوب."
+              : "Sign in to continue to your requested page."}
+          </p>
+        )}
+        <form onSubmit={submit} aria-busy={busy}>
           <label>
-            <span>البريد الإلكتروني</span>
+            {ar ? "البريد الإلكتروني" : "Email"}
             <input
+              name="email"
               type="email"
+              dir="ltr"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@nourappglobal.com"
-              autoComplete="email"
+              autoComplete="username"
               required
+              maxLength={254}
             />
           </label>
-
           <label>
-            <span>كلمة المرور</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-            />
+            {ar ? "كلمة المرور" : "Password"}
+            <span className="aw-password">
+              <input
+                name="password"
+                dir="ltr"
+                type={shown ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                aria-pressed={shown}
+                aria-label={
+                  ar
+                    ? shown
+                      ? "إخفاء كلمة المرور"
+                      : "إظهار كلمة المرور"
+                    : shown
+                      ? "Hide password"
+                      : "Show password"
+                }
+                onClick={() => setShown(!shown)}
+              >
+                {shown ? <EyeOff size={19} /> : <Eye size={19} />}
+              </button>
+            </span>
           </label>
-
-          {errorMessage ? (
-            <div className="nr-auth-error">{errorMessage}</div>
-          ) : null}
-
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "جارٍ تسجيل الدخول..." : "تسجيل الدخول"}
+          {error && (
+            <p role="alert" className="aw-error">
+              {error}
+            </p>
+          )}
+          <button className="aw-primary" disabled={busy} type="submit">
+            {busy
+              ? ar
+                ? "جارٍ التحقق…"
+                : "Signing in…"
+              : ar
+                ? "تسجيل الدخول"
+                : "Sign in"}
           </button>
         </form>
+        <p className="aw-muted">
+          {ar
+            ? "للحصول على صلاحية الإدارة أو استعادة الوصول، تواصل مع مسؤول النظام."
+            : "Contact your system administrator for access or account recovery."}
+        </p>
       </section>
-
-      <style jsx>{`
-        .nr-auth-page {
-          min-height: 100vh;
-          display: grid;
-          place-items: center;
-          padding: 24px;
-          background: #07182c;
-          color: #14253d;
-        }
-        .nr-auth-card {
-          width: min(100%, 470px);
-          padding: 30px;
-          border-radius: 24px;
-          background: #fff;
-          box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
-        }
-        .nr-auth-brand {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .nr-auth-logo {
-          width: 48px;
-          height: 48px;
-          display: grid;
-          place-items: center;
-          border-radius: 14px;
-          background: #ffc313;
-          font-weight: 1000;
-        }
-        .nr-auth-brand div:last-child {
-          display: flex;
-          flex-direction: column;
-          gap: 3px;
-        }
-        .nr-auth-brand span {
-          color: #718198;
-          font-size: 11px;
-          font-weight: 800;
-        }
-        .nr-auth-brand strong {
-          color: #17304f;
-          font-size: 13px;
-        }
-        .nr-auth-heading {
-          margin-top: 28px;
-        }
-        .nr-auth-heading > span {
-          color: #176fe8;
-          font-size: 11px;
-          font-weight: 900;
-        }
-        .nr-auth-heading h1 {
-          margin: 7px 0 10px;
-          font-size: 30px;
-        }
-        .nr-auth-heading p {
-          margin: 0;
-          color: #6f7e92;
-          line-height: 1.8;
-          font-size: 13px;
-        }
-        .nr-auth-form {
-          display: grid;
-          gap: 16px;
-          margin-top: 24px;
-        }
-        .nr-auth-form label {
-          display: grid;
-          gap: 8px;
-        }
-        .nr-auth-form label > span {
-          font-size: 12px;
-          font-weight: 900;
-        }
-        .nr-auth-form input {
-          min-height: 50px;
-          padding-inline: 14px;
-          border: 1px solid #d6e0ec;
-          border-radius: 12px;
-          background: #f8fafd;
-          font: inherit;
-        }
-        .nr-auth-form button {
-          min-height: 52px;
-          border: 0;
-          border-radius: 13px;
-          background: #ffc313;
-          color: #12345d;
-          font: inherit;
-          font-weight: 1000;
-          cursor: pointer;
-        }
-        .nr-auth-form button:disabled {
-          opacity: 0.65;
-        }
-        .nr-auth-error {
-          padding: 11px 12px;
-          border: 1px solid rgba(220, 38, 38, 0.18);
-          border-radius: 10px;
-          color: #b91c1c;
-          background: rgba(220, 38, 38, 0.05);
-          font-size: 12px;
-        }
-      `}</style>
     </main>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import {useUnsaved} from "../admin-workspace/useUnsaved";
 
 import Link from "next/link";
 import {
@@ -66,6 +67,7 @@ export default function MediaDetailsPage({
     queryFn: () => getMediaById(supabase, mediaId),
   });
 
+  useUnsaved(!!media && (altAr !== media.altAr || altEn !== media.altEn), isArabic ? 'لديك تعديلات غير محفوظة. هل تريد المغادرة؟' : 'You have unsaved changes. Leave?');
   const [previousMedia, setPreviousMedia] = useState<typeof media>(undefined);
   if (media !== previousMedia) {
     setPreviousMedia(media);

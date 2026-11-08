@@ -1,3 +1,5 @@
+"use client";
+import {useLanguage} from '../../../core/i18n';
 import type {
   ReactNode,
   TableHTMLAttributes,
@@ -12,8 +14,9 @@ export default function Table({
   className = "",
   ...props
 }: TableProps) {
+  const {language}=useLanguage();
   return (
-    <div className="nr-table-wrapper">
+    <div className="nr-table-wrapper" role="region" tabIndex={0} aria-label={language==='ar'?'جدول البيانات — يمكن التمرير أفقيًا':'Data table — scroll horizontally'}>
       <table
         className={`nr-table ${className}`.trim()}
         {...props}

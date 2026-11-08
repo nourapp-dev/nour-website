@@ -16,7 +16,12 @@ export default function Hero({
 }) {
   const language = t.lang === "English" ? "ar" : "en";
   const { hero } = usePresentation(presentation);
-  if (hero.mode === "phones") return <div className={styles.root}><HeroPhones t={t} hero={hero} /></div>;
+  if (hero.mode === "phones")
+    return (
+      <div className={styles.root}>
+        <HeroPhones t={t} hero={hero} />
+      </div>
+    );
   return (
     <div className={styles.root}>
       <section
@@ -41,6 +46,9 @@ export default function Hero({
             {hero.image ? (
               <Image
                 className={styles.heroImage}
+                style={{
+                  objectPosition: `${hero.focusX ?? 50}% ${hero.focusY ?? 50}%`,
+                }}
                 src={hero.image}
                 alt={hero.imageAlt[language]}
                 fill

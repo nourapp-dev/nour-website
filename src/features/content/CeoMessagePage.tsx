@@ -1,7 +1,10 @@
 "use client";
+import {useLanguage} from "../../core/i18n";
+import DraftPreview from '../admin-workspace/DraftPreview';
+import {useUnsaved} from '../admin-workspace/useUnsaved';
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getErrorMessage } from "../../core/utils/errors";
+import {errorText} from "../admin-workspace/data";
 import { createClient } from "../../lib/supabase/client";
 import { getMedia, type MediaItem } from "../media/repositories/media.repository";
 import "./ceo-message-admin.css";
@@ -29,8 +32,11 @@ const emptyValue: CeoMessageValue = {
 };
 
 export default function CeoMessagePage() {
+  const {language}=useLanguage();const ar=language==='ar';
   const supabase = useMemo(() => createClient(), []);
   const [value, setValue] = useState<CeoMessageValue>(emptyValue);
+  const [savedValue,setSavedValue]=useState<CeoMessageValue>(emptyValue);
+  useUnsaved(JSON.stringify(value)!==JSON.stringify(savedValue),ar?'لديك تعديلات غير محفوظة. هل تريد المغادرة؟':'You have unsaved changes. Leave?');
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -55,6 +61,7 @@ export default function CeoMessagePage() {
 
   const applyContent = useCallback((content: Awaited<ReturnType<typeof fetchContent>>) => {
     setValue(content.value);
+    setSavedValue(content.value);
     setMedia(content.media);
   }, []);
 
@@ -63,10 +70,10 @@ export default function CeoMessagePage() {
     fetchContent().then((content) => {
       if (active) applyContent(content);
     }).catch((error: unknown) => {
-      if (active) setFeedback(`تعذر تحميل كلمة الرئيس التنفيذي: ${getErrorMessage(error, "يرجى المحاولة مجددًا.")}`);
+      if (active) setFeedback(errorText(error,ar));
     }).finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, [fetchContent, applyContent]);
+  }, [fetchContent, applyContent, ar]);
 
   async function load() {
     setLoading(true);
@@ -74,7 +81,7 @@ export default function CeoMessagePage() {
     try {
       applyContent(await fetchContent());
     } catch (error) {
-      setFeedback(`تعذر تحميل كلمة الرئيس التنفيذي: ${getErrorMessage(error, "يرجى المحاولة مجددًا.")}`);
+      setFeedback(errorText(error,ar));
     } finally {
       setLoading(false);
     }
@@ -93,24 +100,25 @@ export default function CeoMessagePage() {
     setSaving(false);
 
     if (error) {
-      setFeedback(`تعذر حفظ كلمة الرئيس التنفيذي: ${error.message}`);
+      setFeedback(errorText(error,ar));
       return;
     }
 
-    setFeedback("تم حفظ كلمة الرئيس التنفيذي بنجاح.");
+    setSavedValue(value);
+    setFeedback((ar ? "تم حفظ كلمة الرئيس التنفيذي بنجاح." : "CEO message saved."));
   }
 
   const selectedImage = media.find((item) => item.id === value.image_media_id);
 
   if (loading) {
-    return <section dir="rtl"><p>جارٍ تحميل كلمة الرئيس التنفيذي...</p></section>;
+    return <section dir={ar?"rtl":"ltr"}><p>{ar ? "جارٍ تحميل كلمة الرئيس التنفيذي..." : "Loading CEO message?"}</p></section>;
   }
 
   return (
-    <section dir="rtl" className="nr-ceo-admin-page">
+    <section dir={ar?"rtl":"ltr"} className="nr-ceo-admin-page">
       <header>
-        <h1>كلمة الرئيس التنفيذي</h1>
-        <p>إدارة النص والصورة والمسمى الوظيفي بالعربية والإنجليزية، مع إمكانية إظهار القسم أو إخفائه من الموقع.</p>
+        <h1>{ar ? "كلمة الرئيس التنفيذي" : "CEO message"}</h1>
+        <p>{ar ? "إدارة النص والصورة والمسمى الوظيفي بالعربية والإنجليزية، مع إمكانية إظهار القسم أو إخفائه من الموقع." : "Manage bilingual text, image and job title, and control whether this section appears on the site."}</p>
       </header>
 
       {feedback && <div className="admin-card nr-ceo-admin-feedback">{feedback}</div>}
@@ -123,14 +131,13 @@ export default function CeoMessagePage() {
             onChange={(e) => setValue({ ...value, enabled: e.target.checked })}
           />
           <span>
-            <strong>إظهار قسم كلمة الرئيس التنفيذي في الموقع</strong>
-            <small>{value.enabled ? "القسم مفعّل وسيظهر عند اكتمال المحتوى." : "القسم مخفي ويمكن حفظه كمسودة بدون تعبئة جميع الحقول."}</small>
+            <strong>{ar ? "إظهار قسم كلمة الرئيس التنفيذي في الموقع" : "Show the CEO message on the website"}</strong>
+            <small>{value.enabled ? "القسم مفعّل وسيظهر عند اكتمال المحتوى." : (ar ? "القسم مخفي ويمكن حفظه كمسودة بدون تعبئة جميع الحقول." : "This section is hidden and may be saved as a draft without completing every field.")}</small>
           </span>
         </label>
 
         <div className="nr-ceo-admin-grid-2">
-          <label>الاسم بالعربية
-            <input required={value.enabled} value={value.name_ar} onChange={(e) => setValue({ ...value, name_ar: e.target.value })} />
+          <label>{ar ? "الاسم بالعربية" : "Arabic name"}<input required={value.enabled} value={value.name_ar} onChange={(e) => setValue({ ...value, name_ar: e.target.value })} />
           </label>
           <label>English name
             <input required={value.enabled} dir="ltr" value={value.name_en} onChange={(e) => setValue({ ...value, name_en: e.target.value })} />
@@ -138,28 +145,25 @@ export default function CeoMessagePage() {
         </div>
 
         <div className="nr-ceo-admin-grid-2">
-          <label>المسمى الوظيفي
-            <input required={value.enabled} value={value.title_ar} onChange={(e) => setValue({ ...value, title_ar: e.target.value })} />
+          <label>{ar ? "المسمى الوظيفي" : "Job title in Arabic"}<input required={value.enabled} value={value.title_ar} onChange={(e) => setValue({ ...value, title_ar: e.target.value })} />
           </label>
           <label>Job title
             <input required={value.enabled} dir="ltr" value={value.title_en} onChange={(e) => setValue({ ...value, title_en: e.target.value })} />
           </label>
         </div>
 
-        <label>الكلمة بالعربية
-          <textarea required={value.enabled} rows={8} value={value.message_ar} onChange={(e) => setValue({ ...value, message_ar: e.target.value })} />
+        <label>{ar ? "الكلمة بالعربية" : "Message in Arabic"}<textarea required={value.enabled} rows={8} value={value.message_ar} onChange={(e) => setValue({ ...value, message_ar: e.target.value })} />
         </label>
 
         <label>English message
           <textarea required={value.enabled} dir="ltr" rows={8} value={value.message_en} onChange={(e) => setValue({ ...value, message_en: e.target.value })} />
         </label>
 
-        <label>صورة الرئيس التنفيذي
-          <select
+        <label>{ar ? "صورة الرئيس التنفيذي" : "CEO image"}<select
             value={value.image_media_id ?? ""}
             onChange={(e) => setValue({ ...value, image_media_id: e.target.value || null })}
           >
-            <option value="">بدون صورة</option>
+            <option value="">{ar ? "بدون صورة" : "No image"}</option>
             {media.map((item) => (
               <option key={item.id} value={item.id}>{item.altAr || item.fileName}</option>
             ))}
@@ -174,18 +178,17 @@ export default function CeoMessagePage() {
             />
             <div>
               <strong>{selectedImage.altAr || selectedImage.fileName}</strong>
-              <small>معاينة الصورة المستخدمة في قسم كلمة الرئيس التنفيذي.</small>
+              <small>{ar ? "معاينة الصورة المستخدمة في قسم كلمة الرئيس التنفيذي." : "Preview of the image used in the CEO message."}</small>
             </div>
           </div>
         )}
 
+        <DraftPreview titleAr={value.name_ar} titleEn={value.name_en} summaryAr={value.title_ar} summaryEn={value.title_en} bodyAr={value.message_ar} bodyEn={value.message_en}/>
         <div className="nr-ceo-admin-actions">
           <button className="admin-button" type="submit" disabled={saving}>
-            {saving ? "جارٍ الحفظ..." : "حفظ الكلمة"}
+            {saving ? "جارٍ الحفظ..." : (ar ? "حفظ الكلمة" : "Save message")}
           </button>
-          <button type="button" disabled={saving} onClick={() => void load()}>
-            إعادة تحميل
-          </button>
+          <button type="button" disabled={saving} onClick={() => void load()}>{ar ? "إعادة تحميل" : "Reload"}</button>
         </div>
       </form>
     </section>

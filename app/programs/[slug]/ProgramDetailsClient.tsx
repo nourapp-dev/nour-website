@@ -3,8 +3,17 @@
 import pageStyles from "./ProgramDetails.styles";
 
 import ProgramSectionState from "../ProgramSectionState";
+import {
+  isActualFlight,
+  travelMode,
+  locationLabel,
+} from "../../../src/features/programs/display";
+import ProgramDisplaySummary from "../../../src/features/programs/components/ProgramDisplaySummary";
+import { useSearchParams } from "next/navigation";
 import ProgramPriceNote from "../ProgramPriceNote";
 import { languageHref } from "../../../src/core/i18n/public-language";
+import {countLabel,stayNights} from "../../../src/core/i18n/counts";
+import {valueLabel,displayValue,visaState} from "../../../src/features/programs/labels";
 import Image from "next/image";
 import Link from "next/link";
 import WebsiteBookingNotice from "../../components/WebsiteBookingNotice";
@@ -39,22 +48,13 @@ import { getPublicProgramBySlug } from "../../../src/features/programs/services/
 import { getTransportsForProgram } from "../../../src/features/transports/services";
 import { getVisasForProgram } from "../../../src/features/visas/services";
 
-function formatNumber(
-  value: number,
-  language: "ar" | "en",
-) {
-  return new Intl.NumberFormat(
-    language === "ar" ? "ar-SA" : "en-US",
-    {
-      maximumFractionDigits: 0,
-    },
-  ).format(value);
+function formatNumber(value: number, language: "ar" | "en") {
+  return new Intl.NumberFormat(language === "ar" ? "ar-SA" : "en-US", {
+    maximumFractionDigits: 0,
+  }).format(value);
 }
 
-function formatDateTime(
-  value: string | null,
-  language: "ar" | "en",
-) {
+function formatDateTime(value: string | null, language: "ar" | "en") {
   if (!value) {
     return "";
   }
@@ -65,19 +65,13 @@ function formatDateTime(
     return value;
   }
 
-  return new Intl.DateTimeFormat(
-    language === "ar" ? "ar-SA" : "en-US",
-    {
-      dateStyle: "medium",
-      timeStyle: "short",
-    },
-  ).format(date);
+  return new Intl.DateTimeFormat(language === "ar" ? "ar-SA" : "en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
 }
 
-function formatDate(
-  value: string | null,
-  language: "ar" | "en",
-) {
+function formatDate(value: string | null, language: "ar" | "en") {
   if (!value) {
     return "";
   }
@@ -88,18 +82,12 @@ function formatDate(
     return value;
   }
 
-  return new Intl.DateTimeFormat(
-    language === "ar" ? "ar-SA" : "en-US",
-    {
-      dateStyle: "medium",
-    },
-  ).format(date);
+  return new Intl.DateTimeFormat(language === "ar" ? "ar-SA" : "en-US", {
+    dateStyle: "medium",
+  }).format(date);
 }
 
-function formatTransitDuration(
-  minutes: number,
-  isArabic: boolean,
-) {
+function formatTransitDuration(minutes: number, isArabic: boolean) {
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
 
@@ -110,33 +98,30 @@ function formatTransitDuration(
   }
 
   if (hours > 0) {
-    return isArabic
-      ? `${hours} ساعة`
-      : `${hours}h`;
+    return isArabic ? `${hours} ساعة` : `${hours}h`;
   }
 
-  return isArabic
-    ? `${remainingMinutes} دقيقة`
-    : `${remainingMinutes}m`;
+  return isArabic ? `${remainingMinutes} دقيقة` : `${remainingMinutes}m`;
 }
 
 export default function PublicProgramDetailsPage() {
   const { language } = useLanguage();
   const isArabic = language === "ar";
 
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("from");
+  const returnHref =
+    returnTo?.startsWith("/programs?") && !/[\\\u0000-\u001f]/.test(returnTo)
+      ? returnTo
+      : "/programs";
   const params = useParams<{
     slug: string;
   }>();
 
   const slug =
-    typeof params.slug === "string"
-      ? decodeURIComponent(params.slug)
-      : "";
+    typeof params.slug === "string" ? decodeURIComponent(params.slug) : "";
 
-  const supabase = useMemo(
-    () => createClient(),
-    [],
-  );
+  const supabase = useMemo(() => createClient(), []);
 
   const {
     data: program,
@@ -144,16 +129,8 @@ export default function PublicProgramDetailsPage() {
     isError: isProgramError,
     refetch: refetchProgram,
   } = useQuery({
-    queryKey: [
-      "public",
-      "program-details",
-      slug,
-    ],
-    queryFn: () =>
-      getPublicProgramBySlug(
-        supabase,
-        slug,
-      ),
+    queryKey: ["public", "program-details", slug],
+    queryFn: () => getPublicProgramBySlug(supabase, slug),
     enabled: Boolean(slug),
   });
 
@@ -163,17 +140,8 @@ export default function PublicProgramDetailsPage() {
     isError: isTransportsError,
     refetch: refetchTransports,
   } = useQuery({
-    queryKey: [
-      "public",
-      "program-details",
-      program?.id ?? "",
-      "transports",
-    ],
-    queryFn: () =>
-      getTransportsForProgram(
-        supabase,
-        program!.id,
-      ),
+    queryKey: ["public", "program-details", program?.id ?? "", "transports"],
+    queryFn: () => getTransportsForProgram(supabase, program!.id),
     enabled: Boolean(program?.id),
   });
 
@@ -183,17 +151,8 @@ export default function PublicProgramDetailsPage() {
     isError: isVisasError,
     refetch: refetchVisas,
   } = useQuery({
-    queryKey: [
-      "public",
-      "program-details",
-      program?.id ?? "",
-      "visas",
-    ],
-    queryFn: () =>
-      getVisasForProgram(
-        supabase,
-        program!.id,
-      ),
+    queryKey: ["public", "program-details", program?.id ?? "", "visas"],
+    queryFn: () => getVisasForProgram(supabase, program!.id),
     enabled: Boolean(program?.id),
   });
 
@@ -205,9 +164,7 @@ export default function PublicProgramDetailsPage() {
       <main className="nr-program-details-state" aria-busy="true" role="status">
         <div className="nr-program-details-loader" />
         <strong>
-          {isArabic
-            ? "جارٍ تحميل البرنامج..."
-            : "Loading program..."}
+          {isArabic ? "جارٍ تحميل البرنامج..." : "Loading program..."}
         </strong>
       </main>
     );
@@ -217,18 +174,24 @@ export default function PublicProgramDetailsPage() {
     return (
       <main className="nr-program-details-state">
         <strong>
-          {isArabic
-            ? "تعذر تحميل البرنامج"
-            : "Unable to load program"}
+          {isArabic ? "تعذر تحميل البرنامج" : "Unable to load program"}
         </strong>
 
-        <p>{isArabic ? "تحقق من اتصالك ثم أعد المحاولة." : "Check your connection and try again."}</p>
-        <button className="program-action" type="button" onClick={() => void refetchProgram()}>{isArabic ? "إعادة المحاولة" : "Try again"}</button>
+        <p>
+          {isArabic
+            ? "تحقق من اتصالك ثم أعد المحاولة."
+            : "Check your connection and try again."}
+        </p>
+        <button
+          className="program-action"
+          type="button"
+          onClick={() => void refetchProgram()}
+        >
+          {isArabic ? "إعادة المحاولة" : "Try again"}
+        </button>
 
         <Link href={languageHref("/", language)}>
-          {isArabic
-            ? "العودة للرئيسية"
-            : "Back Home"}
+          {isArabic ? "العودة للرئيسية" : "Back Home"}
         </Link>
       </main>
     );
@@ -245,35 +208,28 @@ export default function PublicProgramDetailsPage() {
             : "This program does not exist or is not published."}
         </p>
 
-        <Link href={languageHref("/programs", language)}>
-          {isArabic
-            ? "عرض البرامج"
-            : "View Programs"}
+        <Link href={languageHref(returnHref, language)}>
+          {isArabic ? "عرض البرامج" : "View Programs"}
         </Link>
       </main>
     );
   }
 
-  const title =
-    isArabic
-      ? program.titleAr
-      : program.titleEn;
+  const title = isArabic ? program.titleAr : program.titleEn;
 
-  const summary =
-    isArabic
-      ? program.summaryAr
-      : program.summaryEn;
+  const summary = isArabic ? program.summaryAr : program.summaryEn;
 
-  const description =
-    isArabic
-      ? program.descriptionAr
-      : program.descriptionEn;
+  const description = isArabic ? program.descriptionAr : program.descriptionEn;
 
-  const country =
-    isArabic
-      ? program.countryNameAr
-      : program.countryNameEn;
+  const country = isArabic ? program.countryNameAr : program.countryNameEn;
 
+  const visaApplicability=visaState(program.visaStatus,visas);
+  const showVisas=visaApplicability!=="not_applicable";
+  const actualFlights = program.flights.filter(isActualFlight);
+  const showFlights =
+    travelMode(program.display) !== "bus" &&
+    travelMode(program.display) !== "own" &&
+    actualFlights.length > 0;
   const flightPolicyLabel =
     program.flightInclusion === "included"
       ? isArabic
@@ -287,18 +243,12 @@ export default function PublicProgramDetailsPage() {
           ? "سعر الطيران يتحدد حسب السعر والتوفر وقت الحجز"
           : "Flight price depends on live price and availability at booking time";
 
-  const flightPolicyNote =
-    isArabic
-      ? program.flightNotesAr
-      : program.flightNotesEn;
-
-
+  const flightPolicyNote = isArabic
+    ? program.flightNotesAr
+    : program.flightNotesEn;
 
   return (
-    <main
-      className="nr-program-details"
-      dir={isArabic ? "rtl" : "ltr"}
-    >
+    <main className="nr-program-details" dir={isArabic ? "rtl" : "ltr"}>
       <section className="nr-program-details-hero">
         {program.coverUrl ? (
           <Image
@@ -311,10 +261,7 @@ export default function PublicProgramDetailsPage() {
           />
         ) : null}
 
-        <div
-          className="nr-program-details-overlay"
-          aria-hidden="true"
-        />
+        <div className="nr-program-details-overlay" aria-hidden="true" />
 
         <div className="nr-program-details-container nr-program-details-hero-content">
           <Link
@@ -323,9 +270,7 @@ export default function PublicProgramDetailsPage() {
           >
             <ArrowLeft size={17} />
 
-            {isArabic
-              ? "العودة للبرامج"
-              : "Back to Programs"}
+            {isArabic ? "العودة للبرامج" : "Back to Programs"}
           </Link>
 
           <div className="nr-program-details-copy">
@@ -333,9 +278,7 @@ export default function PublicProgramDetailsPage() {
               {program.isFeatured ? (
                 <span className="nr-program-details-badge">
                   <Sparkles size={14} />
-                  {isArabic
-                    ? "برنامج مختار"
-                    : "Selected Program"}
+                  {isArabic ? "برنامج مختار" : "Selected Program"}
                 </span>
               ) : null}
 
@@ -349,41 +292,22 @@ export default function PublicProgramDetailsPage() {
 
             <h1>{title}</h1>
 
-            {summary ? (
-              <p>{summary}</p>
-            ) : null}
+            {summary ? <p>{summary}</p> : null}
 
             <div className="nr-program-details-facts">
               <span>
                 <CalendarDays />
-                <strong>
-                  {program.durationDays}
-                </strong>
-                {isArabic
-                  ? " أيام"
-                  : " days"}
+                <strong>{countLabel(program.durationDays,"day",language)}</strong>
               </span>
 
               <span>
                 <Moon />
-                <strong>
-                  {program.durationNights}
-                </strong>
-                {isArabic
-                  ? " ليالٍ"
-                  : " nights"}
+                <strong>{stayNights(program.durationNights,language)}</strong>
               </span>
 
               <span className="is-price">
-                <small>
-                  {isArabic ? "من" : "From"}
-                </small>
-                <strong>
-                  {formatNumber(
-                    program.basePrice,
-                    language,
-                  )}
-                </strong>
+                <small>{isArabic ? "من" : "From"}</small>
+                <strong>{formatNumber(program.basePrice, language)}</strong>
                 {` ${program.currencyCode}`}
               </span>
             </div>
@@ -395,51 +319,51 @@ export default function PublicProgramDetailsPage() {
       <nav
         className="nr-program-details-subnav"
         aria-label={
-          isArabic
-            ? "أقسام تفاصيل البرنامج"
-            : "Program detail sections"
+          isArabic ? "أقسام تفاصيل البرنامج" : "Program detail sections"
         }
       >
         <div className="nr-program-details-container nr-program-details-subnav-inner">
-          <a href="#overview">
-            {isArabic ? "نظرة عامة" : "Overview"}
-          </a>
-          <a href="#hotels">
-            {isArabic ? "الإقامة" : "Hotels"}
-          </a>
-          <a href="#flights">
-            {isArabic ? "الطيران" : "Flights"}
-          </a>
-          <a href="#transport">
-            {isArabic ? "النقل" : "Transport"}
-          </a>
-          <a href="#visas">
-            {isArabic ? "التأشيرة" : "Visa"}
-          </a>
+          <a href="#overview">{isArabic ? "نظرة عامة" : "Overview"}</a>
+          <a href="#hotels">{isArabic ? "الإقامة" : "Hotels"}</a>
+          {showFlights && (
+            <a href="#flights">{isArabic ? "الطيران" : "Flights"}</a>
+          )}
+          <a href="#transport">{isArabic ? "النقل" : "Transport"}</a>
+          {showVisas&&<a href="#visas">{isArabic ? "التأشيرة" : "Visa"}</a>}
           <a href="#departures">{isArabic ? "المواعيد" : "Departures"}</a>
-          <a href="#additional-information">{isArabic ? "الخطة والشمول والأسعار" : "Itinerary, inclusions & prices"}</a>
+          <a href="#additional-information">
+            {isArabic
+              ? "الخطة والشمول والأسعار"
+              : "Itinerary, inclusions & prices"}
+          </a>
         </div>
       </nav>
 
       <div className="nr-program-details-container nr-program-details-layout">
         <div className="nr-program-details-main">
-          <section id="overview" className="nr-program-details-section nr-program-details-overview">
-            <span className="nr-program-details-kicker">
+          {program.sectionErrors?.length ? (
+            <p role="alert">
               {isArabic
-                ? "عن البرنامج"
-                : "About the Program"}
+                ? "تعذر تحميل بعض تفاصيل البرنامج. يمكنك متابعة الأقسام الأخرى."
+                : "Some program details could not be loaded. Other sections remain available."}{" "}
+              <button onClick={() => void refetchProgram()}>
+                {isArabic ? "إعادة المحاولة" : "Retry"}
+              </button>
+            </p>
+          ) : null}
+          <ProgramDisplaySummary program={program} language={language} />
+          <section
+            id="overview"
+            className="nr-program-details-section nr-program-details-overview"
+          >
+            <span className="nr-program-details-kicker">
+              {isArabic ? "عن البرنامج" : "About the Program"}
             </span>
 
-            <h2>
-              {isArabic
-                ? "تفاصيل البرنامج"
-                : "Program Details"}
-            </h2>
+            <h2>{isArabic ? "تفاصيل البرنامج" : "Program Details"}</h2>
 
             {description ? (
-              <p className="nr-program-details-description">
-                {description}
-              </p>
+              <p className="nr-program-details-description">{description}</p>
             ) : (
               <div className="nr-program-details-empty">
                 {isArabic
@@ -480,18 +404,19 @@ export default function PublicProgramDetailsPage() {
 
           <section id="hotels" className="nr-program-details-section">
             <span className="nr-program-details-kicker">
-              {isArabic
-                ? "الإقامة"
-                : "Accommodation"}
+              {isArabic ? "الإقامة" : "Accommodation"}
             </span>
 
-            <h2>
-              {isArabic
-                ? "الفنادق والإقامة"
-                : "Hotels & Accommodation"}
-            </h2>
+            <h2>{isArabic ? "الفنادق والإقامة" : "Hotels & Accommodation"}</h2>
 
-            {program.hotels.length === 0 ? (
+            {program.sectionErrors?.includes("hotels") ? (
+              <ProgramSectionState
+                language={language}
+                title={isArabic ? "الإقامة" : "Stays"}
+                state="error"
+                onRetry={() => void refetchProgram()}
+              />
+            ) : program.hotels.length === 0 ? (
               <div className="nr-program-details-empty">
                 {isArabic
                   ? "لم تتم إضافة تفاصيل الفندق لهذا البرنامج بعد."
@@ -499,207 +424,174 @@ export default function PublicProgramDetailsPage() {
               </div>
             ) : (
               <div className="nr-program-details-hotels">
-                {program.hotels.map(
-                  (hotel) => {
-                    const hotelName =
-                      isArabic
-                        ? hotel.nameAr
-                        : hotel.nameEn;
+                {program.hotels.map((hotel) => {
+                  const hotelName = isArabic ? hotel.nameAr : hotel.nameEn;
 
-                    const city =
-                      isArabic
-                        ? hotel.cityAr
-                        : hotel.cityEn;
+                  const city = isArabic
+                    ? locationLabel(hotel.cityAr, true)
+                    : locationLabel(hotel.cityEn, false);
 
-                    const hotelDescription =
-                      isArabic
-                        ? hotel.descriptionAr
-                        : hotel.descriptionEn;
+                  const hotelDescription = isArabic
+                    ? hotel.descriptionAr
+                    : hotel.descriptionEn;
 
-                    const roomType =
-                      isArabic
-                        ? hotel.roomTypeAr
-                        : hotel.roomTypeEn;
+                  const roomType = displayValue("room", isArabic ? hotel.roomTypeAr : hotel.roomTypeEn,language);
 
-                    const mealPlan =
-                      isArabic
-                        ? hotel.mealPlanAr
-                        : hotel.mealPlanEn;
+                  const mealPlan = isArabic
+                    ? hotel.mealPlanAr
+                    : hotel.mealPlanEn;
 
-                    const notes =
-                      isArabic
-                        ? hotel.notesAr
-                        : hotel.notesEn;
+                  const notes = isArabic ? hotel.notesAr : hotel.notesEn;
 
-                    return (
-                      <article
-                        key={hotel.relationId}
-                        className="nr-program-details-hotel"
-                      >
-                        <div className="nr-program-details-hotel-cover">
-                          {hotel.coverUrl ? (
-                            <Image
-                              src={hotel.coverUrl}
-                              alt={hotelName}
-                              fill
-                              unoptimized
-                              className="nr-program-details-hotel-image"
-                            />
-                          ) : (
-                            <div className="nr-program-details-hotel-placeholder">
-                              <BedDouble />
-                            </div>
-                          )}
-
-                          {hotel.stars > 0 ? (
-                            <div className="nr-program-details-stars-floating">
-                              <Star
-                                size={14}
-                                fill="currentColor"
-                              />
-                              <strong>
-                                {hotel.stars}
-                              </strong>
-                            </div>
-                          ) : null}
-                        </div>
-
-                        <div className="nr-program-details-hotel-body">
-                          <div className="nr-program-details-hotel-heading">
-                            <div>
-                              {city ? (
-                                <span>
-                                  <MapPin size={15} />
-                                  {city}
-                                </span>
-                              ) : null}
-
-                              <h3>
-                                {hotelName}
-                              </h3>
-                            </div>
+                  return (
+                    <article
+                      key={hotel.relationId}
+                      className="nr-program-details-hotel"
+                    >
+                      <div className="nr-program-details-hotel-cover">
+                        {hotel.coverUrl ? (
+                          <Image
+                            src={hotel.coverUrl}
+                            alt={hotelName}
+                            fill
+                            unoptimized
+                            className="nr-program-details-hotel-image"
+                          />
+                        ) : (
+                          <div className="nr-program-details-hotel-placeholder">
+                            <BedDouble />
                           </div>
+                        )}
 
-                          {hotelDescription ? (
-                            <p>
-                              {hotelDescription}
-                            </p>
-                          ) : null}
-
-                          <div className="nr-program-details-hotel-meta">
-                            <span>
-                              <Moon />
-                              {hotel.nights}{" "}
-                              {isArabic
-                                ? "ليالٍ"
-                                : "nights"}
-                            </span>
-
-                            {roomType ? (
-                              <span>
-                                <BedDouble />
-                                {roomType}
-                              </span>
-                            ) : null}
-
-                            {mealPlan ? (
-                              <span>
-                                <Utensils />
-                                {mealPlan}
-                              </span>
-                            ) : null}
-                          </div>
-
-                          {(hotel.checkInDate ||
-                            hotel.checkOutDate) ? (
-                            <div className="nr-program-details-dates">
-                              {hotel.checkInDate ? (
-                                <span>
-                                  {isArabic
-                                    ? "الدخول:"
-                                    : "Check-in:"}{" "}
-                                  <strong>
-                                    {formatDate(
-                                      hotel.checkInDate,
-                                      language,
-                                    )}
-                                  </strong>
-                                </span>
-                              ) : null}
-
-                              {hotel.checkOutDate ? (
-                                <span>
-                                  {isArabic
-                                    ? "الخروج:"
-                                    : "Check-out:"}{" "}
-                                  <strong>
-                                    {formatDate(
-                                      hotel.checkOutDate,
-                                      language,
-                                    )}
-                                  </strong>
-                                </span>
-                              ) : null}
-                            </div>
-                          ) : null}
-
-                          {notes ? (
-                            <p className="nr-program-details-notes">
-                              {notes}
-                            </p>
-                          ) : null}
-                        </div>
-
-                        {hotel.galleryUrls.length > 0 ? (
-                          <div className="nr-program-details-gallery">
-                            {hotel.galleryUrls
-                              .slice(0, 6)
-                              .map(
-                                (url, index) => (
-                                  <div
-                                    key={`${url}-${index}`}
-                                    className="nr-program-details-gallery-item"
-                                  >
-                                    <Image
-                                      src={url}
-                                      alt={`${hotelName} ${index + 1}`}
-                                      fill
-                                      unoptimized
-                                    />
-
-                                    {index === 5 &&
-                                    hotel.galleryUrls.length > 6 ? (
-                                      <span className="nr-program-details-gallery-more">
-                                        +{hotel.galleryUrls.length - 6}
-                                      </span>
-                                    ) : null}
-                                  </div>
-                                ),
-                              )}
+                        {hotel.stars > 0 ? (
+                          <div className="nr-program-details-stars-floating">
+                            <Star size={14} fill="currentColor" />
+                            <strong>{hotel.stars}</strong>
                           </div>
                         ) : null}
-                      </article>
-                    );
-                  },
-                )}
+                      </div>
+
+                      <div className="nr-program-details-hotel-body">
+                        <div className="nr-program-details-hotel-heading">
+                          <div>
+                            {city ? (
+                              <span>
+                                <MapPin size={15} />
+                                {city}
+                              </span>
+                            ) : null}
+
+                            <h3>{hotelName}</h3>
+                          </div>
+                        </div>
+
+                        {hotelDescription ? <p>{hotelDescription}</p> : null}
+
+                        <div className="nr-program-details-hotel-meta">
+                          <span>
+                            <Moon />
+                            {stayNights(hotel.nights,language)}
+                          </span>
+
+                          {hotel.occupancy != null && (
+                            <span>
+                              {isArabic ? "الشاغلون: " : "Occupancy: "}
+                              {hotel.occupancy}
+                            </span>
+                          )}
+                          {roomType ? (
+                            <span>
+                              <BedDouble />
+                              {roomType}
+                            </span>
+                          ) : null}
+
+                          {mealPlan ? (
+                            <span>
+                              <Utensils />
+                              {mealPlan}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        {hotel.checkInDate || hotel.checkOutDate ? (
+                          <div className="nr-program-details-dates">
+                            {hotel.checkInDate ? (
+                              <span>
+                                {isArabic ? "الدخول:" : "Check-in:"}{" "}
+                                <strong>
+                                  {formatDate(hotel.checkInDate, language)}
+                                </strong>
+                              </span>
+                            ) : null}
+
+                            {hotel.checkOutDate ? (
+                              <span>
+                                {isArabic ? "الخروج:" : "Check-out:"}{" "}
+                                <strong>
+                                  {formatDate(hotel.checkOutDate, language)}
+                                </strong>
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : null}
+
+                        {notes ? (
+                          <p className="nr-program-details-notes">{notes}</p>
+                        ) : null}
+                      </div>
+
+                      {hotel.galleryUrls.length > 0 ? (
+                        <div className="nr-program-details-gallery">
+                          {hotel.galleryUrls.slice(0, 6).map((url, index) => (
+                            <div
+                              key={`${url}-${index}`}
+                              className="nr-program-details-gallery-item"
+                            >
+                              <Image
+                                src={url}
+                                alt={`${hotelName} ${index + 1}`}
+                                fill
+                                unoptimized
+                              />
+
+                              {index === 5 && hotel.galleryUrls.length > 6 ? (
+                                <span className="nr-program-details-gallery-more">
+                                  +{hotel.galleryUrls.length - 6}
+                                </span>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+                    </article>
+                  );
+                })}
               </div>
             )}
           </section>
 
           <section id="transport" className="nr-program-details-section">
             <span className="nr-program-details-kicker">
-              {isArabic
-                ? "النقل"
-                : "Transport"}
+              {isArabic ? "النقل" : "Transport"}
             </span>
 
-            <h2>
-              {isArabic
-                ? "النقل والمواصلات"
-                : "Transport & Transfers"}
-            </h2>
+            <h2>{isArabic ? "النقل والمواصلات" : "Transport & Transfers"}</h2>
 
-            {isTransportsLoading ? <ProgramSectionState language={language} title={isArabic ? "النقل" : "Transport"} state="loading" /> : isTransportsError ? <ProgramSectionState language={language} title={isArabic ? "النقل" : "Transport"} state="error" onRetry={() => void refetchTransports()} /> : transports.length === 0 ? (
+            {isTransportsLoading ? (
+              <ProgramSectionState
+                language={language}
+                title={isArabic ? "النقل" : "Transport"}
+                state="loading"
+              />
+            ) : isTransportsError ? (
+              <ProgramSectionState
+                language={language}
+                title={isArabic ? "النقل" : "Transport"}
+                state="error"
+                onRetry={() => void refetchTransports()}
+              />
+            ) : transports.length === 0 ? (
               <div className="nr-program-details-empty">
                 {isArabic
                   ? "لم تتم إضافة تفاصيل النقل لهذا البرنامج بعد."
@@ -708,41 +600,33 @@ export default function PublicProgramDetailsPage() {
             ) : (
               <div className="nr-program-transports-public">
                 {transports.map((transport) => {
-                  const service =
-                    transport.transport;
+                  const service = transport.transport;
 
-                  const serviceName =
-                    service
-                      ? isArabic
-                        ? service.nameAr
-                        : service.nameEn
-                      : isArabic
-                        ? "خدمة نقل"
-                        : "Transport Service";
+                  const serviceName = service
+                    ? isArabic
+                      ? service.nameAr
+                      : service.nameEn
+                    : isArabic
+                      ? "خدمة نقل"
+                      : "Transport Service";
 
-                  const vehicleName =
-                    service
-                      ? isArabic
-                        ? service.vehicleNameAr ||
-                          service.vehicleType
-                        : service.vehicleNameEn ||
-                          service.vehicleType
-                      : "";
+                  const vehicleName = service
+                    ? isArabic
+                      ? service.vehicleNameAr || valueLabel("vehicle",service.vehicleType,language)
+                      : service.vehicleNameEn || valueLabel("vehicle",service.vehicleType,language)
+                    : "";
 
-                  const pickupName =
-                    isArabic
-                      ? transport.pickupNameAr
-                      : transport.pickupNameEn;
+                  const pickupName = isArabic
+                    ? transport.pickupNameAr
+                    : transport.pickupNameEn;
 
-                  const dropoffName =
-                    isArabic
-                      ? transport.dropoffNameAr
-                      : transport.dropoffNameEn;
+                  const dropoffName = isArabic
+                    ? transport.dropoffNameAr
+                    : transport.dropoffNameEn;
 
-                  const notes =
-                    isArabic
-                      ? transport.notesAr
-                      : transport.notesEn;
+                  const notes = isArabic
+                    ? transport.notesAr
+                    : transport.notesEn;
 
                   return (
                     <article
@@ -769,9 +653,7 @@ export default function PublicProgramDetailsPage() {
 
                         <span
                           className={`nr-program-transport-inclusion ${
-                            transport.isIncluded
-                              ? "is-included"
-                              : "is-excluded"
+                            transport.isIncluded ? "is-included" : "is-excluded"
                           }`}
                         >
                           {transport.isIncluded
@@ -787,14 +669,8 @@ export default function PublicProgramDetailsPage() {
                       <div className="nr-program-transport-route">
                         <div>
                           <MapPin />
-                          <span>
-                            {isArabic
-                              ? "الاستلام"
-                              : "Pickup"}
-                          </span>
-                          <strong>
-                            {pickupName || "—"}
-                          </strong>
+                          <span>{isArabic ? "الاستلام" : "Pickup"}</span>
+                          <strong>{pickupName || "—"}</strong>
                         </div>
 
                         <div className="nr-program-transport-route-line">
@@ -805,14 +681,8 @@ export default function PublicProgramDetailsPage() {
 
                         <div>
                           <MapPin />
-                          <span>
-                            {isArabic
-                              ? "الوصول"
-                              : "Drop-off"}
-                          </span>
-                          <strong>
-                            {dropoffName || "—"}
-                          </strong>
+                          <span>{isArabic ? "الوصول" : "Drop-off"}</span>
+                          <strong>{dropoffName || "—"}</strong>
                         </div>
                       </div>
 
@@ -849,15 +719,11 @@ export default function PublicProgramDetailsPage() {
                         {transport.pickupDatetime ? (
                           <span>
                             <CalendarDays />
-                            {formatDateTime(
-                              transport.pickupDatetime,
-                              language,
-                            )}
+                            {formatDateTime(transport.pickupDatetime, language)}
                           </span>
                         ) : null}
 
-                        {transport.estimatedDurationMinutes !==
-                        null ? (
+                        {transport.estimatedDurationMinutes !== null ? (
                           <span>
                             <Clock3 />
                             {formatTransitDuration(
@@ -869,9 +735,7 @@ export default function PublicProgramDetailsPage() {
                       </div>
 
                       {notes ? (
-                        <p className="nr-program-transport-notes">
-                          {notes}
-                        </p>
+                        <p className="nr-program-transport-notes">{notes}</p>
                       ) : null}
                     </article>
                   );
@@ -880,57 +744,63 @@ export default function PublicProgramDetailsPage() {
             )}
           </section>
 
-          <section id="visas" className="nr-program-details-section">
+          {showVisas&&<section id="visas" className="nr-program-details-section">
             <span className="nr-program-details-kicker">
-              {isArabic
-                ? "التأشيرة"
-                : "Visa"}
+              {isArabic ? "التأشيرة" : "Visa"}
             </span>
 
             <h2>
-              {isArabic
-                ? "التأشيرات والمتطلبات"
-                : "Visas & Requirements"}
+              {isArabic ? "التأشيرات والمتطلبات" : "Visas & Requirements"}
             </h2>
 
-            {isVisasLoading ? <ProgramSectionState language={language} title={isArabic ? "التأشيرات" : "Visas"} state="loading" /> : isVisasError ? <ProgramSectionState language={language} title={isArabic ? "التأشيرات" : "Visas"} state="error" onRetry={() => void refetchVisas()} /> : visas.length === 0 ? (
+            {visaApplicability==="excluded"&&<p role="status">{isArabic?"التأشيرة غير مشمولة في سعر البرنامج.":"Visa is not included in the program price."}</p>}
+            {isVisasLoading ? (
+              <ProgramSectionState
+                language={language}
+                title={isArabic ? "التأشيرات" : "Visas"}
+                state="loading"
+              />
+            ) : isVisasError ? (
+              <ProgramSectionState
+                language={language}
+                title={isArabic ? "التأشيرات" : "Visas"}
+                state="error"
+                onRetry={() => void refetchVisas()}
+              />
+            ) : visas.length === 0 ? (
               <div className="nr-program-details-empty">
                 {isArabic
-                  ? "لم تتم إضافة تفاصيل التأشيرة لهذا البرنامج بعد."
-                  : "Visa details have not been added to this program yet."}
+                  ? visaApplicability==="unspecified"?"حالة التأشيرة غير محددة لهذا البرنامج؛ يرجى الاستفسار قبل ترتيب السفر.":"تفاصيل خدمة التأشيرة المنطبقة غير مكتملة؛ يرجى الاستفسار."
+                  : visaApplicability==="unspecified"?"Visa applicability is unspecified; please enquire before arranging travel.":"Details of the applicable visa service are incomplete; please enquire."}
               </div>
             ) : (
               <div className="nr-program-visas-public">
                 {visas.map((programVisa) => {
                   const visa = programVisa.visa;
 
-                  const visaName =
-                    visa
-                      ? isArabic
-                        ? visa.nameAr
-                        : visa.nameEn
-                      : isArabic
-                        ? "تأشيرة"
-                        : "Visa";
+                  const visaName = visa
+                    ? isArabic
+                      ? visa.nameAr
+                      : visa.nameEn
+                    : isArabic
+                      ? "تأشيرة"
+                      : "Visa";
 
-                  const visaDescription =
-                    visa
-                      ? isArabic
-                        ? visa.descriptionAr
-                        : visa.descriptionEn
-                      : "";
+                  const visaDescription = visa
+                    ? isArabic
+                      ? visa.descriptionAr
+                      : visa.descriptionEn
+                    : "";
 
-                  const requirements =
-                    visa
-                      ? isArabic
-                        ? visa.requirementsAr
-                        : visa.requirementsEn
-                      : [];
+                  const requirements = visa
+                    ? isArabic
+                      ? visa.requirementsAr
+                      : visa.requirementsEn
+                    : [];
 
-                  const notes =
-                    isArabic
-                      ? programVisa.notesAr
-                      : programVisa.notesEn;
+                  const notes = isArabic
+                    ? programVisa.notesAr
+                    : programVisa.notesEn;
 
                   const visaTypeLabel =
                     visa?.visaType === "umrah"
@@ -1048,22 +918,16 @@ export default function PublicProgramDetailsPage() {
                           <div className="nr-program-visa-requirements-heading">
                             <CheckCircle2 />
                             <strong>
-                              {isArabic
-                                ? "المتطلبات"
-                                : "Requirements"}
+                              {isArabic ? "المتطلبات" : "Requirements"}
                             </strong>
                           </div>
 
                           <ul>
                             {requirements.map(
                               (requirement: string, index: number) => (
-                                <li
-                                  key={`${requirement}-${index}`}
-                                >
+                                <li key={`${requirement}-${index}`}>
                                   <CheckCircle2 />
-                                  <span>
-                                    {requirement}
-                                  </span>
+                                  <span>{requirement}</span>
                                 </li>
                               ),
                             )}
@@ -1072,242 +936,200 @@ export default function PublicProgramDetailsPage() {
                       ) : null}
 
                       {notes ? (
-                        <p className="nr-program-visa-notes">
-                          {notes}
-                        </p>
+                        <p className="nr-program-visa-notes">{notes}</p>
                       ) : null}
                     </article>
                   );
                 })}
               </div>
             )}
-          </section>
+          </section>}
 
-          <section id="flights" className="nr-program-details-section">
-            <span className="nr-program-details-kicker">
-              {isArabic
-                ? "الطيران"
-                : "Flights"}
-            </span>
+          {showFlights && (
+            <section id="flights" className="nr-program-details-section">
+              <span className="nr-program-details-kicker">
+                {isArabic ? "الطيران" : "Flights"}
+              </span>
 
-            <h2>
-              {isArabic
-                ? "تفاصيل الرحلات"
-                : "Flight Details"}
-            </h2>
+              <h2>{isArabic ? "تفاصيل الرحلات" : "Flight Details"}</h2>
 
-            <div
-              className={`nr-program-flight-policy nr-program-flight-policy-${program.flightInclusion}`}
-            >
-              <Plane size={19} />
+              <div
+                className={`nr-program-flight-policy nr-program-flight-policy-${program.flightInclusion}`}
+              >
+                <Plane size={19} />
 
-              <div>
-                <strong>
-                  {flightPolicyLabel}
-                </strong>
+                <div>
+                  <strong>{flightPolicyLabel}</strong>
 
-                {flightPolicyNote ? (
-                  <span>
-                    {flightPolicyNote}
-                  </span>
-                ) : null}
+                  {flightPolicyNote ? <span>{flightPolicyNote}</span> : null}
+                </div>
               </div>
-            </div>
 
-            {program.flights.length === 0 ? (
-              <div className="nr-program-details-empty">
-                {isArabic
-                  ? "لم تتم إضافة تفاصيل الرحلات لهذا البرنامج بعد."
-                  : "Flight details have not been added to this program yet."}
-              </div>
-            ) : (
-              <div className="nr-program-flights-public">
-                {program.flights.map((flight) => {
-                  const airlineName =
-                    isArabic
+              {actualFlights.length === 0 ? (
+                <div className="nr-program-details-empty">
+                  {isArabic
+                    ? "لم تتم إضافة تفاصيل الرحلات لهذا البرنامج بعد."
+                    : "Flight details have not been added to this program yet."}
+                </div>
+              ) : (
+                <div className="nr-program-flights-public">
+                  {actualFlights.map((flight) => {
+                    const airlineName = isArabic
                       ? flight.airlineNameAr
                       : flight.airlineNameEn;
 
-                  const departureAirport =
-                    isArabic
+                    const departureAirport = isArabic
                       ? flight.departureAirportAr
                       : flight.departureAirportEn;
 
-                  const arrivalAirport =
-                    isArabic
+                    const arrivalAirport = isArabic
                       ? flight.arrivalAirportAr
                       : flight.arrivalAirportEn;
 
-                  const cabinClass =
-                    isArabic
+                    const cabinClass = isArabic
                       ? flight.cabinClassAr
                       : flight.cabinClassEn;
 
-                  const transitAirport =
-                    isArabic
+                    const transitAirport = isArabic
                       ? flight.transitAirportAr
                       : flight.transitAirportEn;
 
-                  const notes =
-                    isArabic
-                      ? flight.notesAr
-                      : flight.notesEn;
+                    const notes = isArabic ? flight.notesAr : flight.notesEn;
 
-                  return (
-                    <article
-                      key={flight.id}
-                      className="nr-program-flight-public-card"
-                    >
-                      <div className="nr-program-flight-public-header">
-                        <div>
-                          <span
-                            className={`nr-program-flight-public-direction ${
-                              flight.direction === "outbound"
-                                ? "is-outbound"
-                                : "is-return"
-                            }`}
-                          >
-                            {flight.direction === "outbound"
-                              ? isArabic
-                                ? "رحلة الذهاب"
-                                : "Outbound"
-                              : isArabic
-                                ? "رحلة العودة"
-                                : "Return"}
-                          </span>
+                    return (
+                      <article
+                        key={flight.id}
+                        className="nr-program-flight-public-card"
+                      >
+                        <div className="nr-program-flight-public-header">
+                          <div>
+                            <span
+                              className={`nr-program-flight-public-direction ${
+                                flight.direction === "outbound"
+                                  ? "is-outbound"
+                                  : "is-return"
+                              }`}
+                            >
+                              {flight.direction === "outbound"
+                                ? isArabic
+                                  ? "رحلة الذهاب"
+                                  : "Outbound"
+                                : isArabic
+                                  ? "رحلة العودة"
+                                  : "Return"}
+                            </span>
 
-                          <h3>
-                            {airlineName ||
-                              (isArabic
-                                ? "تفاصيل الرحلة"
-                                : "Flight")}
-                          </h3>
-                        </div>
+                            <h3>
+                              {airlineName ||
+                                (isArabic ? "تفاصيل الرحلة" : "Flight")}
+                            </h3>
+                          </div>
 
-                        {flight.flightNumber ? (
-                          <strong className="nr-program-flight-number">
-                            {flight.flightNumber}
-                          </strong>
-                        ) : null}
-                      </div>
-
-                      <div className="nr-program-flight-route">
-                        <div>
-                          <PlaneTakeoff />
-                          <span>
-                            {isArabic
-                              ? "المغادرة"
-                              : "Departure"}
-                          </span>
-                          <strong>
-                            {departureAirport}
-                          </strong>
-                          {flight.departureAt ? (
-                            <small>
-                              {formatDateTime(
-                                flight.departureAt,
-                                language,
-                              )}
-                            </small>
+                          {flight.flightNumber ? (
+                            <strong className="nr-program-flight-number">
+                              {flight.flightNumber}
+                            </strong>
                           ) : null}
                         </div>
 
-                        <div className="nr-program-flight-route-line">
-                          <span />
-                          <Plane size={19} />
-                          <span />
-                        </div>
+                        <div className="nr-program-flight-route">
+                          <div>
+                            <PlaneTakeoff />
+                            <span>{isArabic ? "المغادرة" : "Departure"}</span>
+                            <strong>{departureAirport}</strong>
+                            {flight.departureAt ? (
+                              <small>
+                                {formatDateTime(flight.departureAt, language)}
+                              </small>
+                            ) : null}
+                          </div>
 
-                        <div>
-                          <PlaneLanding />
-                          <span>
-                            {isArabic
-                              ? "الوصول"
-                              : "Arrival"}
-                          </span>
-                          <strong>
-                            {arrivalAirport}
-                          </strong>
-                          {flight.arrivalAt ? (
-                            <small>
-                              {formatDateTime(
-                                flight.arrivalAt,
-                                language,
-                              )}
-                            </small>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      <div className="nr-program-flight-meta">
-                        <span>
-                          <Plane />
-                          {flight.flightType === "direct"
-                            ? isArabic
-                              ? "مباشر"
-                              : "Direct"
-                            : isArabic
-                              ? "ترانزيت"
-                              : "Transit"}
-                        </span>
-
-                        {cabinClass ? (
-                          <span>
-                            <BriefcaseBusiness />
-                            {cabinClass}
-                          </span>
-                        ) : null}
-
-                        {flight.baggageAllowanceKg > 0 ? (
-                          <span>
-                            <BriefcaseBusiness />
-                            {flight.baggageAllowanceKg}{" "}
-                            {isArabic
-                              ? "كجم أمتعة"
-                              : "kg baggage"}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      {flight.flightType === "transit" ? (
-                        <div className="nr-program-flight-transit-public">
-                          <Clock3 />
+                          <div className="nr-program-flight-route-line">
+                            <span />
+                            <Plane size={19} />
+                            <span />
+                          </div>
 
                           <div>
-                            <strong>
-                              {isArabic
-                                ? "تفاصيل الترانزيت"
-                                : "Transit Details"}
-                            </strong>
-
-                            <span>
-                              {transitAirport ||
-                                (isArabic
-                                  ? "مطار الترانزيت غير محدد"
-                                  : "Transit airport not specified")}
-
-                              {flight.transitDurationMinutes > 0
-                                ? ` • ${formatTransitDuration(
-                                    flight.transitDurationMinutes,
-                                    isArabic,
-                                  )}`
-                                : ""}
-                            </span>
+                            <PlaneLanding />
+                            <span>{isArabic ? "الوصول" : "Arrival"}</span>
+                            <strong>{arrivalAirport}</strong>
+                            {flight.arrivalAt ? (
+                              <small>
+                                {formatDateTime(flight.arrivalAt, language)}
+                              </small>
+                            ) : null}
                           </div>
                         </div>
-                      ) : null}
 
-                      {notes ? (
-                        <p className="nr-program-flight-public-notes">
-                          {notes}
-                        </p>
-                      ) : null}
-                    </article>
-                  );
-                })}
-              </div>
-            )}
-          </section>
+                        <div className="nr-program-flight-meta">
+                          <span>
+                            <Plane />
+                            {flight.flightType === "direct"
+                              ? isArabic
+                                ? "مباشر"
+                                : "Direct"
+                              : isArabic
+                                ? "ترانزيت"
+                                : "Transit"}
+                          </span>
+
+                          {cabinClass ? (
+                            <span>
+                              <BriefcaseBusiness />
+                              {cabinClass}
+                            </span>
+                          ) : null}
+
+                          {flight.baggageAllowanceKg > 0 ? (
+                            <span>
+                              <BriefcaseBusiness />
+                              {flight.baggageAllowanceKg}{" "}
+                              {isArabic ? "كجم أمتعة" : "kg baggage"}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        {flight.flightType === "transit" ? (
+                          <div className="nr-program-flight-transit-public">
+                            <Clock3 />
+
+                            <div>
+                              <strong>
+                                {isArabic
+                                  ? "تفاصيل الترانزيت"
+                                  : "Transit Details"}
+                              </strong>
+
+                              <span>
+                                {transitAirport ||
+                                  (isArabic
+                                    ? "مطار الترانزيت غير محدد"
+                                    : "Transit airport not specified")}
+
+                                {flight.transitDurationMinutes > 0
+                                  ? ` • ${formatTransitDuration(
+                                      flight.transitDurationMinutes,
+                                      isArabic,
+                                    )}`
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+                        ) : null}
+
+                        {notes ? (
+                          <p className="nr-program-flight-public-notes">
+                            {notes}
+                          </p>
+                        ) : null}
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          )}
         </div>
 
         <aside className="nr-program-details-booking">
@@ -1318,34 +1140,23 @@ export default function PublicProgramDetailsPage() {
               : "Start your journey with NourApp"}
           </div>
 
-          <span>
-            {isArabic
-              ? "السعر يبدأ من"
-              : "Starting from"}
-          </span>
+          <span>{isArabic ? "السعر يبدأ من" : "Starting from"}</span>
 
           <strong>
-            {formatNumber(
-              program.basePrice,
-              language,
-            )}
+            {formatNumber(program.basePrice, language)}
 
-            <small>
-              {program.currencyCode}
-            </small>
+            <small>{program.currencyCode}</small>
           </strong>
 
           <div className="nr-program-details-booking-facts">
             <span>
               <CalendarDays />
-              {program.durationDays}{" "}
-              {isArabic ? "أيام" : "days"}
+              {countLabel(program.durationDays,"day",language)}
             </span>
 
             <span>
               <Moon />
-              {program.durationNights}{" "}
-              {isArabic ? "ليالٍ" : "nights"}
+              {stayNights(program.durationNights,language)}
             </span>
           </div>
 
@@ -1354,7 +1165,7 @@ export default function PublicProgramDetailsPage() {
               ? "استعرض تفاصيل الإقامة والنقل والخدمات، وتواصل معنا إذا احتجت إلى معلومات إضافية."
               : "Explore accommodation, transport, and services, and contact us if you need more information."}
           </p>
-          <ProgramPriceNote language={language} />
+          <ProgramPriceNote language={language} facts={program.display} />
           <WebsiteBookingNotice language={language} />
 
           <div className="nr-program-details-booking-trust">
@@ -1368,14 +1179,21 @@ export default function PublicProgramDetailsPage() {
             </span>
           </div>
 
-          <AppBookingLink language={language} className="nr-program-details-book" />
+          <AppBookingLink
+            language={language}
+            className="nr-program-details-book"
+          />
           <small className="nr-program-details-booking-hint">
-            {isArabic ? "تطبيق نور آب غير منشور حاليًا. الحجز عبر الموقع متوقف." : "The Nour app is not released yet. Website booking is paused."}
+            {isArabic
+              ? "تطبيق نور آب غير منشور حاليًا. الحجز عبر الموقع متوقف."
+              : "The Nour app is not released yet. Website booking is paused."}
           </small>
         </aside>
       </div>
 
-      <style jsx global>{pageStyles}</style>
+      <style jsx global>
+        {pageStyles}
+      </style>
     </main>
   );
 }

@@ -1,3 +1,4 @@
+import { validCoordinates } from "./coordinates";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPublicCountries } from "../countries/services/public-countries.service";
 import { getPublicPrograms } from "../programs/services/public-programs.service";
@@ -11,12 +12,19 @@ export type DepartureCity = {
   is_active: boolean;
   deleted_at: string | null;
   sort_order: number;
+  timezone?: string | null;
+  publication_status?: string | null;
+  show_on_map?: boolean | null;
+  updated_at?: string;
 };
 export type JourneyDeparture = {
   id: string;
   program_id: string;
   origin_city_id: string;
   start_at: string;
+  departure_timezone?: string | null;
+  meeting_point_id?: string | null;
+  status?: string;
 };
 export async function getCities(client: SupabaseClient, admin = false) {
   let query = client
@@ -29,33 +37,52 @@ export async function getCities(client: SupabaseClient, admin = false) {
   if (error) throw error;
   return (data ?? []).map((c) => ({
     ...c,
-    latitude: Number(c.latitude),
-    longitude: Number(c.longitude),
+    latitude: validCoordinates(c.latitude, c.longitude)
+      ? Number(c.latitude)
+      : Number.NaN,
+    longitude: validCoordinates(c.latitude, c.longitude)
+      ? Number(c.longitude)
+      : Number.NaN,
   })) as DepartureCity[];
 }
 export async function getJourneyCatalog(client: SupabaseClient) {
   const now = new Date().toISOString();
-  const [countries, cities, programs, departures] = await Promise.all([
+  const results = await Promise.allSettled([
     getPublicCountries(client),
     getCities(client),
     getPublicPrograms(client),
     client
       .from("program_departures")
-      .select("id,program_id,origin_city_id,start_at")
+      .select(
+        "id,program_id,origin_city_id,start_at,departure_timezone,meeting_point_id,status",
+      )
       .eq("is_active", true)
-      .eq("status", "open")
+      .neq("status", "cancelled")
       .is("deleted_at", null)
-      .gt("seats_available", 0)
       .gt("start_at", now)
-      .or(`booking_deadline.is.null,booking_deadline.gt.${now}`)
       .order("start_at"),
   ]);
-  if (departures.error) throw departures.error;
+  const [countries, cities, programs, departures] = results;
+  const errors: string[] = [];
+  for (let i = 0; i < results.length; i++) {
+    const r = results[i];
+    if (
+      r.status === "rejected" ||
+      (i === 3 &&
+        r.status === "fulfilled" &&
+        (r.value as { error?: unknown }).error)
+    )
+      errors.push(["countries", "cities", "programs", "departures"][i]);
+  }
   return {
-    countries,
-    cities,
-    programs,
-    departures: (departures.data ?? []) as JourneyDeparture[],
+    countries: countries.status === "fulfilled" ? countries.value : [],
+    cities: cities.status === "fulfilled" ? cities.value : [],
+    programs: programs.status === "fulfilled" ? programs.value : [],
+    departures:
+      departures.status === "fulfilled" && !departures.value.error
+        ? ((departures.value.data ?? []) as JourneyDeparture[])
+        : [],
+    errors,
   };
 }
 export async function getJourneyMeetingPoints(
@@ -63,13 +90,16 @@ export async function getJourneyMeetingPoints(
   programId: string,
   cityId: string,
   departureId: string,
+  meetingPointId?: string | null,
 ) {
   const { data, error } = await client
     .from("program_meeting_points")
     .select(
-      "id,name_ar,name_en,latitude,longitude,address_ar,address_en,departure_id",
+      "id,name_ar,name_en,latitude,longitude,address_ar,address_en,departure_id,map_url,arrival_instructions_ar,arrival_instructions_en",
     )
-    .eq("program_id", programId)
+    .or(
+      `program_id.eq.${programId}${meetingPointId ? `,id.eq.${meetingPointId}` : ""}`,
+    )
     .eq("city_id", cityId)
     .eq("is_active", true)
     .is("deleted_at", null)

@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export type ProgramHotelInput = {
   hotelId: string;
   nights: number;
+  occupancy?:number|null;
 
   roomTypeAr: string;
   roomTypeEn: string;
@@ -25,6 +26,7 @@ export type ProgramHotel = {
   hotelId: string;
 
   nights: number;
+  occupancy?:number|null;
 
   roomTypeAr: string;
   roomTypeEn: string;
@@ -47,6 +49,7 @@ type ProgramHotelRow = {
   hotel_id: string;
 
   nights: number;
+  occupancy?:number|null;
 
   room_type_ar: string | null;
   room_type_en: string | null;
@@ -71,7 +74,7 @@ function mapProgramHotel(
     programId: row.program_id,
     hotelId: row.hotel_id,
 
-    nights: row.nights,
+    nights: row.nights,occupancy:row.occupancy,
 
     roomTypeAr:
       row.room_type_ar ?? "",
@@ -113,7 +116,7 @@ export async function getProgramHotels(
         id,
         program_id,
         hotel_id,
-        nights,
+        nights,occupancy,
         room_type_ar,
         room_type_en,
         meal_plan_ar,
@@ -179,6 +182,7 @@ export async function replaceProgramHotels(
 
         hotel_id:
           hotel.hotelId,
+        occupancy:hotel.occupancy??null,
 
         nights:
           hotel.nights,

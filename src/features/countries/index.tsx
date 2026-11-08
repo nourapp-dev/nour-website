@@ -1,30 +1,19 @@
 "use client";
+import { marketStates, publicationStates, marketLabel } from "./directory";
 
 import { useMemo, useState } from "react";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import Button from "../../components/ui/Button";
 import { ConfirmDialog } from "../../core/dialogs";
 import { usePersistentState } from "../../core/hooks";
-import {
-  getAdminTranslations,
-  useLanguage,
-} from "../../core/i18n";
+import { getAdminTranslations, useLanguage } from "../../core/i18n";
 import { useToast } from "../../core/notifications";
 import { Pagination } from "../../core/pagination";
-import {
-  ErrorState,
-  TableSkeleton,
-} from "../../core/states";
+import { ErrorState, TableSkeleton } from "../../core/states";
 import { createClient } from "../../lib/supabase/client";
 
-import CountryForm, {
-  type CountryFormValues,
-} from "./forms/CountryForm";
+import CountryForm, { type CountryFormValues } from "./forms/CountryForm";
 import {
   countriesQuery,
   countriesQueryKey,
@@ -40,16 +29,18 @@ import CountriesTable from "./tables/CountriesTable";
 import type { Country } from "./types";
 
 export default function CountriesPage() {
+  const [marketFilter, setMarketFilter] = useState("");
+  const [publicationFilter, setPublicationFilter] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] =
-    usePersistentState<number>("countries-page-size", 10);
+  const [pageSize, setPageSize] = usePersistentState<number>(
+    "countries-page-size",
+    10,
+  );
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isRecycleBinOpen, setIsRecycleBinOpen] = useState(false);
-  const [editingCountry, setEditingCountry] =
-    useState<Country | null>(null);
-  const [deletingCountry, setDeletingCountry] =
-    useState<Country | null>(null);
+  const [editingCountry, setEditingCountry] = useState<Country | null>(null);
+  const [deletingCountry, setDeletingCountry] = useState<Country | null>(null);
   const [formError, setFormError] = useState("");
 
   const supabase = useMemo(() => createClient(), []);
@@ -99,16 +90,11 @@ export default function CountriesPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const canCreate =
-    permissions?.["countries.create"] ?? false;
-  const canUpdate =
-    permissions?.["countries.update"] ?? false;
-  const canPublish =
-    permissions?.["countries.publish"] ?? false;
-  const canDelete =
-    permissions?.["countries.delete"] ?? false;
-  const canArchive =
-    permissions?.["countries.archive"] ?? false;
+  const canCreate = permissions?.["countries.create"] ?? false;
+  const canUpdate = permissions?.["countries.update"] ?? false;
+  const canPublish = permissions?.["countries.publish"] ?? false;
+  const canDelete = permissions?.["countries.delete"] ?? false;
+  const canArchive = permissions?.["countries.archive"] ?? false;
 
   const {
     data: countries = [],
@@ -127,9 +113,12 @@ export default function CountriesPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (values: CountryFormValues) =>
-      createCountry(supabase, values),
+    mutationFn: (values: CountryFormValues) => createCountry(supabase, values),
     onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["admin", "country-relation-counts"],
+      });
+      await queryClient.invalidateQueries({ queryKey: ["public"] });
       await queryClient.invalidateQueries({
         queryKey: countriesQueryKey,
       });
@@ -151,9 +140,7 @@ export default function CountriesPage() {
             : "Unable to add the country.";
       setFormError(message);
       showToast({
-        title: isArabic
-          ? "تعذر إضافة الدولة"
-          : "Unable to add country",
+        title: isArabic ? "تعذر إضافة الدولة" : "Unable to add country",
         description: message,
         variant: "error",
       });
@@ -161,14 +148,18 @@ export default function CountriesPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ country, values }: { country: Country; values: CountryFormValues }) =>
-      updateCountry(
-        supabase,
-        country.id,
-        values,
-        country.flagMediaId,
-      ),
+    mutationFn: ({
+      country,
+      values,
+    }: {
+      country: Country;
+      values: CountryFormValues;
+    }) => updateCountry(supabase, country.id, values, country.flagMediaId),
     onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["admin", "country-relation-counts"],
+      });
+      await queryClient.invalidateQueries({ queryKey: ["public"] });
       await queryClient.invalidateQueries({
         queryKey: countriesQueryKey,
       });
@@ -190,9 +181,7 @@ export default function CountriesPage() {
             : "Unable to update the country.";
       setFormError(message);
       showToast({
-        title: isArabic
-          ? "تعذر تعديل الدولة"
-          : "Unable to update country",
+        title: isArabic ? "تعذر تعديل الدولة" : "Unable to update country",
         description: message,
         variant: "error",
       });
@@ -201,11 +190,7 @@ export default function CountriesPage() {
 
   const statusMutation = useMutation({
     mutationFn: (country: Country) =>
-      updateCountryStatus(
-        supabase,
-        country.id,
-        country.status !== "active",
-      ),
+      updateCountryStatus(supabase, country.id, country.status !== "active"),
     onSuccess: async (_, country) => {
       await queryClient.invalidateQueries({
         queryKey: countriesQueryKey,
@@ -240,9 +225,12 @@ export default function CountriesPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (countryId: string) =>
-      softDeleteCountry(supabase, countryId),
+    mutationFn: (countryId: string) => softDeleteCountry(supabase, countryId),
     onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["admin", "country-relation-counts"],
+      });
+      await queryClient.invalidateQueries({ queryKey: ["public"] });
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: countriesQueryKey }),
         queryClient.invalidateQueries({ queryKey: deletedCountriesQueryKey }),
@@ -265,9 +253,7 @@ export default function CountriesPage() {
             : "Unable to delete the country.";
       setFormError(message);
       showToast({
-        title: isArabic
-          ? "تعذر حذف الدولة"
-          : "Unable to delete country",
+        title: isArabic ? "تعذر حذف الدولة" : "Unable to delete country",
         description: message,
         variant: "error",
       });
@@ -275,9 +261,12 @@ export default function CountriesPage() {
   });
 
   const restoreMutation = useMutation({
-    mutationFn: (countryId: string) =>
-      restoreCountry(supabase, countryId),
+    mutationFn: (countryId: string) => restoreCountry(supabase, countryId),
     onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["admin", "country-relation-counts"],
+      });
+      await queryClient.invalidateQueries({ queryKey: ["public"] });
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: countriesQueryKey }),
         queryClient.invalidateQueries({ queryKey: deletedCountriesQueryKey }),
@@ -297,9 +286,7 @@ export default function CountriesPage() {
             ? "تعذر استعادة الدولة."
             : "Unable to restore the country.";
       showToast({
-        title: isArabic
-          ? "تعذر استعادة الدولة"
-          : "Unable to restore country",
+        title: isArabic ? "تعذر استعادة الدولة" : "Unable to restore country",
         description: message,
         variant: "error",
       });
@@ -309,16 +296,22 @@ export default function CountriesPage() {
   const filteredCountries = useMemo(() => {
     const rawSearch = searchValue.trim();
     const normalizedSearch = rawSearch.toLowerCase();
-    if (!normalizedSearch) return countries;
-    return countries.filter((country) =>
-      country.nameAr.includes(rawSearch) ||
-      country.nameEn.toLowerCase().includes(normalizedSearch) ||
-      country.iso2.toLowerCase().includes(normalizedSearch) ||
-      country.iso3.toLowerCase().includes(normalizedSearch) ||
-      country.phoneCode.toLowerCase().includes(normalizedSearch) ||
-      country.currencyCode.toLowerCase().includes(normalizedSearch),
+    const scopedCountries = countries.filter(
+      (country) =>
+        (!marketFilter || country.marketStatus === marketFilter) &&
+        (!publicationFilter || country.publicationStatus === publicationFilter),
     );
-  }, [countries, searchValue]);
+    if (!normalizedSearch) return scopedCountries;
+    return scopedCountries.filter(
+      (country) =>
+        country.nameAr.includes(rawSearch) ||
+        country.nameEn.toLowerCase().includes(normalizedSearch) ||
+        country.iso2.toLowerCase().includes(normalizedSearch) ||
+        country.iso3.toLowerCase().includes(normalizedSearch) ||
+        country.phoneCode.toLowerCase().includes(normalizedSearch) ||
+        country.currencyCode.toLowerCase().includes(normalizedSearch),
+    );
+  }, [countries, searchValue, marketFilter, publicationFilter]);
 
   const totalPages = Math.max(
     1,
@@ -327,10 +320,7 @@ export default function CountriesPage() {
 
   const paginatedCountries = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
-    return filteredCountries.slice(
-      startIndex,
-      startIndex + pageSize,
-    );
+    return filteredCountries.slice(startIndex, startIndex + pageSize);
   }, [filteredCountries, currentPage, pageSize]);
 
   function openCreateDialog() {
@@ -410,10 +400,7 @@ export default function CountriesPage() {
             ) : null}
 
             {canCreate ? (
-              <Button
-                type="button"
-                onClick={openCreateDialog}
-              >
+              <Button type="button" onClick={openCreateDialog}>
                 {t.countries.addCountry}
               </Button>
             ) : null}
@@ -421,19 +408,14 @@ export default function CountriesPage() {
         ) : null}
       </div>
 
-      {formError &&
-      !isCreateOpen &&
-      !editingCountry &&
-      !deletingCountry ? (
+      {formError && !isCreateOpen && !editingCountry && !deletingCountry ? (
         <p className="nr-admin-login-error">{formError}</p>
       ) : null}
 
       {isPermissionsLoading || isLoading ? (
         <TableSkeleton
           rows={6}
-          columns={
-            canUpdate || canPublish || canDelete ? 7 : 6
-          }
+          columns={canUpdate || canPublish || canDelete ? 7 : 6}
         />
       ) : isPermissionsError ? (
         <ErrorState
@@ -471,6 +453,42 @@ export default function CountriesPage() {
         />
       ) : (
         <>
+          <div className="aw-filters">
+            <label>
+              {isArabic ? "حالة السوق" : "Market status"}
+              <select
+                value={marketFilter}
+                onChange={(event) => {
+                  setMarketFilter(event.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="">{isArabic ? "الكل" : "All"}</option>
+                {marketStates.map((state) => (
+                  <option value={state} key={state}>
+                    {marketLabel(state, language)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              {isArabic ? "حالة النشر" : "Publication"}
+              <select
+                value={publicationFilter}
+                onChange={(event) => {
+                  setPublicationFilter(event.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="">{isArabic ? "الكل" : "All"}</option>
+                {publicationStates.map((state) => (
+                  <option value={state} key={state}>
+                    {marketLabel(state, language)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
           <CountriesTable
             countries={paginatedCountries}
             searchValue={searchValue}
@@ -595,37 +613,36 @@ export default function CountriesPage() {
             {formError ? (
               <p className="nr-admin-login-error">{formError}</p>
             ) : null}
-          
-          <CountryForm
-  key={`${editingCountry.id}-${editingCountry.updatedAt}`}
-  initialValues={{
-    nameAr: editingCountry.nameAr,
-    nameEn: editingCountry.nameEn,
-    iso2: editingCountry.iso2,
-    iso3: editingCountry.iso3,
-    phoneCode: editingCountry.phoneCode,
-    currencyCode: editingCountry.currencyCode,
-    currencyNameAr: editingCountry.currencyNameAr,
-    currencyNameEn: editingCountry.currencyNameEn,
-    timezone: editingCountry.timezone,
 
-    latitude: editingCountry.latitude,
-    longitude: editingCountry.longitude,
+            <CountryForm
+              key={`${editingCountry.id}-${editingCountry.updatedAt}`}
+              initialValues={{
+                nameAr: editingCountry.nameAr,
+                nameEn: editingCountry.nameEn,
+                iso2: editingCountry.iso2,
+                iso3: editingCountry.iso3,
+                phoneCode: editingCountry.phoneCode,
+                currencyCode: editingCountry.currencyCode,
+                currencyNameAr: editingCountry.currencyNameAr,
+                currencyNameEn: editingCountry.currencyNameEn,
+                timezone: editingCountry.timezone,
 
-    sortOrder: editingCountry.sortOrder,
-    isActive:
-      editingCountry.status === "active",
-  }}
-  isSubmitting={updateMutation.isPending}
-  onSubmit={async (values) => {
-    setFormError("");
+                latitude: editingCountry.latitude,
+                longitude: editingCountry.longitude,
 
-    await updateMutation.mutateAsync({
-      country: editingCountry,
-      values,
-    });
-  }}
-/>
+                sortOrder: editingCountry.sortOrder,
+                isActive: editingCountry.status === "active",
+              }}
+              isSubmitting={updateMutation.isPending}
+              onSubmit={async (values) => {
+                setFormError("");
+
+                await updateMutation.mutateAsync({
+                  country: editingCountry,
+                  values,
+                });
+              }}
+            />
           </section>
         </div>
       ) : null}
@@ -711,7 +728,8 @@ export default function CountriesPage() {
                           {isArabic ? country.nameAr : country.nameEn}
                         </strong>
                         <span>
-                          {isArabic ? country.nameEn : country.nameAr} · {country.iso2}
+                          {isArabic ? country.nameEn : country.nameAr} ·{" "}
+                          {country.iso2}
                         </span>
                       </div>
                     </div>
@@ -719,10 +737,7 @@ export default function CountriesPage() {
                     <button
                       type="button"
                       className="nr-secondary-button"
-                      disabled={
-                        restoreMutation.isPending ||
-                        !canArchive
-                      }
+                      disabled={restoreMutation.isPending || !canArchive}
                       onClick={() => {
                         if (!canArchive) return;
                         restoreMutation.mutate(country.id);
@@ -763,7 +778,6 @@ export default function CountriesPage() {
               ? "حذف"
               : "Delete"
         }
-        
         isLoading={deleteMutation.isPending}
         onCancel={closeDeleteDialog}
         onConfirm={() => {

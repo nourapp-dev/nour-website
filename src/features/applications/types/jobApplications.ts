@@ -14,6 +14,11 @@ export type EmploymentType =
   | "other";
 
 export type JobApplication = {
+  opportunityType?: import("../utils/talent-application").OpportunityType | null;
+  workMode?: import("../utils/talent-application").WorkMode | null;
+  careerArea?: import("../utils/talent-application").CareerArea | null;
+  applicationKind?: "talent_pool" | null;
+  portfolioUrl?: string | null;
   id: string;
   fullName: string;
   email: string;

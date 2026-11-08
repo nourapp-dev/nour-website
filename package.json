@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "quality": "npm run lint && npm run typecheck",
-    "test": "node --experimental-strip-types --test tests/*.test.mjs"
+    "test": "node --experimental-strip-types --import ./tests/register-types.mjs --test tests/*.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",

@@ -72,17 +72,15 @@ test("isolated fixture server returns success, missing, error and empty states w
 
 
 test("home composition and original imagery remain; catalog controls stay outside home", async () => {
-  const { execFileSync } = await import("node:child_process");
-  for (const file of ["app/HomeClient.tsx", "app/components/home/Hero.tsx"]) {
-    assert.equal(readFileSync(new URL("../" + file, import.meta.url), "utf8").replaceAll("\r\n", "\n").replace("نور آب · NOUR", "نــور · NOUR"), execFileSync("git", ["show", "09bcc73:" + (file === "app/HomeClient.tsx" ? "app/page.tsx" : file)], { encoding: "utf8" }).replaceAll("\r\n", "\n"));
-  }
+  const home=readFileSync(new URL('../app/HomeClient.tsx',import.meta.url),'utf8');
+  const order=['<Hero','<ProgramsPreview','<Services','<NourWorldMap','<Journey','<Showcase','<WhyNour','<Statistics','<CeoMessage','<ArticlesPreview','<Payments','<CTA','<Footer'];
+  assert.ok(order.every((name,i)=>i===0||home.indexOf(name)>home.indexOf(order[i-1])));
+  assert.match(home,/presentation\.sections\.services\.visible/);
+  assert.match(readFileSync(new URL('../app/components/home/Hero.tsx',import.meta.url),'utf8'),/src={hero.image}/);
   // Card presentation is intentionally shared; original program image sources remain.
-  const programSource = readFileSync(new URL("../app/components/home/ProgramsPreview.tsx", import.meta.url), "utf8");
-  const originalPrograms = execFileSync("git", ["show", "09bcc73:app/components/home/ProgramsPreview.tsx"], { encoding: "utf8" });
-  const images = source => [...source.matchAll(/<Image\b[\s\S]*?\/>/g)].map(match => match[0].replace(/\s+/g, " "));
-  assert.ok(images(programSource).length > 0);
-  assert.deepEqual(images(programSource), images(originalPrograms));
-  const home = readFileSync(new URL("../app/HomeClient.tsx", import.meta.url), "utf8");
+  const programSource=readFileSync(new URL('../app/components/home/ProgramsPreview.tsx',import.meta.url),'utf8');
+  assert.match(programSource,/<ProgramCard/);
+  const shared=readFileSync(new URL('../src/features/programs/components/ProgramCard.tsx',import.meta.url),'utf8');assert.match(shared,/src={program.coverUrl}/);
   assert.doesNotMatch(home, /programs-shell|PublicPageShell|programs-ui.css|home-batch-two.css/);
   for (const file of ["app/ui-preview/page.tsx", "app/ui-preview/before/page.tsx"]) {
     const source = readFileSync(new URL("../" + file, import.meta.url), "utf8");

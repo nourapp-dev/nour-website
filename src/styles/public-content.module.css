@@ -1,0 +1,71 @@
+/* Opt-in public content styles; never applied to admin pages or the map panel. */
+.surface {
+  --public-surface: #ffffff;
+  --public-ink: #16324e;
+  --public-secondary: #425b73;
+  --public-border: #c5d2df;
+  --public-link: #1258b5;
+  font-family: var(--font-cairo), sans-serif;
+  color: var(--public-ink);
+  text-align: start;
+  min-width: 0;
+}
+:global(html[data-theme="dark"]) .surface {
+  --public-surface: #132e48;
+  --public-ink: #f5f8fc;
+  --public-secondary: #d0dce8;
+  --public-border: #6b859d;
+  --public-link: #a3c9ff;
+}
+.sectionTitle {
+  margin: 0;
+  color: var(--public-ink);
+  font-size: clamp(1.65rem, 2.8vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1.5;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.sectionDescription {
+  margin: 10px 0 0;
+  max-width: 62ch;
+  color: var(--public-secondary);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.cardTitle {
+  margin: 0;
+  color: var(--public-ink);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.secondary {
+  color: var(--public-secondary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.8;
+}
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--public-link);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.textLink:focus-visible {
+  outline: 3px solid var(--public-link);
+  outline-offset: 3px;
+  border-radius: 4px;
+}

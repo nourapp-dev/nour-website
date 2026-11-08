@@ -1,4 +1,5 @@
 "use client";
+import {useUnsaved} from "../../../../src/features/admin-workspace/useUnsaved";
 
 import {
   FormEvent,
@@ -147,6 +148,7 @@ export default function AdminLegalEditPage() {
   const [page, setPage] = useState<LegalPage | null>(null);
   const [form, setForm] =
     useState<LegalPageFormValues>(emptyForm);
+  useUnsaved(!!page && (form.titleAr !== page.titleAr || form.titleEn !== page.titleEn || form.contentAr !== page.contentAr || form.contentEn !== page.contentEn || form.version !== page.version || form.isActive !== page.isActive), language==='ar' ? 'لديك تعديلات غير محفوظة. هل تريد المغادرة؟' : 'Unsaved changes. Leave?');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);

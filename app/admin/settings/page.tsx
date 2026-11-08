@@ -29,6 +29,7 @@ import {
 
 import { useLanguage } from "../../../src/core/i18n";
 import { createClient } from "../../../src/lib/supabase/client";
+import {useUnsaved} from '../../../src/features/admin-workspace/useUnsaved';
 
 type SettingGroup =
   | "general"
@@ -291,7 +292,7 @@ async function getPlatformSettings(
   }
 
   // The dedicated editor handles the structured presentation and private draft.
-  return ((data ?? []) as PlatformSettingRow[]).filter(row => !row.setting_key.startsWith("website.home_presentation"));
+  return ((data ?? []) as PlatformSettingRow[]).filter(row => !row.setting_key.startsWith("website.home_presentation") && row.setting_key!=="home.ceo_message");
 }
 
 async function savePlatformSetting(
@@ -490,6 +491,7 @@ export default function AdminSettingsPage() {
     initialValues,
   ]);
 
+  useUnsaved(changedKeys.length>0,isArabic?'لديك إعدادات غير محفوظة. هل تريد المغادرة؟':'You have unsaved settings. Leave?');
   const activeGroupSettings =
     useMemo(() => {
       const normalizedSearch =

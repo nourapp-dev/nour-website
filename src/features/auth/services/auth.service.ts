@@ -32,7 +32,7 @@ export async function signInAdmin(
 
   if (!(await canAccessAdmin(supabase, data.user.id))) {
     await supabase.auth.signOut({ scope: "local" });
-    throw new Error("هذا الحساب غير مخوّل للدخول إلى الإدارة.");
+    throw new Error("admin_access_required");
   }
 
   return {

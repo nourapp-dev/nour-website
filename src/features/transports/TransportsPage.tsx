@@ -1,4 +1,5 @@
 "use client";
+import {useUnsaved,serializeDraft} from "../admin-workspace/useUnsaved";
 
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -178,6 +179,9 @@ export default function TransportsPage() {
     );
   }, [currentRows, search]);
 
+  const [formBaseline,setFormBaseline]=useState(()=>serializeDraft(initialValues));
+  useUnsaved(isFormOpen && serializeDraft(values)!==formBaseline, isArabic ? 'لديك تعديلات غير محفوظة. هل تريد المغادرة؟' : 'Unsaved changes. Leave?');
+  const [validationError,setValidationError]=useState('');
   function updateValue<
     K extends keyof TransportFormValues,
   >(
@@ -207,6 +211,7 @@ export default function TransportsPage() {
   }
 
   function closeForm() {
+    if(serializeDraft(values)!==formBaseline && !window.confirm(isArabic ? 'تجاهل التعديلات غير المحفوظة؟' : 'Unsaved changes. Close?'))return;
     if (isSaving) return;
 
     setEditingTransport(null);
@@ -231,12 +236,14 @@ export default function TransportsPage() {
     event: React.FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault();
+    if(isSaving)return;
+    setValidationError('');
 
     if (
       !values.nameAr.trim() ||
       !values.nameEn.trim()
     ) {
-      window.alert(
+      setValidationError(
         isArabic
           ? "أدخل اسم خدمة النقل بالعربية والإنجليزية."
           : "Enter the transport name in Arabic and English.",
@@ -245,7 +252,7 @@ export default function TransportsPage() {
     }
 
     if (values.capacity < 1) {
-      window.alert(
+      setValidationError(
         isArabic
           ? "يجب أن تكون سعة المركبة راكبًا واحدًا على الأقل."
           : "Vehicle capacity must be at least one passenger.",
@@ -270,11 +277,11 @@ export default function TransportsPage() {
       }
 
       await refresh();
-      closeForm();
+      setIsFormOpen(false);setEditingTransport(null);setValues(initialValues);setFormBaseline(serializeDraft(initialValues));
     } catch (error) {
       console.error(error);
 
-      window.alert(
+      setValidationError(
         isArabic
           ? "تعذر حفظ خدمة النقل."
           : "Unable to save the transport service.",
@@ -298,7 +305,7 @@ export default function TransportsPage() {
     } catch (error) {
       console.error(error);
 
-      window.alert(
+      setValidationError(
         isArabic
           ? "تعذر تحديث حالة النقل."
           : "Unable to update transport status.",
@@ -328,7 +335,7 @@ export default function TransportsPage() {
     } catch (error) {
       console.error(error);
 
-      window.alert(
+      setValidationError(
         isArabic
           ? "تعذر حذف خدمة النقل."
           : "Unable to delete the transport service.",
@@ -349,7 +356,7 @@ export default function TransportsPage() {
     } catch (error) {
       console.error(error);
 
-      window.alert(
+      setValidationError(
         isArabic
           ? "تعذر استعادة خدمة النقل."
           : "Unable to restore the transport service.",
@@ -369,6 +376,7 @@ export default function TransportsPage() {
 
   return (
     <div className="nr-admin-page nr-transports-admin">
+      {validationError && !isFormOpen && <p className="aw-error" role="alert">{validationError}</p>}
       <div className="nr-admin-page-header">
         <div>
           <span className="nr-admin-kicker">
@@ -732,6 +740,8 @@ export default function TransportsPage() {
               className="nr-country-form"
               onSubmit={handleSubmit}
             >
+      {validationError && <p className="aw-error" role="alert">{validationError}</p>}
+
               <div className="nr-country-form-grid">
                 <label>
                   <span>

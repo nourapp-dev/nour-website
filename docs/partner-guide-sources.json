@@ -1,0 +1,26 @@
+[
+  {
+    "path": "/documents/partners/v1.1/ar/partner-readiness.docx",
+    "sha256": "6daca2da086f7c373d9f63aba4a6151b6f09b77946cc470c2d9aae0e4dffd300",
+    "originalSha256": "62b48a1afb2012fd4b60aceb26405d9484eb483318040e4c2a54b70b441e0049",
+    "layoutRevision": "blank-fields-20261106"
+  },
+  {
+    "path": "/documents/partners/v1.1/ar/partner-readiness.pdf",
+    "sha256": "4b886f1e15949aaa42d3d40adfb3762ca1e686e2569310dedd5a3241d423c096",
+    "originalSha256": "33240d934c9a70c5d1bf354d99e0cc083cf695de29afd7d6639c989453c25b71",
+    "layoutRevision": "blank-fields-20261106"
+  },
+  {
+    "path": "/documents/partners/v1.2/en/partner-readiness.docx",
+    "sha256": "95326bc1d0a63ea1a68c617df26206c4c0d29b498155709eafc36bf4e0c636ac",
+    "originalSha256": "4cc0f3216ad54efd21dfe8ef850716da94c3be72bd385748dfb7d8218872dfd5",
+    "layoutRevision": "blank-fields-20261106"
+  },
+  {
+    "path": "/documents/partners/v1.2/en/partner-readiness.pdf",
+    "sha256": "ca0a1bb77518435a3077cc6a92aeab4007026a21e1cd1748c92333ecd6fc22ad",
+    "originalSha256": "66bc6773aff6aba501db7e51068f6e4c27cf78ccbc169663a0eb0fa0253877d0",
+    "layoutRevision": "blank-fields-20261106"
+  }
+]

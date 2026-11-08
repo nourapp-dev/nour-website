@@ -1,3 +1,4 @@
+import {imageInfo} from "../utils/imageInfo";
 import type {
   SupabaseClient,
 } from "@supabase/supabase-js";
@@ -97,6 +98,7 @@ export async function uploadMedia(
   input: UploadMediaInput,
 ): Promise<UploadMediaResult> {
   validateMediaFile(input.file);
+  const dimensions=await imageInfo(input.file);
 
   let session;
 
@@ -208,6 +210,7 @@ export async function uploadMedia(
         input.file.type ||
         "application/octet-stream",
       size_bytes: input.file.size,
+      width:dimensions.width,height:dimensions.height,
       alt_ar:
         input.altAr?.trim() || null,
       alt_en:
@@ -285,6 +288,9 @@ async function ensureMediaIsNotUsed(
   supabase: SupabaseClient,
   mediaId: string,
 ): Promise<void> {
+  const usage=await supabase.rpc('website_media_in_use',{media_id:mediaId});
+  if(usage.error)throw usage.error;
+  if(usage.data)throw new Error('لا يمكن حذف الأصل: مستخدم في محتوى الموقع أو إصدار محفوظ. أزل الارتباط أولًا / Media is used by content or a retained version.');
   const {
     data: linkedProgram,
     error: programError,

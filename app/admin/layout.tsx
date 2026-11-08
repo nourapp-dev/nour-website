@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
 
-import Sidebar from "../../src/components/admin/layout/Sidebar";
-import Topbar from "../../src/components/admin/layout/Topbar";
+import AdminFrame from "../../src/features/admin-workspace/AdminFrame";
 import { ToastProvider } from "../../src/core/notifications";
 import { ThemeProvider } from "../../src/core/theme";
 
 import "../../src/styles/admin/admin.css";
+import "../../src/styles/admin/workspace.css";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type AdminLayoutProps = {
   children: ReactNode;
@@ -17,17 +19,7 @@ export default function AdminLayout({
   return (
     <ThemeProvider>
       <ToastProvider>
-        <div className="admin-shell">
-          <Sidebar />
-
-          <div className="admin-main">
-            <Topbar />
-
-            <main className="admin-content">
-              {children}
-            </main>
-          </div>
-        </div>
+        <AdminFrame>{children}</AdminFrame>
       </ToastProvider>
     </ThemeProvider>
   );

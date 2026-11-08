@@ -1,8 +1,9 @@
+import type {CountryMarketFields} from '../market-fields';
 export type CountryStatus =
   | "active"
   | "inactive";
 
-export type Country = {
+export type Country = CountryMarketFields & {
   id: string;
 
   nameAr: string;

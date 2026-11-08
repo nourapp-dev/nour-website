@@ -1,445 +1,111 @@
-"use client";
+﻿"use client";
 
-import { FormEvent, useState } from "react";
+import {usePresentation} from '../../src/features/website/usePresentation';
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, ChevronDown, FileCheck2, FileDown, Globe2, Handshake, Layers3, ListChecks, ShieldCheck, Sparkles } from "lucide-react";
+import { useLanguage } from "../../src/core/i18n";
+import { partnerGuide } from "../../src/features/applications/partner-guide";
+import PartnerInterestForm from "../../src/features/applications/components/PartnerInterestForm";
+import type { Track } from "../../src/features/applications/utils/partner-interest-form";
+import styles from "../../src/features/applications/components/partnership.module.css";
 
-import {
-  type PartnerType,
-  submitPartnerApplication,
-} from "../../src/features/applications/services/partnerApplications";
-
-type FormState = {
-  companyName: string;
-  contactName: string;
-  email: string;
-  phone: string;
-  country: string;
-  city: string;
-  partnerType: PartnerType;
-  registrationNumber: string;
-  licenseNumber: string;
-  websiteUrl: string;
-  companyDescription: string;
-  servicesDescription: string;
-  servedCountries: string;
-  notes: string;
-  termsAccepted: boolean;
-};
-
-const INITIAL_FORM: FormState = {
-  companyName: "",
-  contactName: "",
-  email: "",
-  phone: "",
-  country: "",
-  city: "",
-  partnerType: "hotel",
-  registrationNumber: "",
-  licenseNumber: "",
-  websiteUrl: "",
-  companyDescription: "",
-  servicesDescription: "",
-  servedCountries: "",
-  notes: "",
-  termsAccepted: false,
-};
-
-const partnerOptions: Array<{
-  value: PartnerType;
-  label: string;
-}> = [
-  { value: "hotel", label: "فندق / ضيافة" },
-  { value: "transport", label: "نقل" },
-  { value: "visa", label: "تأشيرات" },
-  { value: "umrah_company", label: "شركة عمرة" },
-  { value: "guide", label: "إرشاد وخدمات ميدانية" },
-  { value: "airline", label: "طيران" },
-  { value: "service_provider", label: "مزود خدمات" },
-  { value: "technology", label: "شراكة تقنية" },
-  { value: "other", label: "أخرى" },
+const journey = [
+  ["تقديم طلب الاهتمام", "Submit your interest", "عرّفنا بمنشأتك ونطاق عملك.", "Introduce your organization and scope of work."],
+  ["المراجعة الأولية والتواصل", "Initial review and contact", "يراجع الفريق البيانات ويتواصل مع المسؤول.", "The team reviews your details and contacts your representative."],
+  ["استكمال متطلبات التأهيل", "Complete qualification", "تُحدد الوثائق والمتطلبات المناسبة للنشاط والدولة.", "Requirements and documents are identified for your activity and country."],
+  ["الاتفاق والتعاقد", "Agreement and contracting", "تُناقش الأدوار والنطاق والشروط وتُوثّق بالاتفاقية.", "Roles, scope and commercial terms are discussed and documented."],
+  ["التهيئة وبدء التشغيل", "Prepare for operations", "يبدأ التشغيل بعد اختبار الجاهزية وصدور الاعتماد.", "Operations begin after readiness checks and approval."],
 ];
 
 export default function BecomePartnerPage() {
-  const [form, setForm] = useState<FormState>(INITIAL_FORM);
-  const [attachment, setAttachment] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-
-  function setField<K extends keyof FormState>(
-    key: K,
-    value: FormState[K],
-  ) {
-    setForm((current) => ({
-      ...current,
-      [key]: value,
-    }));
-  }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (isSubmitting) return;
-
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    if (
-      !form.companyName.trim() ||
-      !form.contactName.trim() ||
-      !form.email.trim() ||
-      !form.phone.trim()
-    ) {
-      setErrorMessage(
-        "اسم المنشأة واسم المسؤول والبريد الإلكتروني ورقم الجوال مطلوبة.",
-      );
-      return;
-    }
-
-    if (!form.termsAccepted) {
-      setErrorMessage(
-        "يجب الموافقة على الشروط وسياسة الخصوصية قبل إرسال الطلب.",
-      );
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      await submitPartnerApplication(
-        {
-          companyName: form.companyName,
-          contactName: form.contactName,
-          email: form.email,
-          phone: form.phone,
-          country: form.country,
-          city: form.city,
-          partnerType: form.partnerType,
-          registrationNumber: form.registrationNumber,
-          licenseNumber: form.licenseNumber,
-          websiteUrl: form.websiteUrl,
-          companyDescription: form.companyDescription,
-          servicesDescription: form.servicesDescription,
-          servedCountries: form.servedCountries
-            .split(",")
-            .map((item) => item.trim())
-            .filter(Boolean),
-          notes: form.notes,
-          termsAccepted: form.termsAccepted,
-        },
-        attachment,
-      );
-
-      setForm(INITIAL_FORM);
-      setAttachment(null);
-      setSuccessMessage(
-        "تم استلام طلب الشراكة بنجاح. سيقوم فريق نور آب بمراجعة البيانات والتواصل معكم.",
-      );
-
-      const fileInput = document.getElementById(
-        "partner-attachment",
-      ) as HTMLInputElement | null;
-
-      if (fileInput) fileInput.value = "";
-    } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "حدث خطأ غير متوقع أثناء إرسال طلب الشراكة.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
-  return (
-    <main className="partner-page" dir="rtl">
-      <section className="partner-hero">
-        <div className="partner-container partner-hero-grid">
-          <div>
-            <span className="partner-kicker">كن شريك نور آب</span>
-            <h1>
-              ننمو مع شركائنا
-              <strong> لنصنع رحلة أفضل للمعتمر</strong>
-            </h1>
-            <p>
-              إذا كنت فندقًا، شركة نقل، مزود تأشيرات، شركة عمرة أو مقدم خدمة
-              مرتبط برحلة المعتمر، يسعدنا التعرف على خدماتكم وبحث فرص التعاون.
-            </p>
-
-            <div className="partner-points">
-              <span>وصول لعملاء جدد</span>
-              <span>تشغيل رقمي</span>
-              <span>شراكات قابلة للتوسع</span>
-            </div>
+  const pageContent=usePresentation().pages.partner;const faqs=pageContent.faqs.map(f=>[f.question.ar,f.question.en,f.answer.ar,f.answer.en]);
+  const { language, setLanguage } = useLanguage();
+  const ar = language === "ar";
+  const t = (a: string, e: string) => ar ? a : e;
+  const [track, setTrack] = useState<Track>("international");
+  const [busy, setBusy] = useState(false);
+  const guide = partnerGuide[language];
+  const DirectionArrow = ar ? ArrowLeft : ArrowRight;
+  const requirements = track === "international" ? [
+    ["بيانات المنشأة والمفوّض ومستندات النشاط", "Company, representative and activity documents"],
+    ["جاهزية مالية ومحاسبية ودراسة وسائل الدفع", "Financial and accounting readiness and payment assessment"],
+    ["مراجعة التقنية والبيانات ومتطلبات الدولة", "Technology, data and country requirements review"],
+    ["عينات البرامج وجهات التأشيرات وفهرس المرفقات", "Package samples, visa providers and attachment index"],
+  ] : [
+    ["بيانات المنشأة والمسؤول ونطاق التغطية", "Company, contact and service coverage details"],
+    ["تعريف بالخدمات والخبرة والقدرة على تقديمها", "Service overview, experience and delivery capability"],
+    ["التراخيص ذات الصلة بحسب النشاط والدولة", "Relevant licenses for the activity and country"],
+    ["متطلبات الجودة والتشغيل التي تُناقش أثناء التقييم", "Quality and operational requirements discussed during evaluation"],
+  ];
+  return <main className={styles.page} lang={language} dir={ar ? "rtl" : "ltr"}>
+    <a href="#interest" className={styles.skipLink}>{t("انتقل إلى طلب الاهتمام", "Skip to the application")}</a>
+    <header className={styles.topbar}>
+      <Link href="/" aria-label={t("نور آب — الرئيسية", "Nour App — Home")}><Image src="/images/brand/nour-horizontal.svg" alt={t("نور آب", "Nour App")} width={138} height={44} priority/></Link>
+      <nav aria-label={t("تنقل الصفحة", "Page navigation")}><Link href="/">{t("الرئيسية", "Home")}</Link><button type="button" onClick={() => setLanguage(ar ? "en" : "ar")}>{ar ? "English" : "العربية"}</button></nav>
+    </header>
+    <section className={styles.hero}>
+      <div className={styles.container}>
+        <div className={styles.heroGrid}>
+          <div><span className={styles.eyebrow}><Handshake size={16} aria-hidden="true"/>{t("شراكات نور آب", "Nour App partnerships")}</span>
+            <h1>{pageContent.title[language]}<br/><span>{pageContent.emphasis[language]}</span></h1><p>{pageContent.description[language]}</p>
+            <div className={styles.heroActions}><a className={styles.primaryButton} href="#interest">{t("ابدأ طلب الاهتمام", "Start your expression of interest")}<DirectionArrow size={18} aria-hidden="true"/></a><a className={styles.secondaryButton} href="#tracks">{t("اكتشف مسارات الشراكة", "Explore partnership tracks")}</a></div>
+            <span className={styles.heroNote}><ShieldCheck size={15} aria-hidden="true"/>{t("طلب اهتمام أولي • دون مستندات حساسة", "An initial expression of interest • No sensitive documents")}</span>
           </div>
-
-          <div className="partner-hero-card">
-            <span>شراكة متكاملة</span>
-            <strong>
-              اربط خدماتك بمنصة نور آب وكن جزءًا من تجربة رقمية موثوقة.
-            </strong>
-            <p>
-              نراجع كل طلب شراكة وفق نوع الخدمة، الجودة، نطاق التغطية والجاهزية
-              التشغيلية قبل بدء التعاون.
-            </p>
+          <div className={styles.visual} aria-hidden="true">
+            <div className={styles.visualBadge}><Image src="/images/brand/nour-symbol.svg" alt="" width={62} height={62}/></div>
+            <span className={styles.visualKicker}>{t("من اهتمام مشترك", "From shared interest")}</span>
+            <strong>{t("إلى تعاون واضح", "to clear collaboration")}</strong>
+            <div className={styles.visualLine}><span><Globe2 size={22}/></span><i/><span><Handshake size={22}/></span><i/><span><CheckCircle2 size={22}/></span></div>
+            <div className={styles.visualCaptions}><span>{t("نطاق محدد", "Defined scope")}</span><span>{t("تقييم وتعاقد", "Review and agreement")}</span><span>{t("اعتماد مستقل", "Separate approval")}</span></div>
+            <div className={styles.visualFooter}><Sparkles size={16}/>{t("خطوات مدروسة لبداية مشتركة", "Considered steps towards collaboration")}</div>
           </div>
         </div>
-      </section>
-
-      <section className="partner-form-section">
-        <div className="partner-container">
-          <div className="partner-form-heading">
-            <span>طلب شراكة</span>
-            <h2>عرّفنا بمنشأتك</h2>
-            <p>
-              أدخل المعلومات الأساسية وسيتولى فريق نور آب مراجعة الطلب.
-            </p>
-          </div>
-
-          <form className="partner-form" onSubmit={handleSubmit}>
-            <div className="partner-grid">
-              <label>
-                <span>اسم الشركة / المنشأة *</span>
-                <input
-                  value={form.companyName}
-                  onChange={(e) => setField("companyName", e.target.value)}
-                  required
-                />
-              </label>
-
-              <label>
-                <span>اسم المسؤول *</span>
-                <input
-                  value={form.contactName}
-                  onChange={(e) => setField("contactName", e.target.value)}
-                  autoComplete="name"
-                  required
-                />
-              </label>
-
-              <label>
-                <span>البريد الإلكتروني *</span>
-                <input
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setField("email", e.target.value)}
-                  autoComplete="email"
-                  dir="ltr"
-                  required
-                />
-              </label>
-
-              <label>
-                <span>رقم الجوال *</span>
-                <input
-                  type="tel"
-                  value={form.phone}
-                  onChange={(e) => setField("phone", e.target.value)}
-                  autoComplete="tel"
-                  dir="ltr"
-                  required
-                />
-              </label>
-
-              <label>
-                <span>الدولة</span>
-                <input
-                  value={form.country}
-                  onChange={(e) => setField("country", e.target.value)}
-                  autoComplete="country-name"
-                />
-              </label>
-
-              <label>
-                <span>المدينة</span>
-                <input
-                  value={form.city}
-                  onChange={(e) => setField("city", e.target.value)}
-                  autoComplete="address-level2"
-                />
-              </label>
-
-              <label>
-                <span>نوع الشراكة *</span>
-                <select
-                  value={form.partnerType}
-                  onChange={(e) =>
-                    setField("partnerType", e.target.value as PartnerType)
-                  }
-                  required
-                >
-                  {partnerOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label>
-                <span>رقم السجل التجاري</span>
-                <input
-                  value={form.registrationNumber}
-                  onChange={(e) =>
-                    setField("registrationNumber", e.target.value)
-                  }
-                />
-              </label>
-
-              <label>
-                <span>رقم الترخيص</span>
-                <input
-                  value={form.licenseNumber}
-                  onChange={(e) => setField("licenseNumber", e.target.value)}
-                />
-              </label>
-
-              <label>
-                <span>الموقع الإلكتروني</span>
-                <input
-                  type="url"
-                  value={form.websiteUrl}
-                  onChange={(e) => setField("websiteUrl", e.target.value)}
-                  placeholder="https://example.com"
-                  dir="ltr"
-                />
-              </label>
-
-              <label>
-                <span>الدول التي تخدمونها</span>
-                <input
-                  value={form.servedCountries}
-                  onChange={(e) => setField("servedCountries", e.target.value)}
-                  placeholder="السعودية، نيجيريا، باكستان"
-                />
-                <small>افصل بين الدول بفاصلة.</small>
-              </label>
-
-              <label className="partner-file">
-                <span>مرفق تعريفي / ترخيص</span>
-                <input
-                  id="partner-attachment"
-                  type="file"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png"
-                  onChange={(e) =>
-                    setAttachment(e.target.files?.[0] ?? null)
-                  }
-                />
-                <small>PDF أو Word أو JPG أو PNG — بحد أقصى 5MB</small>
-              </label>
-            </div>
-
-            <label className="partner-message">
-              <span>نبذة عن الشركة</span>
-              <textarea
-                rows={5}
-                value={form.companyDescription}
-                onChange={(e) =>
-                  setField("companyDescription", e.target.value)
-                }
-                placeholder="نبذة مختصرة عن المنشأة وخبرتها..."
-              />
-            </label>
-
-            <label className="partner-message">
-              <span>الخدمات المقدمة</span>
-              <textarea
-                rows={5}
-                value={form.servicesDescription}
-                onChange={(e) =>
-                  setField("servicesDescription", e.target.value)
-                }
-                placeholder="اشرح الخدمات التي يمكن تقديمها لمستخدمي نور آب..."
-              />
-            </label>
-
-            <label className="partner-message">
-              <span>ملاحظات إضافية</span>
-              <textarea
-                rows={4}
-                value={form.notes}
-                onChange={(e) => setField("notes", e.target.value)}
-              />
-            </label>
-
-            <label className="partner-consent">
-              <input
-                type="checkbox"
-                checked={form.termsAccepted}
-                onChange={(e) =>
-                  setField("termsAccepted", e.target.checked)
-                }
-                required
-              />
-              <span>
-                أوافق على استخدام البيانات لغرض تقييم طلب الشراكة وفق الشروط
-                وسياسة الخصوصية.
-              </span>
-            </label>
-
-            {errorMessage ? (
-              <div className="partner-alert partner-alert-error">
-                {errorMessage}
-              </div>
-            ) : null}
-
-            {successMessage ? (
-              <div className="partner-alert partner-alert-success">
-                {successMessage}
-              </div>
-            ) : null}
-
-            <button
-              className="partner-submit"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "جارٍ إرسال الطلب..." : "إرسال طلب الشراكة"}
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <style jsx>{`
-        .partner-page{min-height:100vh;background:#f6f9fd;color:#15233b}
-        .partner-container{width:min(1160px,calc(100% - 32px));margin-inline:auto}
-        .partner-hero{position:relative;overflow:hidden;padding:92px 0 72px;background:radial-gradient(circle at 12% 15%,rgba(255,195,19,.18),transparent 25%),linear-gradient(135deg,#082c67 0%,#176fe8 58%,#2aa9e9 100%);color:white}
-        .partner-hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:48px;align-items:center}
-        .partner-kicker,.partner-form-heading>span{display:inline-flex;align-items:center;width:fit-content;padding:8px 13px;border-radius:999px;font-size:12px;font-weight:900}
-        .partner-kicker{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.1)}
-        .partner-hero h1{max-width:760px;margin:18px 0;font-size:clamp(38px,5vw,68px);line-height:1.15;letter-spacing:-.04em}
-        .partner-hero h1 strong{display:block;color:#ffc313}
-        .partner-hero p{max-width:720px;margin:0;color:rgba(255,255,255,.82);font-size:16px;line-height:2}
-        .partner-points{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-        .partner-points span{padding:10px 14px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(255,255,255,.08);font-size:12px;font-weight:800}
-        .partner-hero-card{padding:28px;border:1px solid rgba(255,255,255,.18);border-radius:26px;background:rgba(7,24,44,.26);backdrop-filter:blur(14px);box-shadow:0 26px 80px rgba(4,31,69,.24)}
-        .partner-hero-card>span{color:#ffc313;font-size:12px;font-weight:900}
-        .partner-hero-card strong{display:block;margin:10px 0;font-size:24px;line-height:1.65}
-        .partner-hero-card p{font-size:13px}
-        .partner-form-section{padding:72px 0 96px}
-        .partner-form-heading{margin-bottom:26px}
-        .partner-form-heading>span{background:rgba(23,111,232,.08);color:#176fe8}
-        .partner-form-heading h2{margin:12px 0 8px;font-size:clamp(30px,4vw,44px)}
-        .partner-form-heading p{margin:0;color:#6d7b91}
-        .partner-form{padding:30px;border:1px solid #e4ebf4;border-radius:26px;background:#fff;box-shadow:0 20px 60px rgba(22,47,86,.08)}
-        .partner-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-        .partner-form label{display:grid;gap:8px}
-        .partner-form label>span{font-size:12px;font-weight:900}
-        .partner-form input,.partner-form select,.partner-form textarea{width:100%;box-sizing:border-box;border:1px solid #d7e1ed;border-radius:13px;background:#f9fbfe;color:#15233b;font:inherit;outline:none;transition:border-color .18s ease,box-shadow .18s ease}
-        .partner-form input,.partner-form select{min-height:52px;padding:0 14px}
-        .partner-form textarea{padding:14px;resize:vertical}
-        .partner-form input:focus,.partner-form select:focus,.partner-form textarea:focus{border-color:#176fe8;box-shadow:0 0 0 4px rgba(23,111,232,.09)}
-        .partner-file small,.partner-grid small{color:#7a8799;font-size:11px}
-        .partner-message{margin-top:18px}
-        .partner-consent{grid-template-columns:auto 1fr;align-items:start;gap:10px!important;margin-top:18px;color:#536279;line-height:1.8}
-        .partner-consent input{width:18px;min-height:18px;margin-top:4px}
-        .partner-alert{margin-top:18px;padding:13px 15px;border-radius:12px;font-size:13px;font-weight:800}
-        .partner-alert-error{border:1px solid rgba(185,28,28,.16);background:rgba(185,28,28,.05);color:#b91c1c}
-        .partner-alert-success{border:1px solid rgba(22,163,74,.16);background:rgba(22,163,74,.06);color:#15803d}
-        .partner-submit{min-height:54px;margin-top:20px;padding:0 24px;border:0;border-radius:14px;background:#ffc313;color:#12345d;font:inherit;font-weight:1000;cursor:pointer}
-        .partner-submit:disabled{cursor:wait;opacity:.65}
-        @media(max-width:820px){.partner-hero{padding-top:64px}.partner-hero-grid,.partner-grid{grid-template-columns:1fr}.partner-hero-grid{gap:30px}.partner-form{padding:20px}}
-      `}</style>
-    </main>
-  );
+      </div>
+    </section>
+    <section id="tracks" className={`${styles.section} ${styles.container}`} aria-labelledby="tracks-title">
+      <div className={styles.sectionHeading}><span>{t("مساران للتعاون", "Two ways to collaborate")}</span><h2 id="tracks-title">{t("أين تبدأ شراكتك؟", "Where does your partnership begin?")}</h2><p>{t("اختر ما يناسب نشاطك. سنخصص المتطلبات وطلب الاهتمام لمسارك.", "Choose the track that fits your activity. Requirements and the application will adapt to your choice.")}</p></div>
+      <div className={styles.trackGrid} role="group" aria-label={t("مسار الشراكة", "Partnership track")}>
+        {(["international", "service_provider"] as const).map(value => {
+          const Icon = value === "international" ? Globe2 : Building2;
+          return <button type="button" key={value} className={styles.trackCard} aria-pressed={track === value} disabled={busy} onClick={() => setTrack(value)}>
+            <div className={styles.trackTop}><span className={styles.iconBox}><Icon size={26} aria-hidden="true"/></span><span className={styles.selectedMark}>{track === value ? <Check size={16} aria-hidden="true"/> : null}</span></div>
+            <h3>{value === "international" ? t("شريك دولي في دولة", "International country partner") : t("مزوّد خدمات", "Service provider")}</h3>
+            <p>{value === "international" ? t("تعاون في سوقك المحلي، بنطاق عمل يُحدد بعد التقييم ومراجعة متطلبات الدولة والتعاقد.", "Collaborate in your local market, with a scope defined through evaluation, country requirements review and contracting.") : t("فنادق ونقل وطيران وتأشيرات وخدمات أخرى مرتبطة برحلة العمرة، بحسب النشاط والتراخيص ذات الصلة.", "Hotels, transport, flights, visas and other Umrah-related services, according to your activity and relevant licenses.")}</p>
+            <span className={styles.trackAction}>{track === value ? t("المسار المحدد", "Selected track") : t("اختيار هذا المسار", "Choose this track")}<DirectionArrow size={17} aria-hidden="true"/></span>
+          </button>;
+        })}
+      </div>
+    </section>
+    <section className={styles.valueSection} aria-labelledby="value-title"><div className={styles.container}>
+      <div className={styles.sectionHeading}><span>{t("أساس التعاون", "The foundation of collaboration")}</span><h2 id="value-title">{t("قيمة مشتركة ومسؤوليات واضحة", "Shared purpose, clear responsibilities")}</h2></div>
+      <div className={styles.valueGrid}>{[
+        [Handshake, "ما نهدف إليه", "What we aim for", "تعاون منظم يسهم في جودة الخدمات ووضوح تجربة المعتمر، ضمن نطاق متفق عليه.", "Structured collaboration that supports service quality and a clearer Umrah experience within an agreed scope."],
+        [Layers3, "ما تقدمه نور آب", "What Nour App provides", "دراسة فرص التعاون، ومراجعة الجاهزية والمتطلبات، وتحديد إطار العمل مع فريق الشراكات.", "Assessment of collaboration opportunities, review of readiness and requirements, and coordination of the proposed scope with the partnerships team."],
+        [ShieldCheck, "ما ننتظره من الشريك", "What we expect from partners", "جودة الخدمة، ودقة البيانات، والجاهزية، والتعاون في استكمال المتطلبات والتشغيل المتفق عليه.", "Service quality, accurate information, readiness and cooperation in completing requirements and agreed operations."],
+      ].map(([Icon, a, e, pa, pe], index) => {
+        const CardIcon = Icon as typeof Handshake;
+        return <article key={index}><CardIcon size={24} aria-hidden="true"/><h3>{t(a as string, e as string)}</h3><p>{t(pa as string, pe as string)}</p></article>;
+      })}</div>
+    </div></section>
+    <section className={`${styles.section} ${styles.container}`} aria-labelledby="journey-title"><div className={styles.sectionHeading}><span>{t("من الطلب إلى البداية", "From application to getting started")}</span><h2 id="journey-title">{t("رحلة الانضمام", "Your partnership journey")}</h2></div>
+      <ol className={styles.journey}>{journey.map(([a, e, pa, pe], index) => <li key={a}><span>{String(index + 1).padStart(2, "0")}</span><h3>{t(a, e)}</h3><p>{t(pa, pe)}</p></li>)}</ol>
+    </section>
+    <section id="requirements" className={styles.requirementsSection} aria-labelledby="requirements-title"><div className={`${styles.container} ${styles.requirementsGrid}`}>
+      <div><div className={styles.sectionHeading}><span>{track === "international" ? t("مسار الشريك الدولي", "International partner track") : t("مسار مزوّد الخدمات", "Service provider track")}</span><h2 id="requirements-title">{t("اعرف المتطلبات قبل أن تبدأ", "Know what comes next")}</h2><p>{t("طلب الاهتمام هو البداية. تُستكمل متطلبات التأهيل المناسبة بعد المراجعة الأولية.", "Your expression of interest is the first step. Relevant qualification requirements follow the initial review.")}</p></div>
+        <ul className={styles.requirementList}>{requirements.map(([a, e]) => <li key={a}><CheckCircle2 size={19} aria-hidden="true"/>{t(a, e)}</li>)}</ul>
+        <p className={styles.privacyNote}><ShieldCheck size={20} aria-hidden="true"/>{t("الهويات والبيانات البنكية والمستندات الحساسة تُطلب لاحقًا عند الحاجة عبر القناة المعتمدة. لا تُرفقها بطلب الاهتمام.", "Identity, banking and other sensitive documents are requested later when needed through the approved channel. Do not attach them to your expression of interest.")}</p>
+      </div>
+      <aside className={styles.guideCard}><span className={styles.iconBox}><FileCheck2 size={28} aria-hidden="true"/></span><h3>{t("دليل الشريك الدولي", "International partner guide")}</h3><p>{track === "international" ? t("مرجع تجهيز ملف التأهيل ومتطلبات الدولة والمرفقات والإقرار.", "Your reference for preparing the qualification pack, country requirements, attachments and declaration.") : t("الدليل مرجع لمسار الشريك الدولي. لا تُطبّق جميع متطلباته على مزوّدي الخدمات؛ يُحدد المطلوب بحسب النشاط.", "This guide covers the international partner track. Its full requirements do not apply to every service provider; requirements depend on the activity.")}</p>
+        <span className={styles.guideMeta}>{t("العربية", "English")} • {t("الإصدار", "Version")} <bdi>{guide.version}</bdi></span>
+        <nav aria-label={t("الدليل وملفات التنزيل", "Guide and downloads")}><Link className={styles.blueButton} href={`/become-a-partner/guide?lang=${language}`}><ListChecks size={18} aria-hidden="true"/>{t("قراءة الدليل", "Read the guide")}</Link><div><a href={guide.downloads.pdf} download><FileDown size={17} aria-hidden="true"/>{t("تنزيل PDF", "Download PDF")}</a><a href={guide.downloads.word} download><FileDown size={17} aria-hidden="true"/>{t("تنزيل Word", "Download Word")}</a></div></nav>
+      </aside>
+    </div></section>
+    <section id="interest" className={`${styles.section} ${styles.container}`} aria-labelledby="interest-title"><div className={styles.sectionHeading}><span>{t("لنبدأ بالتعارف", "Let's get acquainted")}</span><h2 id="interest-title">{t("قدّم طلب اهتمام", "Express your interest")}</h2><p>{t("ثلاث خطوات لتعريفنا بمنشأتك. لا حاجة لرفع مستندات الآن.", "Three steps to introduce your organization. No documents to upload at this stage.")}</p></div>
+      <PartnerInterestForm track={track} language={language} onBusyChange={setBusy}/>
+    </section>
+    <section className={`${styles.faqSection} ${styles.container}`} aria-labelledby="faq-title"><div className={styles.sectionHeading}><span>{t("قبل أن تتقدم", "Before you apply")}</span><h2 id="faq-title">{t("أسئلة شائعة", "Frequently asked questions")}</h2></div><div className={styles.faqList}>{faqs.map(([a, e, pa, pe]) => <details key={a}><summary>{t(a, e)}<ChevronDown size={19} aria-hidden="true"/></summary><p>{t(pa, pe)}</p></details>)}</div></section>
+    <footer className={styles.footer}><div className={styles.container}><span>{t("نور آب • شراكات تُبنى بخطوات واضحة", "Nour App • Partnerships built through clear steps")}</span><Link href="/privacy">{t("سياسة الخصوصية", "Privacy Policy")}</Link></div></footer>
+  </main>;
 }

@@ -2,11 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import {
+  imageInfo,
+  validateProgramCover,
+} from "../../../features/media/utils/imageInfo";
 import Button from "../Button";
 import { useLanguage } from "../../../core/i18n";
 
 type MediaUploaderProps = {
   label?: string;
+  programCover?: boolean;
   accept?: string;
   maxSizeMb?: number;
   initialPreviewUrl?: string | null;
@@ -15,7 +20,8 @@ type MediaUploaderProps = {
 
 export default function MediaUploader({
   label,
-  accept = "image/png,image/jpeg,image/webp,image/svg+xml",
+  programCover = false,
+  accept = "image/png,image/jpeg,image/webp",
   maxSizeMb = 10,
   initialPreviewUrl = null,
   onFileSelect,
@@ -24,17 +30,16 @@ export default function MediaUploader({
   const { language } = useLanguage();
   const isArabic = language === "ar";
 
-  const [previewUrl, setPreviewUrl] =
-    useState<string | null>(initialPreviewUrl);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    initialPreviewUrl,
+  );
 
-  const [errorMessage, setErrorMessage] =
-    useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const resolvedLabel =
-    label ??
-    (isArabic ? "رفع صورة" : "Upload Image");
+  const resolvedLabel = label ?? (isArabic ? "رفع صورة" : "Upload Image");
 
-  const [previousInitialUrl, setPreviousInitialUrl] = useState(initialPreviewUrl);
+  const [previousInitialUrl, setPreviousInitialUrl] =
+    useState(initialPreviewUrl);
   if (initialPreviewUrl !== previousInitialUrl) {
     setPreviousInitialUrl(initialPreviewUrl);
     setPreviewUrl(initialPreviewUrl);
@@ -42,10 +47,7 @@ export default function MediaUploader({
 
   useEffect(() => {
     return () => {
-      if (
-        previewUrl &&
-        previewUrl.startsWith("blob:")
-      ) {
+      if (previewUrl && previewUrl.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl);
       }
     };
@@ -53,15 +55,11 @@ export default function MediaUploader({
 
   function validateFile(file: File) {
     const maxSizeBytes = maxSizeMb * 1024 * 1024;
-    const acceptedTypes = accept
-      .split(",")
-      .map((type) => type.trim());
+    const acceptedTypes = accept.split(",").map((type) => type.trim());
 
     if (!acceptedTypes.includes(file.type)) {
       throw new Error(
-        isArabic
-          ? "نوع الملف غير مدعوم."
-          : "Unsupported file type.",
+        isArabic ? "نوع الملف غير مدعوم." : "Unsupported file type.",
       );
     }
 
@@ -74,7 +72,7 @@ export default function MediaUploader({
     }
   }
 
-  function handleFile(file: File | null) {
+  async function handleFile(file: File | null) {
     setErrorMessage("");
 
     if (!file) {
@@ -84,16 +82,13 @@ export default function MediaUploader({
 
     try {
       validateFile(file);
+      if (programCover) validateProgramCover(file, await imageInfo(file));
 
-      if (
-        previewUrl &&
-        previewUrl.startsWith("blob:")
-      ) {
+      if (previewUrl && previewUrl.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl);
       }
 
-      const nextPreviewUrl =
-        URL.createObjectURL(file);
+      const nextPreviewUrl = URL.createObjectURL(file);
 
       setPreviewUrl(nextPreviewUrl);
       onFileSelect(file);
@@ -112,13 +107,10 @@ export default function MediaUploader({
     }
   }
 
-  function handleDrop(
-    event: React.DragEvent<HTMLDivElement>,
-  ) {
+  function handleDrop(event: React.DragEvent<HTMLDivElement>) {
     event.preventDefault();
 
-    const file =
-      event.dataTransfer.files?.[0] ?? null;
+    const file = event.dataTransfer.files?.[0] ?? null;
 
     handleFile(file);
   }
@@ -128,10 +120,7 @@ export default function MediaUploader({
   }
 
   function clearFile() {
-    if (
-      previewUrl &&
-      previewUrl.startsWith("blob:")
-    ) {
+    if (previewUrl && previewUrl.startsWith("blob:")) {
       URL.revokeObjectURL(previewUrl);
     }
 
@@ -150,9 +139,11 @@ export default function MediaUploader({
         <span>{resolvedLabel}</span>
 
         <small>
-          {isArabic
-            ? `PNG أو JPG أو WEBP أو SVG — حتى ${maxSizeMb} MB`
-            : `PNG, JPG, WEBP or SVG — up to ${maxSizeMb} MB`}
+          {programCover
+            ? "16:9 · 1600×900 recommended · min 800×450 · max 5MB"
+            : isArabic
+              ? `PNG أو JPG أو WEBP أو SVG — حتى ${maxSizeMb} MB`
+              : `PNG, JPG, WEBP or SVG — up to ${maxSizeMb} MB`}
         </small>
       </div>
 
@@ -161,52 +152,28 @@ export default function MediaUploader({
         type="file"
         accept={accept}
         hidden
-        onChange={(event) =>
-          handleFile(
-            event.target.files?.[0] ?? null,
-          )
-        }
+        onChange={(event) => handleFile(event.target.files?.[0] ?? null)}
       />
 
       <div
-        className={`nr-media-dropzone ${
-          previewUrl ? "has-preview" : ""
-        }`}
-        onDragOver={(event) =>
-          event.preventDefault()
-        }
+        className={`nr-media-dropzone ${previewUrl ? "has-preview" : ""}`}
+        onDragOver={(event) => event.preventDefault()}
         onDrop={handleDrop}
       >
         {previewUrl ? (
           <div className="nr-media-preview">
             <img
               src={previewUrl}
-              alt={
-                isArabic
-                  ? "معاينة الصورة"
-                  : "Image preview"
-              }
+              alt={isArabic ? "معاينة الصورة" : "Image preview"}
             />
 
             <div className="nr-media-preview-actions">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={openFileDialog}
-              >
-                {isArabic
-                  ? "تغيير الصورة"
-                  : "Change Image"}
+              <Button type="button" variant="outline" onClick={openFileDialog}>
+                {isArabic ? "تغيير الصورة" : "Change Image"}
               </Button>
 
-              <Button
-                type="button"
-                variant="danger"
-                onClick={clearFile}
-              >
-                {isArabic
-                  ? "حذف الصورة"
-                  : "Remove Image"}
+              <Button type="button" variant="danger" onClick={clearFile}>
+                {isArabic ? "حذف الصورة" : "Remove Image"}
               </Button>
             </div>
           </div>
@@ -216,10 +183,7 @@ export default function MediaUploader({
             className="nr-media-dropzone-button"
             onClick={openFileDialog}
           >
-            <span
-              className="nr-media-dropzone-icon"
-              aria-hidden="true"
-            >
+            <span className="nr-media-dropzone-icon" aria-hidden="true">
               ↑
             </span>
 
@@ -239,9 +203,7 @@ export default function MediaUploader({
       </div>
 
       {errorMessage ? (
-        <p className="nr-media-uploader-error">
-          {errorMessage}
-        </p>
+        <p className="nr-media-uploader-error">{errorMessage}</p>
       ) : null}
     </div>
   );

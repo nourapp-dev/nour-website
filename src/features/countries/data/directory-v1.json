@@ -1,0 +1,6490 @@
+[
+  {
+    "iso2": "AF",
+    "iso3": "AFG",
+    "nameAr": "أفغانستان",
+    "nameEn": "Afghanistan",
+    "flag": "🇦🇫",
+    "latitude": 33,
+    "longitude": 65,
+    "phoneCodes": [
+      "+93"
+    ],
+    "primaryPhone": "+93",
+    "currencies": [
+      {
+        "code": "AFN",
+        "ar": "أفغاني",
+        "en": "Afghan Afghani"
+      }
+    ],
+    "timezones": [
+      "Asia/Kabul"
+    ]
+  },
+  {
+    "iso2": "AX",
+    "iso3": "ALA",
+    "nameAr": "جزر أولاند",
+    "nameEn": "Åland Islands",
+    "flag": "🇦🇽",
+    "latitude": 60.116667,
+    "longitude": 19.9,
+    "phoneCodes": [
+      "+35818"
+    ],
+    "primaryPhone": "+35818",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Helsinki"
+    ]
+  },
+  {
+    "iso2": "AL",
+    "iso3": "ALB",
+    "nameAr": "ألبانيا",
+    "nameEn": "Albania",
+    "flag": "🇦🇱",
+    "latitude": 41,
+    "longitude": 20,
+    "phoneCodes": [
+      "+355"
+    ],
+    "primaryPhone": "+355",
+    "currencies": [
+      {
+        "code": "ALL",
+        "ar": "ليك ألباني",
+        "en": "Albanian Lek"
+      }
+    ],
+    "timezones": [
+      "Europe/Tirane"
+    ]
+  },
+  {
+    "iso2": "DZ",
+    "iso3": "DZA",
+    "nameAr": "الجزائر",
+    "nameEn": "Algeria",
+    "flag": "🇩🇿",
+    "latitude": 28,
+    "longitude": 3,
+    "phoneCodes": [
+      "+213"
+    ],
+    "primaryPhone": "+213",
+    "currencies": [
+      {
+        "code": "DZD",
+        "ar": "دينار جزائري",
+        "en": "Algerian Dinar"
+      }
+    ],
+    "timezones": [
+      "Africa/Algiers"
+    ]
+  },
+  {
+    "iso2": "AS",
+    "iso3": "ASM",
+    "nameAr": "ساموا الأمريكية",
+    "nameEn": "American Samoa",
+    "flag": "🇦🇸",
+    "latitude": -14.33333333,
+    "longitude": -170,
+    "phoneCodes": [
+      "+1684"
+    ],
+    "primaryPhone": "+1684",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Pago_Pago"
+    ]
+  },
+  {
+    "iso2": "AD",
+    "iso3": "AND",
+    "nameAr": "أندورا",
+    "nameEn": "Andorra",
+    "flag": "🇦🇩",
+    "latitude": 42.5,
+    "longitude": 1.5,
+    "phoneCodes": [
+      "+376"
+    ],
+    "primaryPhone": "+376",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Andorra"
+    ]
+  },
+  {
+    "iso2": "AO",
+    "iso3": "AGO",
+    "nameAr": "جمهورية أنغولا",
+    "nameEn": "Angola",
+    "flag": "🇦🇴",
+    "latitude": -12.5,
+    "longitude": 18.5,
+    "phoneCodes": [
+      "+244"
+    ],
+    "primaryPhone": "+244",
+    "currencies": [
+      {
+        "code": "AOA",
+        "ar": "كوانزا أنغولي",
+        "en": "Angolan Kwanza"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "AI",
+    "iso3": "AIA",
+    "nameAr": "أنغويلا",
+    "nameEn": "Anguilla",
+    "flag": "🇦🇮",
+    "latitude": 18.25,
+    "longitude": -63.16666666,
+    "phoneCodes": [
+      "+1264"
+    ],
+    "primaryPhone": "+1264",
+    "currencies": [
+      {
+        "code": "XCD",
+        "ar": "دولار شرق الكاريبي",
+        "en": "East Caribbean Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "AQ",
+    "iso3": "ATA",
+    "nameAr": "أنتارتيكا",
+    "nameEn": "Antarctica",
+    "flag": "🇦🇶",
+    "latitude": -90,
+    "longitude": 0,
+    "phoneCodes": [],
+    "primaryPhone": "",
+    "currencies": [],
+    "timezones": [
+      "Antarctica/Casey",
+      "Antarctica/Davis",
+      "Antarctica/Mawson",
+      "Antarctica/Palmer",
+      "Antarctica/Rothera",
+      "Antarctica/Troll",
+      "Antarctica/Vostok",
+      "Asia/Riyadh",
+      "Asia/Singapore",
+      "Pacific/Auckland",
+      "Pacific/Port_Moresby"
+    ]
+  },
+  {
+    "iso2": "AG",
+    "iso3": "ATG",
+    "nameAr": "أنتيغوا وباربودا",
+    "nameEn": "Antigua and Barbuda",
+    "flag": "🇦🇬",
+    "latitude": 17.05,
+    "longitude": -61.8,
+    "phoneCodes": [
+      "+1268"
+    ],
+    "primaryPhone": "+1268",
+    "currencies": [
+      {
+        "code": "XCD",
+        "ar": "دولار شرق الكاريبي",
+        "en": "East Caribbean Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "AR",
+    "iso3": "ARG",
+    "nameAr": "الأرجنتين",
+    "nameEn": "Argentina",
+    "flag": "🇦🇷",
+    "latitude": -34,
+    "longitude": -64,
+    "phoneCodes": [
+      "+54"
+    ],
+    "primaryPhone": "+54",
+    "currencies": [
+      {
+        "code": "ARS",
+        "ar": "بيزو أرجنتيني",
+        "en": "Argentine Peso"
+      }
+    ],
+    "timezones": [
+      "America/Argentina/Buenos_Aires",
+      "America/Argentina/Catamarca",
+      "America/Argentina/Cordoba",
+      "America/Argentina/Jujuy",
+      "America/Argentina/La_Rioja",
+      "America/Argentina/Mendoza",
+      "America/Argentina/Rio_Gallegos",
+      "America/Argentina/Salta",
+      "America/Argentina/San_Juan",
+      "America/Argentina/San_Luis",
+      "America/Argentina/Tucuman",
+      "America/Argentina/Ushuaia"
+    ]
+  },
+  {
+    "iso2": "AM",
+    "iso3": "ARM",
+    "nameAr": "أرمينيا",
+    "nameEn": "Armenia",
+    "flag": "🇦🇲",
+    "latitude": 40,
+    "longitude": 45,
+    "phoneCodes": [
+      "+374"
+    ],
+    "primaryPhone": "+374",
+    "currencies": [
+      {
+        "code": "AMD",
+        "ar": "درام أرميني",
+        "en": "Armenian Dram"
+      }
+    ],
+    "timezones": [
+      "Asia/Yerevan"
+    ]
+  },
+  {
+    "iso2": "AW",
+    "iso3": "ABW",
+    "nameAr": "أروبا",
+    "nameEn": "Aruba",
+    "flag": "🇦🇼",
+    "latitude": 12.5,
+    "longitude": -69.96666666,
+    "phoneCodes": [
+      "+297"
+    ],
+    "primaryPhone": "+297",
+    "currencies": [
+      {
+        "code": "AWG",
+        "ar": "فلورن أروبي",
+        "en": "Aruban Florin"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "AU",
+    "iso3": "AUS",
+    "nameAr": "أستراليا",
+    "nameEn": "Australia",
+    "flag": "🇦🇺",
+    "latitude": -27,
+    "longitude": 133,
+    "phoneCodes": [
+      "+61"
+    ],
+    "primaryPhone": "+61",
+    "currencies": [
+      {
+        "code": "AUD",
+        "ar": "دولار أسترالي",
+        "en": "Australian Dollar"
+      }
+    ],
+    "timezones": [
+      "Antarctica/Macquarie",
+      "Asia/Tokyo",
+      "Australia/Adelaide",
+      "Australia/Brisbane",
+      "Australia/Broken_Hill",
+      "Australia/Darwin",
+      "Australia/Eucla",
+      "Australia/Hobart",
+      "Australia/Lindeman",
+      "Australia/Lord_Howe",
+      "Australia/Melbourne",
+      "Australia/Perth",
+      "Australia/Sydney"
+    ]
+  },
+  {
+    "iso2": "AT",
+    "iso3": "AUT",
+    "nameAr": "النمسا",
+    "nameEn": "Austria",
+    "flag": "🇦🇹",
+    "latitude": 47.33333333,
+    "longitude": 13.33333333,
+    "phoneCodes": [
+      "+43"
+    ],
+    "primaryPhone": "+43",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Vienna"
+    ]
+  },
+  {
+    "iso2": "AZ",
+    "iso3": "AZE",
+    "nameAr": "أذربيجان",
+    "nameEn": "Azerbaijan",
+    "flag": "🇦🇿",
+    "latitude": 40.5,
+    "longitude": 47.5,
+    "phoneCodes": [
+      "+994"
+    ],
+    "primaryPhone": "+994",
+    "currencies": [
+      {
+        "code": "AZN",
+        "ar": "مانات أذربيجان",
+        "en": "Azerbaijani Manat"
+      }
+    ],
+    "timezones": [
+      "Asia/Baku"
+    ]
+  },
+  {
+    "iso2": "BS",
+    "iso3": "BHS",
+    "nameAr": "البهاما",
+    "nameEn": "Bahamas",
+    "flag": "🇧🇸",
+    "latitude": 24.25,
+    "longitude": -76,
+    "phoneCodes": [
+      "+1242"
+    ],
+    "primaryPhone": "+1242",
+    "currencies": [
+      {
+        "code": "BSD",
+        "ar": "دولار باهامي",
+        "en": "Bahamian Dollar"
+      },
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Toronto"
+    ]
+  },
+  {
+    "iso2": "BH",
+    "iso3": "BHR",
+    "nameAr": "البحرين",
+    "nameEn": "Bahrain",
+    "flag": "🇧🇭",
+    "latitude": 26,
+    "longitude": 50.55,
+    "phoneCodes": [
+      "+973"
+    ],
+    "primaryPhone": "+973",
+    "currencies": [
+      {
+        "code": "BHD",
+        "ar": "دينار بحريني",
+        "en": "Bahraini Dinar"
+      }
+    ],
+    "timezones": [
+      "Asia/Qatar"
+    ]
+  },
+  {
+    "iso2": "BD",
+    "iso3": "BGD",
+    "nameAr": "بنغلاديش",
+    "nameEn": "Bangladesh",
+    "flag": "🇧🇩",
+    "latitude": 24,
+    "longitude": 90,
+    "phoneCodes": [
+      "+880"
+    ],
+    "primaryPhone": "+880",
+    "currencies": [
+      {
+        "code": "BDT",
+        "ar": "تاكا بنغلاديشي",
+        "en": "Bangladeshi Taka"
+      }
+    ],
+    "timezones": [
+      "Asia/Dhaka"
+    ]
+  },
+  {
+    "iso2": "BB",
+    "iso3": "BRB",
+    "nameAr": "باربادوس",
+    "nameEn": "Barbados",
+    "flag": "🇧🇧",
+    "latitude": 13.16666666,
+    "longitude": -59.53333333,
+    "phoneCodes": [
+      "+1246"
+    ],
+    "primaryPhone": "+1246",
+    "currencies": [
+      {
+        "code": "BBD",
+        "ar": "دولار بربادوسي",
+        "en": "Barbadian Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Barbados"
+    ]
+  },
+  {
+    "iso2": "BY",
+    "iso3": "BLR",
+    "nameAr": "بيلاروسيا",
+    "nameEn": "Belarus",
+    "flag": "🇧🇾",
+    "latitude": 53,
+    "longitude": 28,
+    "phoneCodes": [
+      "+375"
+    ],
+    "primaryPhone": "+375",
+    "currencies": [
+      {
+        "code": "BYN",
+        "ar": "روبل بيلاروسي",
+        "en": "Belarusian Ruble"
+      }
+    ],
+    "timezones": [
+      "Europe/Minsk"
+    ]
+  },
+  {
+    "iso2": "BE",
+    "iso3": "BEL",
+    "nameAr": "بلجيكا",
+    "nameEn": "Belgium",
+    "flag": "🇧🇪",
+    "latitude": 50.83333333,
+    "longitude": 4,
+    "phoneCodes": [
+      "+32"
+    ],
+    "primaryPhone": "+32",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Brussels"
+    ]
+  },
+  {
+    "iso2": "BZ",
+    "iso3": "BLZ",
+    "nameAr": "بليز",
+    "nameEn": "Belize",
+    "flag": "🇧🇿",
+    "latitude": 17.25,
+    "longitude": -88.75,
+    "phoneCodes": [
+      "+501"
+    ],
+    "primaryPhone": "+501",
+    "currencies": [
+      {
+        "code": "BZD",
+        "ar": "دولار بليزي",
+        "en": "Belize Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Belize"
+    ]
+  },
+  {
+    "iso2": "BJ",
+    "iso3": "BEN",
+    "nameAr": "بنين",
+    "nameEn": "Benin",
+    "flag": "🇧🇯",
+    "latitude": 9.5,
+    "longitude": 2.25,
+    "phoneCodes": [
+      "+229"
+    ],
+    "primaryPhone": "+229",
+    "currencies": [
+      {
+        "code": "XOF",
+        "ar": "فرنك غرب أفريقي",
+        "en": "West African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "BM",
+    "iso3": "BMU",
+    "nameAr": "برمودا",
+    "nameEn": "Bermuda",
+    "flag": "🇧🇲",
+    "latitude": 32.33333333,
+    "longitude": -64.75,
+    "phoneCodes": [
+      "+1441"
+    ],
+    "primaryPhone": "+1441",
+    "currencies": [
+      {
+        "code": "BMD",
+        "ar": "دولار برمودي",
+        "en": "Bermudan Dollar"
+      }
+    ],
+    "timezones": [
+      "Atlantic/Bermuda"
+    ]
+  },
+  {
+    "iso2": "BT",
+    "iso3": "BTN",
+    "nameAr": "بوتان",
+    "nameEn": "Bhutan",
+    "flag": "🇧🇹",
+    "latitude": 27.5,
+    "longitude": 90.5,
+    "phoneCodes": [
+      "+975"
+    ],
+    "primaryPhone": "+975",
+    "currencies": [
+      {
+        "code": "BTN",
+        "ar": "نولتوم بوتاني",
+        "en": "Bhutanese Ngultrum"
+      },
+      {
+        "code": "INR",
+        "ar": "روبية هندي",
+        "en": "Indian Rupee"
+      }
+    ],
+    "timezones": [
+      "Asia/Thimphu"
+    ]
+  },
+  {
+    "iso2": "BO",
+    "iso3": "BOL",
+    "nameAr": "بوليفيا",
+    "nameEn": "Bolivia",
+    "flag": "🇧🇴",
+    "latitude": -17,
+    "longitude": -65,
+    "phoneCodes": [
+      "+591"
+    ],
+    "primaryPhone": "+591",
+    "currencies": [
+      {
+        "code": "BOB",
+        "ar": "بوليفيانو بوليفي",
+        "en": "Bolivian Boliviano"
+      }
+    ],
+    "timezones": [
+      "America/La_Paz"
+    ]
+  },
+  {
+    "iso2": "BA",
+    "iso3": "BIH",
+    "nameAr": "البوسنة والهرسك",
+    "nameEn": "Bosnia and Herzegovina",
+    "flag": "🇧🇦",
+    "latitude": 44,
+    "longitude": 18,
+    "phoneCodes": [
+      "+387"
+    ],
+    "primaryPhone": "+387",
+    "currencies": [
+      {
+        "code": "BAM",
+        "ar": "مارك البوسنة والهرسك قابل للتحويل",
+        "en": "Bosnia-Herzegovina Convertible Mark"
+      }
+    ],
+    "timezones": [
+      "Europe/Belgrade"
+    ]
+  },
+  {
+    "iso2": "BW",
+    "iso3": "BWA",
+    "nameAr": "بوتسوانا",
+    "nameEn": "Botswana",
+    "flag": "🇧🇼",
+    "latitude": -22,
+    "longitude": 24,
+    "phoneCodes": [
+      "+267"
+    ],
+    "primaryPhone": "+267",
+    "currencies": [
+      {
+        "code": "BWP",
+        "ar": "بولا بتسواني",
+        "en": "Botswanan Pula"
+      }
+    ],
+    "timezones": [
+      "Africa/Maputo"
+    ]
+  },
+  {
+    "iso2": "BV",
+    "iso3": "BVT",
+    "nameAr": "جزر بوفيه",
+    "nameEn": "Bouvet Island",
+    "flag": "🇧🇻",
+    "latitude": -54.43333333,
+    "longitude": 3.4,
+    "phoneCodes": [
+      "+47"
+    ],
+    "primaryPhone": "+47",
+    "currencies": [],
+    "timezones": []
+  },
+  {
+    "iso2": "BR",
+    "iso3": "BRA",
+    "nameAr": "البرازيل",
+    "nameEn": "Brazil",
+    "flag": "🇧🇷",
+    "latitude": -10,
+    "longitude": -55,
+    "phoneCodes": [
+      "+55"
+    ],
+    "primaryPhone": "+55",
+    "currencies": [
+      {
+        "code": "BRL",
+        "ar": "ريال برازيلي",
+        "en": "Brazilian Real"
+      }
+    ],
+    "timezones": [
+      "America/Araguaina",
+      "America/Bahia",
+      "America/Belem",
+      "America/Boa_Vista",
+      "America/Campo_Grande",
+      "America/Cuiaba",
+      "America/Eirunepe",
+      "America/Fortaleza",
+      "America/Maceio",
+      "America/Manaus",
+      "America/Noronha",
+      "America/Porto_Velho",
+      "America/Recife",
+      "America/Rio_Branco",
+      "America/Santarem",
+      "America/Sao_Paulo"
+    ]
+  },
+  {
+    "iso2": "IO",
+    "iso3": "IOT",
+    "nameAr": "إقليم المحيط الهندي البريطاني",
+    "nameEn": "British Indian Ocean Territory",
+    "flag": "🇮🇴",
+    "latitude": -6,
+    "longitude": 71.5,
+    "phoneCodes": [
+      "+246"
+    ],
+    "primaryPhone": "+246",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Indian/Chagos"
+    ]
+  },
+  {
+    "iso2": "VG",
+    "iso3": "VGB",
+    "nameAr": "جزر العذراء",
+    "nameEn": "British Virgin Islands",
+    "flag": "🇻🇬",
+    "latitude": 18.431383,
+    "longitude": -64.62305,
+    "phoneCodes": [
+      "+1284"
+    ],
+    "primaryPhone": "+1284",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "BN",
+    "iso3": "BRN",
+    "nameAr": "بروناي",
+    "nameEn": "Brunei",
+    "flag": "🇧🇳",
+    "latitude": 4.5,
+    "longitude": 114.66666666,
+    "phoneCodes": [
+      "+673"
+    ],
+    "primaryPhone": "+673",
+    "currencies": [
+      {
+        "code": "BND",
+        "ar": "دولار بروناي",
+        "en": "Brunei Dollar"
+      },
+      {
+        "code": "SGD",
+        "ar": "دولار سنغافوري",
+        "en": "Singapore Dollar"
+      }
+    ],
+    "timezones": [
+      "Asia/Kuching"
+    ]
+  },
+  {
+    "iso2": "BG",
+    "iso3": "BGR",
+    "nameAr": "بلغاريا",
+    "nameEn": "Bulgaria",
+    "flag": "🇧🇬",
+    "latitude": 43,
+    "longitude": 25,
+    "phoneCodes": [
+      "+359"
+    ],
+    "primaryPhone": "+359",
+    "currencies": [
+      {
+        "code": "BGN",
+        "ar": "ليف بلغاري",
+        "en": "Bulgarian Lev"
+      }
+    ],
+    "timezones": [
+      "Europe/Sofia"
+    ]
+  },
+  {
+    "iso2": "BF",
+    "iso3": "BFA",
+    "nameAr": "بوركينا فاسو",
+    "nameEn": "Burkina Faso",
+    "flag": "🇧🇫",
+    "latitude": 13,
+    "longitude": -2,
+    "phoneCodes": [
+      "+226"
+    ],
+    "primaryPhone": "+226",
+    "currencies": [
+      {
+        "code": "XOF",
+        "ar": "فرنك غرب أفريقي",
+        "en": "West African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "BI",
+    "iso3": "BDI",
+    "nameAr": "بوروندي",
+    "nameEn": "Burundi",
+    "flag": "🇧🇮",
+    "latitude": -3.5,
+    "longitude": 30,
+    "phoneCodes": [
+      "+257"
+    ],
+    "primaryPhone": "+257",
+    "currencies": [
+      {
+        "code": "BIF",
+        "ar": "فرنك بروندي",
+        "en": "Burundian Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Maputo"
+    ]
+  },
+  {
+    "iso2": "KH",
+    "iso3": "KHM",
+    "nameAr": "كمبوديا",
+    "nameEn": "Cambodia",
+    "flag": "🇰🇭",
+    "latitude": 13,
+    "longitude": 105,
+    "phoneCodes": [
+      "+855"
+    ],
+    "primaryPhone": "+855",
+    "currencies": [
+      {
+        "code": "KHR",
+        "ar": "رييال كمبودي",
+        "en": "Cambodian Riel"
+      },
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Asia/Bangkok"
+    ]
+  },
+  {
+    "iso2": "CM",
+    "iso3": "CMR",
+    "nameAr": "الكاميرون",
+    "nameEn": "Cameroon",
+    "flag": "🇨🇲",
+    "latitude": 6,
+    "longitude": 12,
+    "phoneCodes": [
+      "+237"
+    ],
+    "primaryPhone": "+237",
+    "currencies": [
+      {
+        "code": "XAF",
+        "ar": "فرنك وسط أفريقي",
+        "en": "Central African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "CA",
+    "iso3": "CAN",
+    "nameAr": "كندا",
+    "nameEn": "Canada",
+    "flag": "🇨🇦",
+    "latitude": 60,
+    "longitude": -95,
+    "phoneCodes": [
+      "+1204",
+      "+1226",
+      "+1236",
+      "+1249",
+      "+1250",
+      "+1263",
+      "+1289",
+      "+1306",
+      "+1343",
+      "+1354",
+      "+1365",
+      "+1367",
+      "+1368",
+      "+1382",
+      "+1387",
+      "+1403",
+      "+1416",
+      "+1418",
+      "+1428",
+      "+1431",
+      "+1437",
+      "+1438",
+      "+1450",
+      "+1468",
+      "+1474",
+      "+1506",
+      "+1514",
+      "+1519",
+      "+1548",
+      "+1579",
+      "+1581",
+      "+1584",
+      "+1587",
+      "+1600",
+      "+1604",
+      "+1613",
+      "+1622",
+      "+1633",
+      "+1639",
+      "+1644",
+      "+1647",
+      "+1655",
+      "+1672",
+      "+1677",
+      "+1683",
+      "+1688",
+      "+1705",
+      "+1709",
+      "+1742",
+      "+1753",
+      "+1778",
+      "+1780",
+      "+1782",
+      "+1807",
+      "+1819",
+      "+1825",
+      "+1867",
+      "+1873",
+      "+1879",
+      "+1902",
+      "+1905",
+      "+1942"
+    ],
+    "primaryPhone": "+1",
+    "currencies": [
+      {
+        "code": "CAD",
+        "ar": "دولار كندي",
+        "en": "Canadian Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Cambridge_Bay",
+      "America/Dawson",
+      "America/Dawson_Creek",
+      "America/Edmonton",
+      "America/Fort_Nelson",
+      "America/Glace_Bay",
+      "America/Goose_Bay",
+      "America/Halifax",
+      "America/Inuvik",
+      "America/Iqaluit",
+      "America/Moncton",
+      "America/Panama",
+      "America/Phoenix",
+      "America/Puerto_Rico",
+      "America/Rankin_Inlet",
+      "America/Regina",
+      "America/Resolute",
+      "America/St_Johns",
+      "America/Swift_Current",
+      "America/Toronto",
+      "America/Vancouver",
+      "America/Whitehorse",
+      "America/Winnipeg"
+    ]
+  },
+  {
+    "iso2": "CV",
+    "iso3": "CPV",
+    "nameAr": "كابو فيردي",
+    "nameEn": "Cape Verde",
+    "flag": "🇨🇻",
+    "latitude": 16,
+    "longitude": -24,
+    "phoneCodes": [
+      "+238"
+    ],
+    "primaryPhone": "+238",
+    "currencies": [
+      {
+        "code": "CVE",
+        "ar": "اسكودو الرأس الأخضر",
+        "en": "Cape Verdean Escudo"
+      }
+    ],
+    "timezones": [
+      "Atlantic/Cape_Verde"
+    ]
+  },
+  {
+    "iso2": "BQ",
+    "iso3": "BES",
+    "nameAr": "الجزر الكاريبية الهولندية",
+    "nameEn": "Caribbean Netherlands",
+    "flag": "",
+    "latitude": 12.18,
+    "longitude": -68.25,
+    "phoneCodes": [
+      "+599"
+    ],
+    "primaryPhone": "+599",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "KY",
+    "iso3": "CYM",
+    "nameAr": "جزر كايمان",
+    "nameEn": "Cayman Islands",
+    "flag": "🇰🇾",
+    "latitude": 19.5,
+    "longitude": -80.5,
+    "phoneCodes": [
+      "+1345"
+    ],
+    "primaryPhone": "+1345",
+    "currencies": [
+      {
+        "code": "KYD",
+        "ar": "دولار جزر كيمن",
+        "en": "Cayman Islands Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Panama"
+    ]
+  },
+  {
+    "iso2": "CF",
+    "iso3": "CAF",
+    "nameAr": "جمهورية أفريقيا الوسطى",
+    "nameEn": "Central African Republic",
+    "flag": "🇨🇫",
+    "latitude": 7,
+    "longitude": 21,
+    "phoneCodes": [
+      "+236"
+    ],
+    "primaryPhone": "+236",
+    "currencies": [
+      {
+        "code": "XAF",
+        "ar": "فرنك وسط أفريقي",
+        "en": "Central African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "TD",
+    "iso3": "TCD",
+    "nameAr": "تشاد",
+    "nameEn": "Chad",
+    "flag": "🇹🇩",
+    "latitude": 15,
+    "longitude": 19,
+    "phoneCodes": [
+      "+235"
+    ],
+    "primaryPhone": "+235",
+    "currencies": [
+      {
+        "code": "XAF",
+        "ar": "فرنك وسط أفريقي",
+        "en": "Central African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Ndjamena"
+    ]
+  },
+  {
+    "iso2": "CL",
+    "iso3": "CHL",
+    "nameAr": "تشيلي",
+    "nameEn": "Chile",
+    "flag": "🇨🇱",
+    "latitude": -30,
+    "longitude": -71,
+    "phoneCodes": [
+      "+56"
+    ],
+    "primaryPhone": "+56",
+    "currencies": [
+      {
+        "code": "CLP",
+        "ar": "بيزو تشيلي",
+        "en": "Chilean Peso"
+      }
+    ],
+    "timezones": [
+      "America/Coyhaique",
+      "America/Punta_Arenas",
+      "America/Santiago",
+      "Pacific/Easter"
+    ]
+  },
+  {
+    "iso2": "CN",
+    "iso3": "CHN",
+    "nameAr": "الصين",
+    "nameEn": "China",
+    "flag": "🇨🇳",
+    "latitude": 35,
+    "longitude": 105,
+    "phoneCodes": [
+      "+86"
+    ],
+    "primaryPhone": "+86",
+    "currencies": [
+      {
+        "code": "CNY",
+        "ar": "يوان صيني",
+        "en": "Chinese Yuan"
+      }
+    ],
+    "timezones": [
+      "Asia/Shanghai",
+      "Asia/Urumqi"
+    ]
+  },
+  {
+    "iso2": "CX",
+    "iso3": "CXR",
+    "nameAr": "جزيرة كريسماس",
+    "nameEn": "Christmas Island",
+    "flag": "🇨🇽",
+    "latitude": -10.5,
+    "longitude": 105.66666666,
+    "phoneCodes": [
+      "+61"
+    ],
+    "primaryPhone": "+61",
+    "currencies": [
+      {
+        "code": "AUD",
+        "ar": "دولار أسترالي",
+        "en": "Australian Dollar"
+      }
+    ],
+    "timezones": [
+      "Asia/Bangkok"
+    ]
+  },
+  {
+    "iso2": "CC",
+    "iso3": "CCK",
+    "nameAr": "جزر كوكوس",
+    "nameEn": "Cocos (Keeling) Islands",
+    "flag": "🇨🇨",
+    "latitude": -12.5,
+    "longitude": 96.83333333,
+    "phoneCodes": [
+      "+61"
+    ],
+    "primaryPhone": "+61",
+    "currencies": [
+      {
+        "code": "AUD",
+        "ar": "دولار أسترالي",
+        "en": "Australian Dollar"
+      }
+    ],
+    "timezones": [
+      "Asia/Yangon"
+    ]
+  },
+  {
+    "iso2": "CO",
+    "iso3": "COL",
+    "nameAr": "كولومبيا",
+    "nameEn": "Colombia",
+    "flag": "🇨🇴",
+    "latitude": 4,
+    "longitude": -72,
+    "phoneCodes": [
+      "+57"
+    ],
+    "primaryPhone": "+57",
+    "currencies": [
+      {
+        "code": "COP",
+        "ar": "بيزو كولومبي",
+        "en": "Colombian Peso"
+      }
+    ],
+    "timezones": [
+      "America/Bogota"
+    ]
+  },
+  {
+    "iso2": "KM",
+    "iso3": "COM",
+    "nameAr": "جزر القمر",
+    "nameEn": "Comoros",
+    "flag": "🇰🇲",
+    "latitude": -12.16666666,
+    "longitude": 44.25,
+    "phoneCodes": [
+      "+269"
+    ],
+    "primaryPhone": "+269",
+    "currencies": [
+      {
+        "code": "KMF",
+        "ar": "فرنك جزر القمر",
+        "en": "Comorian Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "CK",
+    "iso3": "COK",
+    "nameAr": "جزر كوك",
+    "nameEn": "Cook Islands",
+    "flag": "🇨🇰",
+    "latitude": -21.23333333,
+    "longitude": -159.76666666,
+    "phoneCodes": [
+      "+682"
+    ],
+    "primaryPhone": "+682",
+    "currencies": [
+      {
+        "code": "CKD",
+        "ar": "CKD",
+        "en": "CKD"
+      },
+      {
+        "code": "NZD",
+        "ar": "دولار نيوزيلندي",
+        "en": "New Zealand Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Rarotonga"
+    ]
+  },
+  {
+    "iso2": "CR",
+    "iso3": "CRI",
+    "nameAr": "كوستاريكا",
+    "nameEn": "Costa Rica",
+    "flag": "🇨🇷",
+    "latitude": 10,
+    "longitude": -84,
+    "phoneCodes": [
+      "+506"
+    ],
+    "primaryPhone": "+506",
+    "currencies": [
+      {
+        "code": "CRC",
+        "ar": "كولن كوستاريكي",
+        "en": "Costa Rican Colón"
+      }
+    ],
+    "timezones": [
+      "America/Costa_Rica"
+    ]
+  },
+  {
+    "iso2": "HR",
+    "iso3": "HRV",
+    "nameAr": "كرواتيا",
+    "nameEn": "Croatia",
+    "flag": "🇭🇷",
+    "latitude": 45.16666666,
+    "longitude": 15.5,
+    "phoneCodes": [
+      "+385"
+    ],
+    "primaryPhone": "+385",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Belgrade"
+    ]
+  },
+  {
+    "iso2": "CU",
+    "iso3": "CUB",
+    "nameAr": "كوبا",
+    "nameEn": "Cuba",
+    "flag": "🇨🇺",
+    "latitude": 21.5,
+    "longitude": -80,
+    "phoneCodes": [
+      "+53"
+    ],
+    "primaryPhone": "+53",
+    "currencies": [
+      {
+        "code": "CUC",
+        "ar": "بيزو كوبي قابل للتحويل",
+        "en": "Cuban Convertible Peso"
+      },
+      {
+        "code": "CUP",
+        "ar": "بيزو كوبي",
+        "en": "Cuban Peso"
+      }
+    ],
+    "timezones": [
+      "America/Havana"
+    ]
+  },
+  {
+    "iso2": "CW",
+    "iso3": "CUW",
+    "nameAr": "كوراساو",
+    "nameEn": "Curaçao",
+    "flag": "🇨🇼",
+    "latitude": 12.116667,
+    "longitude": -68.933333,
+    "phoneCodes": [
+      "+599"
+    ],
+    "primaryPhone": "+599",
+    "currencies": [
+      {
+        "code": "ANG",
+        "ar": "غيلدر أنتيلي هولندي",
+        "en": "Netherlands Antillean Guilder"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "CY",
+    "iso3": "CYP",
+    "nameAr": "قبرص",
+    "nameEn": "Cyprus",
+    "flag": "🇨🇾",
+    "latitude": 35,
+    "longitude": 33,
+    "phoneCodes": [
+      "+357"
+    ],
+    "primaryPhone": "+357",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Asia/Famagusta",
+      "Asia/Nicosia"
+    ]
+  },
+  {
+    "iso2": "CZ",
+    "iso3": "CZE",
+    "nameAr": "التشيك",
+    "nameEn": "Czechia",
+    "flag": "🇨🇿",
+    "latitude": 49.75,
+    "longitude": 15.5,
+    "phoneCodes": [
+      "+420"
+    ],
+    "primaryPhone": "+420",
+    "currencies": [
+      {
+        "code": "CZK",
+        "ar": "كرونة تشيكية",
+        "en": "Czech Koruna"
+      }
+    ],
+    "timezones": [
+      "Europe/Prague"
+    ]
+  },
+  {
+    "iso2": "DK",
+    "iso3": "DNK",
+    "nameAr": "الدنمارك",
+    "nameEn": "Denmark",
+    "flag": "🇩🇰",
+    "latitude": 56,
+    "longitude": 10,
+    "phoneCodes": [
+      "+45"
+    ],
+    "primaryPhone": "+45",
+    "currencies": [
+      {
+        "code": "DKK",
+        "ar": "كرونة دنماركية",
+        "en": "Danish Krone"
+      }
+    ],
+    "timezones": [
+      "Europe/Berlin"
+    ]
+  },
+  {
+    "iso2": "DJ",
+    "iso3": "DJI",
+    "nameAr": "جيبوتي",
+    "nameEn": "Djibouti",
+    "flag": "🇩🇯",
+    "latitude": 11.5,
+    "longitude": 43,
+    "phoneCodes": [
+      "+253"
+    ],
+    "primaryPhone": "+253",
+    "currencies": [
+      {
+        "code": "DJF",
+        "ar": "فرنك جيبوتي",
+        "en": "Djiboutian Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "DM",
+    "iso3": "DMA",
+    "nameAr": "دومينيكا",
+    "nameEn": "Dominica",
+    "flag": "🇩🇲",
+    "latitude": 15.41666666,
+    "longitude": -61.33333333,
+    "phoneCodes": [
+      "+1767"
+    ],
+    "primaryPhone": "+1767",
+    "currencies": [
+      {
+        "code": "XCD",
+        "ar": "دولار شرق الكاريبي",
+        "en": "East Caribbean Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "DO",
+    "iso3": "DOM",
+    "nameAr": "جمهورية الدومينيكان",
+    "nameEn": "Dominican Republic",
+    "flag": "🇩🇴",
+    "latitude": 19,
+    "longitude": -70.66666666,
+    "phoneCodes": [
+      "+1809",
+      "+1829",
+      "+1849"
+    ],
+    "primaryPhone": "+1",
+    "currencies": [
+      {
+        "code": "DOP",
+        "ar": "بيزو الدومنيكان",
+        "en": "Dominican Peso"
+      }
+    ],
+    "timezones": [
+      "America/Santo_Domingo"
+    ]
+  },
+  {
+    "iso2": "CD",
+    "iso3": "COD",
+    "nameAr": "الكونغو",
+    "nameEn": "DR Congo",
+    "flag": "🇨🇩",
+    "latitude": 0,
+    "longitude": 25,
+    "phoneCodes": [
+      "+243"
+    ],
+    "primaryPhone": "+243",
+    "currencies": [
+      {
+        "code": "CDF",
+        "ar": "فرنك كونغولي",
+        "en": "Congolese Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos",
+      "Africa/Maputo"
+    ]
+  },
+  {
+    "iso2": "EC",
+    "iso3": "ECU",
+    "nameAr": "الإكوادور",
+    "nameEn": "Ecuador",
+    "flag": "🇪🇨",
+    "latitude": -2,
+    "longitude": -77.5,
+    "phoneCodes": [
+      "+593"
+    ],
+    "primaryPhone": "+593",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Guayaquil",
+      "Pacific/Galapagos"
+    ]
+  },
+  {
+    "iso2": "EG",
+    "iso3": "EGY",
+    "nameAr": "مصر",
+    "nameEn": "Egypt",
+    "flag": "🇪🇬",
+    "latitude": 27,
+    "longitude": 30,
+    "phoneCodes": [
+      "+20"
+    ],
+    "primaryPhone": "+20",
+    "currencies": [
+      {
+        "code": "EGP",
+        "ar": "جنيه مصري",
+        "en": "Egyptian Pound"
+      }
+    ],
+    "timezones": [
+      "Africa/Cairo"
+    ]
+  },
+  {
+    "iso2": "SV",
+    "iso3": "SLV",
+    "nameAr": "السلفادور",
+    "nameEn": "El Salvador",
+    "flag": "🇸🇻",
+    "latitude": 13.83333333,
+    "longitude": -88.91666666,
+    "phoneCodes": [
+      "+503"
+    ],
+    "primaryPhone": "+503",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/El_Salvador"
+    ]
+  },
+  {
+    "iso2": "GQ",
+    "iso3": "GNQ",
+    "nameAr": "غينيا الاستوائية",
+    "nameEn": "Equatorial Guinea",
+    "flag": "🇬🇶",
+    "latitude": 2,
+    "longitude": 10,
+    "phoneCodes": [
+      "+240"
+    ],
+    "primaryPhone": "+240",
+    "currencies": [
+      {
+        "code": "XAF",
+        "ar": "فرنك وسط أفريقي",
+        "en": "Central African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "ER",
+    "iso3": "ERI",
+    "nameAr": "إريتريا",
+    "nameEn": "Eritrea",
+    "flag": "🇪🇷",
+    "latitude": 15,
+    "longitude": 39,
+    "phoneCodes": [
+      "+291"
+    ],
+    "primaryPhone": "+291",
+    "currencies": [
+      {
+        "code": "ERN",
+        "ar": "ناكفا أريتري",
+        "en": "Eritrean Nakfa"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "EE",
+    "iso3": "EST",
+    "nameAr": "إستونيا",
+    "nameEn": "Estonia",
+    "flag": "🇪🇪",
+    "latitude": 59,
+    "longitude": 26,
+    "phoneCodes": [
+      "+372"
+    ],
+    "primaryPhone": "+372",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Tallinn"
+    ]
+  },
+  {
+    "iso2": "SZ",
+    "iso3": "SWZ",
+    "nameAr": "إسواتيني",
+    "nameEn": "Eswatini",
+    "flag": "🇸🇿",
+    "latitude": -26.5,
+    "longitude": 31.5,
+    "phoneCodes": [
+      "+268"
+    ],
+    "primaryPhone": "+268",
+    "currencies": [
+      {
+        "code": "SZL",
+        "ar": "ليلانجيني سوازيلندي",
+        "en": "Swazi Lilangeni"
+      },
+      {
+        "code": "ZAR",
+        "ar": "راند جنوب أفريقيا",
+        "en": "South African Rand"
+      }
+    ],
+    "timezones": [
+      "Africa/Johannesburg"
+    ]
+  },
+  {
+    "iso2": "ET",
+    "iso3": "ETH",
+    "nameAr": "إثيوبيا",
+    "nameEn": "Ethiopia",
+    "flag": "🇪🇹",
+    "latitude": 8,
+    "longitude": 38,
+    "phoneCodes": [
+      "+251"
+    ],
+    "primaryPhone": "+251",
+    "currencies": [
+      {
+        "code": "ETB",
+        "ar": "بير أثيوبي",
+        "en": "Ethiopian Birr"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "FK",
+    "iso3": "FLK",
+    "nameAr": "جزر فوكلاند",
+    "nameEn": "Falkland Islands",
+    "flag": "🇫🇰",
+    "latitude": -51.75,
+    "longitude": -59,
+    "phoneCodes": [
+      "+500"
+    ],
+    "primaryPhone": "+500",
+    "currencies": [
+      {
+        "code": "FKP",
+        "ar": "جنيه جزر فوكلاند",
+        "en": "Falkland Islands Pound"
+      }
+    ],
+    "timezones": [
+      "Atlantic/Stanley"
+    ]
+  },
+  {
+    "iso2": "FO",
+    "iso3": "FRO",
+    "nameAr": "جزر فارو",
+    "nameEn": "Faroe Islands",
+    "flag": "🇫🇴",
+    "latitude": 62,
+    "longitude": -7,
+    "phoneCodes": [
+      "+298"
+    ],
+    "primaryPhone": "+298",
+    "currencies": [
+      {
+        "code": "DKK",
+        "ar": "كرونة دنماركية",
+        "en": "Danish Krone"
+      },
+      {
+        "code": "FOK",
+        "ar": "FOK",
+        "en": "FOK"
+      }
+    ],
+    "timezones": [
+      "Atlantic/Faroe"
+    ]
+  },
+  {
+    "iso2": "FJ",
+    "iso3": "FJI",
+    "nameAr": "فيجي",
+    "nameEn": "Fiji",
+    "flag": "🇫🇯",
+    "latitude": -18,
+    "longitude": 175,
+    "phoneCodes": [
+      "+679"
+    ],
+    "primaryPhone": "+679",
+    "currencies": [
+      {
+        "code": "FJD",
+        "ar": "دولار فيجي",
+        "en": "Fijian Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Fiji"
+    ]
+  },
+  {
+    "iso2": "FI",
+    "iso3": "FIN",
+    "nameAr": "فنلندا",
+    "nameEn": "Finland",
+    "flag": "🇫🇮",
+    "latitude": 64,
+    "longitude": 26,
+    "phoneCodes": [
+      "+358"
+    ],
+    "primaryPhone": "+358",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Helsinki"
+    ]
+  },
+  {
+    "iso2": "FR",
+    "iso3": "FRA",
+    "nameAr": "فرنسا",
+    "nameEn": "France",
+    "flag": "🇫🇷",
+    "latitude": 46,
+    "longitude": 2,
+    "phoneCodes": [
+      "+33"
+    ],
+    "primaryPhone": "+33",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Paris"
+    ]
+  },
+  {
+    "iso2": "GF",
+    "iso3": "GUF",
+    "nameAr": "غويانا",
+    "nameEn": "French Guiana",
+    "flag": "🇬🇫",
+    "latitude": 4,
+    "longitude": -53,
+    "phoneCodes": [
+      "+594"
+    ],
+    "primaryPhone": "+594",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "America/Cayenne"
+    ]
+  },
+  {
+    "iso2": "PF",
+    "iso3": "PYF",
+    "nameAr": "بولينزيا الفرنسية",
+    "nameEn": "French Polynesia",
+    "flag": "🇵🇫",
+    "latitude": -15,
+    "longitude": -140,
+    "phoneCodes": [
+      "+689"
+    ],
+    "primaryPhone": "+689",
+    "currencies": [
+      {
+        "code": "XPF",
+        "ar": "فرنك سي إف بي",
+        "en": "CFP Franc"
+      }
+    ],
+    "timezones": [
+      "Pacific/Gambier",
+      "Pacific/Marquesas",
+      "Pacific/Tahiti"
+    ]
+  },
+  {
+    "iso2": "TF",
+    "iso3": "ATF",
+    "nameAr": "أراض فرنسية جنوبية وأنتارتيكية",
+    "nameEn": "French Southern and Antarctic Lands",
+    "flag": "🇹🇫",
+    "latitude": -49.25,
+    "longitude": 69.167,
+    "phoneCodes": [
+      "+262"
+    ],
+    "primaryPhone": "+262",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Asia/Dubai",
+      "Indian/Maldives"
+    ]
+  },
+  {
+    "iso2": "GA",
+    "iso3": "GAB",
+    "nameAr": "الغابون",
+    "nameEn": "Gabon",
+    "flag": "🇬🇦",
+    "latitude": -1,
+    "longitude": 11.75,
+    "phoneCodes": [
+      "+241"
+    ],
+    "primaryPhone": "+241",
+    "currencies": [
+      {
+        "code": "XAF",
+        "ar": "فرنك وسط أفريقي",
+        "en": "Central African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "GM",
+    "iso3": "GMB",
+    "nameAr": "غامبيا",
+    "nameEn": "Gambia",
+    "flag": "🇬🇲",
+    "latitude": 13.46666666,
+    "longitude": -16.56666666,
+    "phoneCodes": [
+      "+220"
+    ],
+    "primaryPhone": "+220",
+    "currencies": [
+      {
+        "code": "GMD",
+        "ar": "دلاسي غامبي",
+        "en": "Gambian Dalasi"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "GE",
+    "iso3": "GEO",
+    "nameAr": "جورجيا",
+    "nameEn": "Georgia",
+    "flag": "🇬🇪",
+    "latitude": 42,
+    "longitude": 43.5,
+    "phoneCodes": [
+      "+995"
+    ],
+    "primaryPhone": "+995",
+    "currencies": [
+      {
+        "code": "GEL",
+        "ar": "لارى جورجي",
+        "en": "Georgian Lari"
+      }
+    ],
+    "timezones": [
+      "Asia/Tbilisi"
+    ]
+  },
+  {
+    "iso2": "DE",
+    "iso3": "DEU",
+    "nameAr": "ألمانيا",
+    "nameEn": "Germany",
+    "flag": "🇩🇪",
+    "latitude": 51,
+    "longitude": 9,
+    "phoneCodes": [
+      "+49"
+    ],
+    "primaryPhone": "+49",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Berlin",
+      "Europe/Zurich"
+    ]
+  },
+  {
+    "iso2": "GH",
+    "iso3": "GHA",
+    "nameAr": "غانا",
+    "nameEn": "Ghana",
+    "flag": "🇬🇭",
+    "latitude": 8,
+    "longitude": -2,
+    "phoneCodes": [
+      "+233"
+    ],
+    "primaryPhone": "+233",
+    "currencies": [
+      {
+        "code": "GHS",
+        "ar": "سيدي غانا",
+        "en": "Ghanaian Cedi"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "GI",
+    "iso3": "GIB",
+    "nameAr": "جبل طارق",
+    "nameEn": "Gibraltar",
+    "flag": "🇬🇮",
+    "latitude": 36.13333333,
+    "longitude": -5.35,
+    "phoneCodes": [
+      "+350"
+    ],
+    "primaryPhone": "+350",
+    "currencies": [
+      {
+        "code": "GIP",
+        "ar": "جنيه جبل طارق",
+        "en": "Gibraltar Pound"
+      }
+    ],
+    "timezones": [
+      "Europe/Gibraltar"
+    ]
+  },
+  {
+    "iso2": "GR",
+    "iso3": "GRC",
+    "nameAr": "اليونان",
+    "nameEn": "Greece",
+    "flag": "🇬🇷",
+    "latitude": 39,
+    "longitude": 22,
+    "phoneCodes": [
+      "+30"
+    ],
+    "primaryPhone": "+30",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Athens"
+    ]
+  },
+  {
+    "iso2": "GL",
+    "iso3": "GRL",
+    "nameAr": "جرينلاند",
+    "nameEn": "Greenland",
+    "flag": "🇬🇱",
+    "latitude": 72,
+    "longitude": -40,
+    "phoneCodes": [
+      "+299"
+    ],
+    "primaryPhone": "+299",
+    "currencies": [
+      {
+        "code": "DKK",
+        "ar": "كرونة دنماركية",
+        "en": "Danish Krone"
+      }
+    ],
+    "timezones": [
+      "America/Danmarkshavn",
+      "America/Nuuk",
+      "America/Scoresbysund",
+      "America/Thule"
+    ]
+  },
+  {
+    "iso2": "GD",
+    "iso3": "GRD",
+    "nameAr": "غرينادا",
+    "nameEn": "Grenada",
+    "flag": "🇬🇩",
+    "latitude": 12.11666666,
+    "longitude": -61.66666666,
+    "phoneCodes": [
+      "+1473"
+    ],
+    "primaryPhone": "+1473",
+    "currencies": [
+      {
+        "code": "XCD",
+        "ar": "دولار شرق الكاريبي",
+        "en": "East Caribbean Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "GP",
+    "iso3": "GLP",
+    "nameAr": "غوادلوب",
+    "nameEn": "Guadeloupe",
+    "flag": "🇬🇵",
+    "latitude": 16.25,
+    "longitude": -61.583333,
+    "phoneCodes": [
+      "+590"
+    ],
+    "primaryPhone": "+590",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "GU",
+    "iso3": "GUM",
+    "nameAr": "غوام",
+    "nameEn": "Guam",
+    "flag": "🇬🇺",
+    "latitude": 13.46666666,
+    "longitude": 144.78333333,
+    "phoneCodes": [
+      "+1671"
+    ],
+    "primaryPhone": "+1671",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Guam"
+    ]
+  },
+  {
+    "iso2": "GT",
+    "iso3": "GTM",
+    "nameAr": "غواتيمالا",
+    "nameEn": "Guatemala",
+    "flag": "🇬🇹",
+    "latitude": 15.5,
+    "longitude": -90.25,
+    "phoneCodes": [
+      "+502"
+    ],
+    "primaryPhone": "+502",
+    "currencies": [
+      {
+        "code": "GTQ",
+        "ar": "كوتزال غواتيمالا",
+        "en": "Guatemalan Quetzal"
+      }
+    ],
+    "timezones": [
+      "America/Guatemala"
+    ]
+  },
+  {
+    "iso2": "GG",
+    "iso3": "GGY",
+    "nameAr": "غيرنزي",
+    "nameEn": "Guernsey",
+    "flag": "🇬🇬",
+    "latitude": 49.46666666,
+    "longitude": -2.58333333,
+    "phoneCodes": [
+      "+44"
+    ],
+    "primaryPhone": "+44",
+    "currencies": [
+      {
+        "code": "GBP",
+        "ar": "جنيه إسترليني",
+        "en": "British Pound"
+      },
+      {
+        "code": "GGP",
+        "ar": "GGP",
+        "en": "GGP"
+      }
+    ],
+    "timezones": [
+      "Europe/London"
+    ]
+  },
+  {
+    "iso2": "GN",
+    "iso3": "GIN",
+    "nameAr": "غينيا",
+    "nameEn": "Guinea",
+    "flag": "🇬🇳",
+    "latitude": 11,
+    "longitude": -10,
+    "phoneCodes": [
+      "+224"
+    ],
+    "primaryPhone": "+224",
+    "currencies": [
+      {
+        "code": "GNF",
+        "ar": "فرنك غينيا",
+        "en": "Guinean Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "GW",
+    "iso3": "GNB",
+    "nameAr": "غينيا بيساو",
+    "nameEn": "Guinea-Bissau",
+    "flag": "🇬🇼",
+    "latitude": 12,
+    "longitude": -15,
+    "phoneCodes": [
+      "+245"
+    ],
+    "primaryPhone": "+245",
+    "currencies": [
+      {
+        "code": "XOF",
+        "ar": "فرنك غرب أفريقي",
+        "en": "West African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Bissau"
+    ]
+  },
+  {
+    "iso2": "GY",
+    "iso3": "GUY",
+    "nameAr": "غيانا",
+    "nameEn": "Guyana",
+    "flag": "🇬🇾",
+    "latitude": 5,
+    "longitude": -59,
+    "phoneCodes": [
+      "+592"
+    ],
+    "primaryPhone": "+592",
+    "currencies": [
+      {
+        "code": "GYD",
+        "ar": "دولار غيانا",
+        "en": "Guyanaese Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Guyana"
+    ]
+  },
+  {
+    "iso2": "HT",
+    "iso3": "HTI",
+    "nameAr": "هايتي",
+    "nameEn": "Haiti",
+    "flag": "🇭🇹",
+    "latitude": 19,
+    "longitude": -72.41666666,
+    "phoneCodes": [
+      "+509"
+    ],
+    "primaryPhone": "+509",
+    "currencies": [
+      {
+        "code": "HTG",
+        "ar": "جوردى هايتي",
+        "en": "Haitian Gourde"
+      }
+    ],
+    "timezones": [
+      "America/Port-au-Prince"
+    ]
+  },
+  {
+    "iso2": "HM",
+    "iso3": "HMD",
+    "nameAr": "جزيرة هيرد وجزر ماكدونالد",
+    "nameEn": "Heard Island and McDonald Islands",
+    "flag": "🇭🇲",
+    "latitude": -53.1,
+    "longitude": 72.51666666,
+    "phoneCodes": [],
+    "primaryPhone": "",
+    "currencies": [],
+    "timezones": []
+  },
+  {
+    "iso2": "HN",
+    "iso3": "HND",
+    "nameAr": "هندوراس",
+    "nameEn": "Honduras",
+    "flag": "🇭🇳",
+    "latitude": 15,
+    "longitude": -86.5,
+    "phoneCodes": [
+      "+504"
+    ],
+    "primaryPhone": "+504",
+    "currencies": [
+      {
+        "code": "HNL",
+        "ar": "ليمبيرا هنداروس",
+        "en": "Honduran Lempira"
+      }
+    ],
+    "timezones": [
+      "America/Tegucigalpa"
+    ]
+  },
+  {
+    "iso2": "HK",
+    "iso3": "HKG",
+    "nameAr": "هونغ كونغ",
+    "nameEn": "Hong Kong",
+    "flag": "🇭🇰",
+    "latitude": 22.267,
+    "longitude": 114.188,
+    "phoneCodes": [
+      "+852"
+    ],
+    "primaryPhone": "+852",
+    "currencies": [
+      {
+        "code": "HKD",
+        "ar": "دولار هونغ كونغ",
+        "en": "Hong Kong Dollar"
+      }
+    ],
+    "timezones": [
+      "Asia/Hong_Kong"
+    ]
+  },
+  {
+    "iso2": "HU",
+    "iso3": "HUN",
+    "nameAr": "المجر",
+    "nameEn": "Hungary",
+    "flag": "🇭🇺",
+    "latitude": 47,
+    "longitude": 20,
+    "phoneCodes": [
+      "+36"
+    ],
+    "primaryPhone": "+36",
+    "currencies": [
+      {
+        "code": "HUF",
+        "ar": "فورينت هنغاري",
+        "en": "Hungarian Forint"
+      }
+    ],
+    "timezones": [
+      "Europe/Budapest"
+    ]
+  },
+  {
+    "iso2": "IS",
+    "iso3": "ISL",
+    "nameAr": "آيسلندا",
+    "nameEn": "Iceland",
+    "flag": "🇮🇸",
+    "latitude": 65,
+    "longitude": -18,
+    "phoneCodes": [
+      "+354"
+    ],
+    "primaryPhone": "+354",
+    "currencies": [
+      {
+        "code": "ISK",
+        "ar": "كرونة أيسلندية",
+        "en": "Icelandic Króna"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "IN",
+    "iso3": "IND",
+    "nameAr": "الهند",
+    "nameEn": "India",
+    "flag": "🇮🇳",
+    "latitude": 20,
+    "longitude": 77,
+    "phoneCodes": [
+      "+91"
+    ],
+    "primaryPhone": "+91",
+    "currencies": [
+      {
+        "code": "INR",
+        "ar": "روبية هندي",
+        "en": "Indian Rupee"
+      }
+    ],
+    "timezones": [
+      "Asia/Kolkata"
+    ]
+  },
+  {
+    "iso2": "ID",
+    "iso3": "IDN",
+    "nameAr": "إندونيسيا",
+    "nameEn": "Indonesia",
+    "flag": "🇮🇩",
+    "latitude": -5,
+    "longitude": 120,
+    "phoneCodes": [
+      "+62"
+    ],
+    "primaryPhone": "+62",
+    "currencies": [
+      {
+        "code": "IDR",
+        "ar": "روبية إندونيسية",
+        "en": "Indonesian Rupiah"
+      }
+    ],
+    "timezones": [
+      "Asia/Jakarta",
+      "Asia/Jayapura",
+      "Asia/Makassar",
+      "Asia/Pontianak"
+    ]
+  },
+  {
+    "iso2": "IR",
+    "iso3": "IRN",
+    "nameAr": "إيران",
+    "nameEn": "Iran",
+    "flag": "🇮🇷",
+    "latitude": 32,
+    "longitude": 53,
+    "phoneCodes": [
+      "+98"
+    ],
+    "primaryPhone": "+98",
+    "currencies": [
+      {
+        "code": "IRR",
+        "ar": "ريال إيراني",
+        "en": "Iranian Rial"
+      }
+    ],
+    "timezones": [
+      "Asia/Tehran"
+    ]
+  },
+  {
+    "iso2": "IQ",
+    "iso3": "IRQ",
+    "nameAr": "العراق",
+    "nameEn": "Iraq",
+    "flag": "🇮🇶",
+    "latitude": 33,
+    "longitude": 44,
+    "phoneCodes": [
+      "+964"
+    ],
+    "primaryPhone": "+964",
+    "currencies": [
+      {
+        "code": "IQD",
+        "ar": "دينار عراقي",
+        "en": "Iraqi Dinar"
+      }
+    ],
+    "timezones": [
+      "Asia/Baghdad"
+    ]
+  },
+  {
+    "iso2": "IE",
+    "iso3": "IRL",
+    "nameAr": "أيرلندا",
+    "nameEn": "Ireland",
+    "flag": "🇮🇪",
+    "latitude": 53,
+    "longitude": -8,
+    "phoneCodes": [
+      "+353"
+    ],
+    "primaryPhone": "+353",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Dublin"
+    ]
+  },
+  {
+    "iso2": "IM",
+    "iso3": "IMN",
+    "nameAr": "جزيرة مان",
+    "nameEn": "Isle of Man",
+    "flag": "🇮🇲",
+    "latitude": 54.25,
+    "longitude": -4.5,
+    "phoneCodes": [
+      "+44"
+    ],
+    "primaryPhone": "+44",
+    "currencies": [
+      {
+        "code": "GBP",
+        "ar": "جنيه إسترليني",
+        "en": "British Pound"
+      },
+      {
+        "code": "IMP",
+        "ar": "IMP",
+        "en": "IMP"
+      }
+    ],
+    "timezones": [
+      "Europe/London"
+    ]
+  },
+  {
+    "iso2": "IL",
+    "iso3": "ISR",
+    "nameAr": "إسرائيل",
+    "nameEn": "Israel",
+    "flag": "🇮🇱",
+    "latitude": 31.47,
+    "longitude": 35.13,
+    "phoneCodes": [
+      "+972"
+    ],
+    "primaryPhone": "+972",
+    "currencies": [
+      {
+        "code": "ILS",
+        "ar": "شيكل إسرائيلي جديد",
+        "en": "Israeli New Shekel"
+      }
+    ],
+    "timezones": [
+      "Asia/Jerusalem"
+    ]
+  },
+  {
+    "iso2": "IT",
+    "iso3": "ITA",
+    "nameAr": "إيطاليا",
+    "nameEn": "Italy",
+    "flag": "🇮🇹",
+    "latitude": 42.83333333,
+    "longitude": 12.83333333,
+    "phoneCodes": [
+      "+39"
+    ],
+    "primaryPhone": "+39",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Rome"
+    ]
+  },
+  {
+    "iso2": "CI",
+    "iso3": "CIV",
+    "nameAr": "ساحل العاج",
+    "nameEn": "Ivory Coast",
+    "flag": "🇨🇮",
+    "latitude": 8,
+    "longitude": -5,
+    "phoneCodes": [
+      "+225"
+    ],
+    "primaryPhone": "+225",
+    "currencies": [
+      {
+        "code": "XOF",
+        "ar": "فرنك غرب أفريقي",
+        "en": "West African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "JM",
+    "iso3": "JAM",
+    "nameAr": "جامايكا",
+    "nameEn": "Jamaica",
+    "flag": "🇯🇲",
+    "latitude": 18.25,
+    "longitude": -77.5,
+    "phoneCodes": [
+      "+1876"
+    ],
+    "primaryPhone": "+1876",
+    "currencies": [
+      {
+        "code": "JMD",
+        "ar": "دولار جامايكي",
+        "en": "Jamaican Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Jamaica"
+    ]
+  },
+  {
+    "iso2": "JP",
+    "iso3": "JPN",
+    "nameAr": "اليابان",
+    "nameEn": "Japan",
+    "flag": "🇯🇵",
+    "latitude": 36,
+    "longitude": 138,
+    "phoneCodes": [
+      "+81"
+    ],
+    "primaryPhone": "+81",
+    "currencies": [
+      {
+        "code": "JPY",
+        "ar": "ين ياباني",
+        "en": "Japanese Yen"
+      }
+    ],
+    "timezones": [
+      "Asia/Tokyo"
+    ]
+  },
+  {
+    "iso2": "JE",
+    "iso3": "JEY",
+    "nameAr": "جيرزي",
+    "nameEn": "Jersey",
+    "flag": "🇯🇪",
+    "latitude": 49.25,
+    "longitude": -2.16666666,
+    "phoneCodes": [
+      "+44"
+    ],
+    "primaryPhone": "+44",
+    "currencies": [
+      {
+        "code": "GBP",
+        "ar": "جنيه إسترليني",
+        "en": "British Pound"
+      },
+      {
+        "code": "JEP",
+        "ar": "JEP",
+        "en": "JEP"
+      }
+    ],
+    "timezones": [
+      "Europe/London"
+    ]
+  },
+  {
+    "iso2": "JO",
+    "iso3": "JOR",
+    "nameAr": "الأردن",
+    "nameEn": "Jordan",
+    "flag": "🇯🇴",
+    "latitude": 31,
+    "longitude": 36,
+    "phoneCodes": [
+      "+962"
+    ],
+    "primaryPhone": "+962",
+    "currencies": [
+      {
+        "code": "JOD",
+        "ar": "دينار أردني",
+        "en": "Jordanian Dinar"
+      }
+    ],
+    "timezones": [
+      "Asia/Amman"
+    ]
+  },
+  {
+    "iso2": "KZ",
+    "iso3": "KAZ",
+    "nameAr": "كازاخستان",
+    "nameEn": "Kazakhstan",
+    "flag": "🇰🇿",
+    "latitude": 48,
+    "longitude": 68,
+    "phoneCodes": [
+      "+76",
+      "+77"
+    ],
+    "primaryPhone": "+7",
+    "currencies": [
+      {
+        "code": "KZT",
+        "ar": "تينغ كازاخستاني",
+        "en": "Kazakhstani Tenge"
+      }
+    ],
+    "timezones": [
+      "Asia/Almaty",
+      "Asia/Aqtau",
+      "Asia/Aqtobe",
+      "Asia/Atyrau",
+      "Asia/Oral",
+      "Asia/Qostanay",
+      "Asia/Qyzylorda"
+    ]
+  },
+  {
+    "iso2": "KE",
+    "iso3": "KEN",
+    "nameAr": "كينيا",
+    "nameEn": "Kenya",
+    "flag": "🇰🇪",
+    "latitude": 1,
+    "longitude": 38,
+    "phoneCodes": [
+      "+254"
+    ],
+    "primaryPhone": "+254",
+    "currencies": [
+      {
+        "code": "KES",
+        "ar": "شلن كينيي",
+        "en": "Kenyan Shilling"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "KI",
+    "iso3": "KIR",
+    "nameAr": "كيريباتي",
+    "nameEn": "Kiribati",
+    "flag": "🇰🇮",
+    "latitude": 1.41666666,
+    "longitude": 173,
+    "phoneCodes": [
+      "+686"
+    ],
+    "primaryPhone": "+686",
+    "currencies": [
+      {
+        "code": "AUD",
+        "ar": "دولار أسترالي",
+        "en": "Australian Dollar"
+      },
+      {
+        "code": "KID",
+        "ar": "KID",
+        "en": "KID"
+      }
+    ],
+    "timezones": [
+      "Pacific/Kanton",
+      "Pacific/Kiritimati",
+      "Pacific/Tarawa"
+    ]
+  },
+  {
+    "iso2": "XK",
+    "iso3": "UNK",
+    "nameAr": "كوسوفو",
+    "nameEn": "Kosovo",
+    "flag": "🇽🇰",
+    "latitude": 42.666667,
+    "longitude": 21.166667,
+    "phoneCodes": [
+      "+383"
+    ],
+    "primaryPhone": "+383",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": []
+  },
+  {
+    "iso2": "KW",
+    "iso3": "KWT",
+    "nameAr": "الكويت",
+    "nameEn": "Kuwait",
+    "flag": "🇰🇼",
+    "latitude": 29.5,
+    "longitude": 45.75,
+    "phoneCodes": [
+      "+965"
+    ],
+    "primaryPhone": "+965",
+    "currencies": [
+      {
+        "code": "KWD",
+        "ar": "دينار كويتي",
+        "en": "Kuwaiti Dinar"
+      }
+    ],
+    "timezones": [
+      "Asia/Riyadh"
+    ]
+  },
+  {
+    "iso2": "KG",
+    "iso3": "KGZ",
+    "nameAr": "قيرغيزستان",
+    "nameEn": "Kyrgyzstan",
+    "flag": "🇰🇬",
+    "latitude": 41,
+    "longitude": 75,
+    "phoneCodes": [
+      "+996"
+    ],
+    "primaryPhone": "+996",
+    "currencies": [
+      {
+        "code": "KGS",
+        "ar": "سوم قيرغستاني",
+        "en": "Kyrgyz Som"
+      }
+    ],
+    "timezones": [
+      "Asia/Bishkek"
+    ]
+  },
+  {
+    "iso2": "LA",
+    "iso3": "LAO",
+    "nameAr": "لاوس",
+    "nameEn": "Laos",
+    "flag": "🇱🇦",
+    "latitude": 18,
+    "longitude": 105,
+    "phoneCodes": [
+      "+856"
+    ],
+    "primaryPhone": "+856",
+    "currencies": [
+      {
+        "code": "LAK",
+        "ar": "كيب لاوسي",
+        "en": "Laotian Kip"
+      }
+    ],
+    "timezones": [
+      "Asia/Bangkok"
+    ]
+  },
+  {
+    "iso2": "LV",
+    "iso3": "LVA",
+    "nameAr": "لاتفيا",
+    "nameEn": "Latvia",
+    "flag": "🇱🇻",
+    "latitude": 57,
+    "longitude": 25,
+    "phoneCodes": [
+      "+371"
+    ],
+    "primaryPhone": "+371",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Riga"
+    ]
+  },
+  {
+    "iso2": "LB",
+    "iso3": "LBN",
+    "nameAr": "لبنان",
+    "nameEn": "Lebanon",
+    "flag": "🇱🇧",
+    "latitude": 33.83333333,
+    "longitude": 35.83333333,
+    "phoneCodes": [
+      "+961"
+    ],
+    "primaryPhone": "+961",
+    "currencies": [
+      {
+        "code": "LBP",
+        "ar": "جنيه لبناني",
+        "en": "Lebanese Pound"
+      }
+    ],
+    "timezones": [
+      "Asia/Beirut"
+    ]
+  },
+  {
+    "iso2": "LS",
+    "iso3": "LSO",
+    "nameAr": "ليسوتو",
+    "nameEn": "Lesotho",
+    "flag": "🇱🇸",
+    "latitude": -29.5,
+    "longitude": 28.5,
+    "phoneCodes": [
+      "+266"
+    ],
+    "primaryPhone": "+266",
+    "currencies": [
+      {
+        "code": "LSL",
+        "ar": "لوتي ليسوتو",
+        "en": "Lesotho Loti"
+      },
+      {
+        "code": "ZAR",
+        "ar": "راند جنوب أفريقيا",
+        "en": "South African Rand"
+      }
+    ],
+    "timezones": [
+      "Africa/Johannesburg"
+    ]
+  },
+  {
+    "iso2": "LR",
+    "iso3": "LBR",
+    "nameAr": "ليبيريا",
+    "nameEn": "Liberia",
+    "flag": "🇱🇷",
+    "latitude": 6.5,
+    "longitude": -9.5,
+    "phoneCodes": [
+      "+231"
+    ],
+    "primaryPhone": "+231",
+    "currencies": [
+      {
+        "code": "LRD",
+        "ar": "دولار ليبيري",
+        "en": "Liberian Dollar"
+      }
+    ],
+    "timezones": [
+      "Africa/Monrovia"
+    ]
+  },
+  {
+    "iso2": "LY",
+    "iso3": "LBY",
+    "nameAr": "ليبيا",
+    "nameEn": "Libya",
+    "flag": "🇱🇾",
+    "latitude": 25,
+    "longitude": 17,
+    "phoneCodes": [
+      "+218"
+    ],
+    "primaryPhone": "+218",
+    "currencies": [
+      {
+        "code": "LYD",
+        "ar": "دينار ليبي",
+        "en": "Libyan Dinar"
+      }
+    ],
+    "timezones": [
+      "Africa/Tripoli"
+    ]
+  },
+  {
+    "iso2": "LI",
+    "iso3": "LIE",
+    "nameAr": "ليختنشتاين",
+    "nameEn": "Liechtenstein",
+    "flag": "🇱🇮",
+    "latitude": 47.26666666,
+    "longitude": 9.53333333,
+    "phoneCodes": [
+      "+423"
+    ],
+    "primaryPhone": "+423",
+    "currencies": [
+      {
+        "code": "CHF",
+        "ar": "فرنك سويسري",
+        "en": "Swiss Franc"
+      }
+    ],
+    "timezones": [
+      "Europe/Zurich"
+    ]
+  },
+  {
+    "iso2": "LT",
+    "iso3": "LTU",
+    "nameAr": "ليتوانيا",
+    "nameEn": "Lithuania",
+    "flag": "🇱🇹",
+    "latitude": 56,
+    "longitude": 24,
+    "phoneCodes": [
+      "+370"
+    ],
+    "primaryPhone": "+370",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Vilnius"
+    ]
+  },
+  {
+    "iso2": "LU",
+    "iso3": "LUX",
+    "nameAr": "لوكسمبورغ",
+    "nameEn": "Luxembourg",
+    "flag": "🇱🇺",
+    "latitude": 49.75,
+    "longitude": 6.16666666,
+    "phoneCodes": [
+      "+352"
+    ],
+    "primaryPhone": "+352",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Brussels"
+    ]
+  },
+  {
+    "iso2": "MO",
+    "iso3": "MAC",
+    "nameAr": "ماكاو",
+    "nameEn": "Macau",
+    "flag": "🇲🇴",
+    "latitude": 22.16666666,
+    "longitude": 113.55,
+    "phoneCodes": [
+      "+853"
+    ],
+    "primaryPhone": "+853",
+    "currencies": [
+      {
+        "code": "MOP",
+        "ar": "باتاكا ماكاوي",
+        "en": "Macanese Pataca"
+      }
+    ],
+    "timezones": [
+      "Asia/Macau"
+    ]
+  },
+  {
+    "iso2": "MG",
+    "iso3": "MDG",
+    "nameAr": "مدغشقر",
+    "nameEn": "Madagascar",
+    "flag": "🇲🇬",
+    "latitude": -20,
+    "longitude": 47,
+    "phoneCodes": [
+      "+261"
+    ],
+    "primaryPhone": "+261",
+    "currencies": [
+      {
+        "code": "MGA",
+        "ar": "أرياري مدغشقر",
+        "en": "Malagasy Ariary"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "MW",
+    "iso3": "MWI",
+    "nameAr": "مالاوي",
+    "nameEn": "Malawi",
+    "flag": "🇲🇼",
+    "latitude": -13.5,
+    "longitude": 34,
+    "phoneCodes": [
+      "+265"
+    ],
+    "primaryPhone": "+265",
+    "currencies": [
+      {
+        "code": "MWK",
+        "ar": "كواشا مالاوي",
+        "en": "Malawian Kwacha"
+      }
+    ],
+    "timezones": [
+      "Africa/Maputo"
+    ]
+  },
+  {
+    "iso2": "MY",
+    "iso3": "MYS",
+    "nameAr": "ماليزيا",
+    "nameEn": "Malaysia",
+    "flag": "🇲🇾",
+    "latitude": 2.5,
+    "longitude": 112.5,
+    "phoneCodes": [
+      "+60"
+    ],
+    "primaryPhone": "+60",
+    "currencies": [
+      {
+        "code": "MYR",
+        "ar": "رينغيت ماليزي",
+        "en": "Malaysian Ringgit"
+      }
+    ],
+    "timezones": [
+      "Asia/Kuching",
+      "Asia/Singapore"
+    ]
+  },
+  {
+    "iso2": "MV",
+    "iso3": "MDV",
+    "nameAr": "المالديف",
+    "nameEn": "Maldives",
+    "flag": "🇲🇻",
+    "latitude": 3.25,
+    "longitude": 73,
+    "phoneCodes": [
+      "+960"
+    ],
+    "primaryPhone": "+960",
+    "currencies": [
+      {
+        "code": "MVR",
+        "ar": "روفيه جزر المالديف",
+        "en": "Maldivian Rufiyaa"
+      }
+    ],
+    "timezones": [
+      "Indian/Maldives"
+    ]
+  },
+  {
+    "iso2": "ML",
+    "iso3": "MLI",
+    "nameAr": "مالي",
+    "nameEn": "Mali",
+    "flag": "🇲🇱",
+    "latitude": 17,
+    "longitude": -4,
+    "phoneCodes": [
+      "+223"
+    ],
+    "primaryPhone": "+223",
+    "currencies": [
+      {
+        "code": "XOF",
+        "ar": "فرنك غرب أفريقي",
+        "en": "West African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "MT",
+    "iso3": "MLT",
+    "nameAr": "مالطا",
+    "nameEn": "Malta",
+    "flag": "🇲🇹",
+    "latitude": 35.83333333,
+    "longitude": 14.58333333,
+    "phoneCodes": [
+      "+356"
+    ],
+    "primaryPhone": "+356",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Malta"
+    ]
+  },
+  {
+    "iso2": "MH",
+    "iso3": "MHL",
+    "nameAr": "جزر مارشال",
+    "nameEn": "Marshall Islands",
+    "flag": "🇲🇭",
+    "latitude": 9,
+    "longitude": 168,
+    "phoneCodes": [
+      "+692"
+    ],
+    "primaryPhone": "+692",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Kwajalein",
+      "Pacific/Tarawa"
+    ]
+  },
+  {
+    "iso2": "MQ",
+    "iso3": "MTQ",
+    "nameAr": "مارتينيك",
+    "nameEn": "Martinique",
+    "flag": "🇲🇶",
+    "latitude": 14.666667,
+    "longitude": -61,
+    "phoneCodes": [
+      "+596"
+    ],
+    "primaryPhone": "+596",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "America/Martinique"
+    ]
+  },
+  {
+    "iso2": "MR",
+    "iso3": "MRT",
+    "nameAr": "موريتانيا",
+    "nameEn": "Mauritania",
+    "flag": "🇲🇷",
+    "latitude": 20,
+    "longitude": -12,
+    "phoneCodes": [
+      "+222"
+    ],
+    "primaryPhone": "+222",
+    "currencies": [
+      {
+        "code": "MRU",
+        "ar": "أوقية موريتانية",
+        "en": "Mauritanian Ouguiya"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "MU",
+    "iso3": "MUS",
+    "nameAr": "موريشيوس",
+    "nameEn": "Mauritius",
+    "flag": "🇲🇺",
+    "latitude": -20.28333333,
+    "longitude": 57.55,
+    "phoneCodes": [
+      "+230"
+    ],
+    "primaryPhone": "+230",
+    "currencies": [
+      {
+        "code": "MUR",
+        "ar": "روبية موريشيوسية",
+        "en": "Mauritian Rupee"
+      }
+    ],
+    "timezones": [
+      "Indian/Mauritius"
+    ]
+  },
+  {
+    "iso2": "YT",
+    "iso3": "MYT",
+    "nameAr": "مايوت",
+    "nameEn": "Mayotte",
+    "flag": "🇾🇹",
+    "latitude": -12.83333333,
+    "longitude": 45.16666666,
+    "phoneCodes": [
+      "+262"
+    ],
+    "primaryPhone": "+262",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "MX",
+    "iso3": "MEX",
+    "nameAr": "المسكيك",
+    "nameEn": "Mexico",
+    "flag": "🇲🇽",
+    "latitude": 23,
+    "longitude": -102,
+    "phoneCodes": [
+      "+52"
+    ],
+    "primaryPhone": "+52",
+    "currencies": [
+      {
+        "code": "MXN",
+        "ar": "بيزو مكسيكي",
+        "en": "Mexican Peso"
+      }
+    ],
+    "timezones": [
+      "America/Bahia_Banderas",
+      "America/Cancun",
+      "America/Chihuahua",
+      "America/Ciudad_Juarez",
+      "America/Hermosillo",
+      "America/Matamoros",
+      "America/Mazatlan",
+      "America/Merida",
+      "America/Mexico_City",
+      "America/Monterrey",
+      "America/Ojinaga",
+      "America/Tijuana"
+    ]
+  },
+  {
+    "iso2": "FM",
+    "iso3": "FSM",
+    "nameAr": "ميكرونيسيا",
+    "nameEn": "Micronesia",
+    "flag": "🇫🇲",
+    "latitude": 6.91666666,
+    "longitude": 158.25,
+    "phoneCodes": [
+      "+691"
+    ],
+    "primaryPhone": "+691",
+    "currencies": [],
+    "timezones": [
+      "Pacific/Guadalcanal",
+      "Pacific/Kosrae",
+      "Pacific/Port_Moresby"
+    ]
+  },
+  {
+    "iso2": "MD",
+    "iso3": "MDA",
+    "nameAr": "مولدوڤا",
+    "nameEn": "Moldova",
+    "flag": "🇲🇩",
+    "latitude": 47,
+    "longitude": 29,
+    "phoneCodes": [
+      "+373"
+    ],
+    "primaryPhone": "+373",
+    "currencies": [
+      {
+        "code": "MDL",
+        "ar": "ليو مولدوفي",
+        "en": "Moldovan Leu"
+      }
+    ],
+    "timezones": [
+      "Europe/Chisinau"
+    ]
+  },
+  {
+    "iso2": "MC",
+    "iso3": "MCO",
+    "nameAr": "موناكو",
+    "nameEn": "Monaco",
+    "flag": "🇲🇨",
+    "latitude": 43.73333333,
+    "longitude": 7.4,
+    "phoneCodes": [
+      "+377"
+    ],
+    "primaryPhone": "+377",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Paris"
+    ]
+  },
+  {
+    "iso2": "MN",
+    "iso3": "MNG",
+    "nameAr": "منغوليا",
+    "nameEn": "Mongolia",
+    "flag": "🇲🇳",
+    "latitude": 46,
+    "longitude": 105,
+    "phoneCodes": [
+      "+976"
+    ],
+    "primaryPhone": "+976",
+    "currencies": [
+      {
+        "code": "MNT",
+        "ar": "توغروغ منغولي",
+        "en": "Mongolian Tugrik"
+      }
+    ],
+    "timezones": [
+      "Asia/Hovd",
+      "Asia/Ulaanbaatar"
+    ]
+  },
+  {
+    "iso2": "ME",
+    "iso3": "MNE",
+    "nameAr": "الجبل الاسود",
+    "nameEn": "Montenegro",
+    "flag": "🇲🇪",
+    "latitude": 42.5,
+    "longitude": 19.3,
+    "phoneCodes": [
+      "+382"
+    ],
+    "primaryPhone": "+382",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Belgrade"
+    ]
+  },
+  {
+    "iso2": "MS",
+    "iso3": "MSR",
+    "nameAr": "مونتسرات",
+    "nameEn": "Montserrat",
+    "flag": "🇲🇸",
+    "latitude": 16.75,
+    "longitude": -62.2,
+    "phoneCodes": [
+      "+1664"
+    ],
+    "primaryPhone": "+1664",
+    "currencies": [
+      {
+        "code": "XCD",
+        "ar": "دولار شرق الكاريبي",
+        "en": "East Caribbean Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "MA",
+    "iso3": "MAR",
+    "nameAr": "المغرب",
+    "nameEn": "Morocco",
+    "flag": "🇲🇦",
+    "latitude": 32,
+    "longitude": -5,
+    "phoneCodes": [
+      "+212"
+    ],
+    "primaryPhone": "+212",
+    "currencies": [
+      {
+        "code": "MAD",
+        "ar": "درهم مغربي",
+        "en": "Moroccan Dirham"
+      }
+    ],
+    "timezones": [
+      "Africa/Casablanca"
+    ]
+  },
+  {
+    "iso2": "MZ",
+    "iso3": "MOZ",
+    "nameAr": "موزمبيق",
+    "nameEn": "Mozambique",
+    "flag": "🇲🇿",
+    "latitude": -18.25,
+    "longitude": 35,
+    "phoneCodes": [
+      "+258"
+    ],
+    "primaryPhone": "+258",
+    "currencies": [
+      {
+        "code": "MZN",
+        "ar": "متكال موزمبيقي",
+        "en": "Mozambican Metical"
+      }
+    ],
+    "timezones": [
+      "Africa/Maputo"
+    ]
+  },
+  {
+    "iso2": "MM",
+    "iso3": "MMR",
+    "nameAr": "ميانمار",
+    "nameEn": "Myanmar",
+    "flag": "🇲🇲",
+    "latitude": 22,
+    "longitude": 98,
+    "phoneCodes": [
+      "+95"
+    ],
+    "primaryPhone": "+95",
+    "currencies": [
+      {
+        "code": "MMK",
+        "ar": "كيات ميانمار",
+        "en": "Myanmar Kyat"
+      }
+    ],
+    "timezones": [
+      "Asia/Yangon"
+    ]
+  },
+  {
+    "iso2": "NA",
+    "iso3": "NAM",
+    "nameAr": "ناميبيا",
+    "nameEn": "Namibia",
+    "flag": "🇳🇦",
+    "latitude": -22,
+    "longitude": 17,
+    "phoneCodes": [
+      "+264"
+    ],
+    "primaryPhone": "+264",
+    "currencies": [
+      {
+        "code": "NAD",
+        "ar": "دولار ناميبي",
+        "en": "Namibian Dollar"
+      },
+      {
+        "code": "ZAR",
+        "ar": "راند جنوب أفريقيا",
+        "en": "South African Rand"
+      }
+    ],
+    "timezones": [
+      "Africa/Windhoek"
+    ]
+  },
+  {
+    "iso2": "NR",
+    "iso3": "NRU",
+    "nameAr": "ناورو",
+    "nameEn": "Nauru",
+    "flag": "🇳🇷",
+    "latitude": -0.53333333,
+    "longitude": 166.91666666,
+    "phoneCodes": [
+      "+674"
+    ],
+    "primaryPhone": "+674",
+    "currencies": [
+      {
+        "code": "AUD",
+        "ar": "دولار أسترالي",
+        "en": "Australian Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Nauru"
+    ]
+  },
+  {
+    "iso2": "NP",
+    "iso3": "NPL",
+    "nameAr": "نيبال",
+    "nameEn": "Nepal",
+    "flag": "🇳🇵",
+    "latitude": 28,
+    "longitude": 84,
+    "phoneCodes": [
+      "+977"
+    ],
+    "primaryPhone": "+977",
+    "currencies": [
+      {
+        "code": "NPR",
+        "ar": "روبية نيبالي",
+        "en": "Nepalese Rupee"
+      }
+    ],
+    "timezones": [
+      "Asia/Kathmandu"
+    ]
+  },
+  {
+    "iso2": "NL",
+    "iso3": "NLD",
+    "nameAr": "هولندا",
+    "nameEn": "Netherlands",
+    "flag": "🇳🇱",
+    "latitude": 52.5,
+    "longitude": 5.75,
+    "phoneCodes": [
+      "+31"
+    ],
+    "primaryPhone": "+31",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Brussels"
+    ]
+  },
+  {
+    "iso2": "NC",
+    "iso3": "NCL",
+    "nameAr": "كاليدونيا الجديدة",
+    "nameEn": "New Caledonia",
+    "flag": "🇳🇨",
+    "latitude": -21.5,
+    "longitude": 165.5,
+    "phoneCodes": [
+      "+687"
+    ],
+    "primaryPhone": "+687",
+    "currencies": [
+      {
+        "code": "XPF",
+        "ar": "فرنك سي إف بي",
+        "en": "CFP Franc"
+      }
+    ],
+    "timezones": [
+      "Pacific/Noumea"
+    ]
+  },
+  {
+    "iso2": "NZ",
+    "iso3": "NZL",
+    "nameAr": "نيوزيلندا",
+    "nameEn": "New Zealand",
+    "flag": "🇳🇿",
+    "latitude": -41,
+    "longitude": 174,
+    "phoneCodes": [
+      "+64"
+    ],
+    "primaryPhone": "+64",
+    "currencies": [
+      {
+        "code": "NZD",
+        "ar": "دولار نيوزيلندي",
+        "en": "New Zealand Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Auckland",
+      "Pacific/Chatham"
+    ]
+  },
+  {
+    "iso2": "NI",
+    "iso3": "NIC",
+    "nameAr": "نيكاراغوا",
+    "nameEn": "Nicaragua",
+    "flag": "🇳🇮",
+    "latitude": 13,
+    "longitude": -85,
+    "phoneCodes": [
+      "+505"
+    ],
+    "primaryPhone": "+505",
+    "currencies": [
+      {
+        "code": "NIO",
+        "ar": "قرطبة نيكاراغوا",
+        "en": "Nicaraguan Córdoba"
+      }
+    ],
+    "timezones": [
+      "America/Managua"
+    ]
+  },
+  {
+    "iso2": "NE",
+    "iso3": "NER",
+    "nameAr": "النيجر",
+    "nameEn": "Niger",
+    "flag": "🇳🇪",
+    "latitude": 16,
+    "longitude": 8,
+    "phoneCodes": [
+      "+227"
+    ],
+    "primaryPhone": "+227",
+    "currencies": [
+      {
+        "code": "XOF",
+        "ar": "فرنك غرب أفريقي",
+        "en": "West African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "NG",
+    "iso3": "NGA",
+    "nameAr": "نيجيريا",
+    "nameEn": "Nigeria",
+    "flag": "🇳🇬",
+    "latitude": 10,
+    "longitude": 8,
+    "phoneCodes": [
+      "+234"
+    ],
+    "primaryPhone": "+234",
+    "currencies": [
+      {
+        "code": "NGN",
+        "ar": "نايرا نيجيري",
+        "en": "Nigerian Naira"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "NU",
+    "iso3": "NIU",
+    "nameAr": "نييوي",
+    "nameEn": "Niue",
+    "flag": "🇳🇺",
+    "latitude": -19.03333333,
+    "longitude": -169.86666666,
+    "phoneCodes": [
+      "+683"
+    ],
+    "primaryPhone": "+683",
+    "currencies": [
+      {
+        "code": "NZD",
+        "ar": "دولار نيوزيلندي",
+        "en": "New Zealand Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Niue"
+    ]
+  },
+  {
+    "iso2": "NF",
+    "iso3": "NFK",
+    "nameAr": "جزيرة نورفولك",
+    "nameEn": "Norfolk Island",
+    "flag": "🇳🇫",
+    "latitude": -29.03333333,
+    "longitude": 167.95,
+    "phoneCodes": [
+      "+672"
+    ],
+    "primaryPhone": "+672",
+    "currencies": [
+      {
+        "code": "AUD",
+        "ar": "دولار أسترالي",
+        "en": "Australian Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Norfolk"
+    ]
+  },
+  {
+    "iso2": "KP",
+    "iso3": "PRK",
+    "nameAr": "كوريا الشمالية",
+    "nameEn": "North Korea",
+    "flag": "🇰🇵",
+    "latitude": 40,
+    "longitude": 127,
+    "phoneCodes": [
+      "+850"
+    ],
+    "primaryPhone": "+850",
+    "currencies": [
+      {
+        "code": "KPW",
+        "ar": "وون كوريا الشمالية",
+        "en": "North Korean Won"
+      }
+    ],
+    "timezones": [
+      "Asia/Pyongyang"
+    ]
+  },
+  {
+    "iso2": "MK",
+    "iso3": "MKD",
+    "nameAr": "شمال مقدونيا",
+    "nameEn": "North Macedonia",
+    "flag": "🇲🇰",
+    "latitude": 41.83333333,
+    "longitude": 22,
+    "phoneCodes": [
+      "+389"
+    ],
+    "primaryPhone": "+389",
+    "currencies": [
+      {
+        "code": "MKD",
+        "ar": "دينار مقدوني",
+        "en": "Macedonian Denar"
+      }
+    ],
+    "timezones": [
+      "Europe/Belgrade"
+    ]
+  },
+  {
+    "iso2": "MP",
+    "iso3": "MNP",
+    "nameAr": "جزر ماريانا الشمالية",
+    "nameEn": "Northern Mariana Islands",
+    "flag": "🇲🇵",
+    "latitude": 15.2,
+    "longitude": 145.75,
+    "phoneCodes": [
+      "+1670"
+    ],
+    "primaryPhone": "+1670",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Guam"
+    ]
+  },
+  {
+    "iso2": "NO",
+    "iso3": "NOR",
+    "nameAr": "النرويج",
+    "nameEn": "Norway",
+    "flag": "🇳🇴",
+    "latitude": 62,
+    "longitude": 10,
+    "phoneCodes": [
+      "+47"
+    ],
+    "primaryPhone": "+47",
+    "currencies": [
+      {
+        "code": "NOK",
+        "ar": "كرونة نرويجية",
+        "en": "Norwegian Krone"
+      }
+    ],
+    "timezones": [
+      "Europe/Berlin"
+    ]
+  },
+  {
+    "iso2": "OM",
+    "iso3": "OMN",
+    "nameAr": "عمان",
+    "nameEn": "Oman",
+    "flag": "🇴🇲",
+    "latitude": 21,
+    "longitude": 57,
+    "phoneCodes": [
+      "+968"
+    ],
+    "primaryPhone": "+968",
+    "currencies": [
+      {
+        "code": "OMR",
+        "ar": "ريال عماني",
+        "en": "Omani Rial"
+      }
+    ],
+    "timezones": [
+      "Asia/Dubai"
+    ]
+  },
+  {
+    "iso2": "PK",
+    "iso3": "PAK",
+    "nameAr": "باكستان",
+    "nameEn": "Pakistan",
+    "flag": "🇵🇰",
+    "latitude": 30,
+    "longitude": 70,
+    "phoneCodes": [
+      "+92"
+    ],
+    "primaryPhone": "+92",
+    "currencies": [
+      {
+        "code": "PKR",
+        "ar": "روبية باكستاني",
+        "en": "Pakistani Rupee"
+      }
+    ],
+    "timezones": [
+      "Asia/Karachi"
+    ]
+  },
+  {
+    "iso2": "PW",
+    "iso3": "PLW",
+    "nameAr": "بالاو",
+    "nameEn": "Palau",
+    "flag": "🇵🇼",
+    "latitude": 7.5,
+    "longitude": 134.5,
+    "phoneCodes": [
+      "+680"
+    ],
+    "primaryPhone": "+680",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Palau"
+    ]
+  },
+  {
+    "iso2": "PS",
+    "iso3": "PSE",
+    "nameAr": "فلسطين",
+    "nameEn": "Palestine",
+    "flag": "🇵🇸",
+    "latitude": 31.9,
+    "longitude": 35.2,
+    "phoneCodes": [
+      "+970"
+    ],
+    "primaryPhone": "+970",
+    "currencies": [
+      {
+        "code": "EGP",
+        "ar": "جنيه مصري",
+        "en": "Egyptian Pound"
+      },
+      {
+        "code": "ILS",
+        "ar": "شيكل إسرائيلي جديد",
+        "en": "Israeli New Shekel"
+      },
+      {
+        "code": "JOD",
+        "ar": "دينار أردني",
+        "en": "Jordanian Dinar"
+      }
+    ],
+    "timezones": [
+      "Asia/Gaza",
+      "Asia/Hebron"
+    ]
+  },
+  {
+    "iso2": "PA",
+    "iso3": "PAN",
+    "nameAr": "بنما",
+    "nameEn": "Panama",
+    "flag": "🇵🇦",
+    "latitude": 9,
+    "longitude": -80,
+    "phoneCodes": [
+      "+507"
+    ],
+    "primaryPhone": "+507",
+    "currencies": [
+      {
+        "code": "PAB",
+        "ar": "بالبوا بنمي",
+        "en": "Panamanian Balboa"
+      },
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Panama"
+    ]
+  },
+  {
+    "iso2": "PG",
+    "iso3": "PNG",
+    "nameAr": "بابوا غينيا الجديدة",
+    "nameEn": "Papua New Guinea",
+    "flag": "🇵🇬",
+    "latitude": -6,
+    "longitude": 147,
+    "phoneCodes": [
+      "+675"
+    ],
+    "primaryPhone": "+675",
+    "currencies": [
+      {
+        "code": "PGK",
+        "ar": "كينا بابوا غينيا الجديدة",
+        "en": "Papua New Guinean Kina"
+      }
+    ],
+    "timezones": [
+      "Pacific/Bougainville",
+      "Pacific/Port_Moresby"
+    ]
+  },
+  {
+    "iso2": "PY",
+    "iso3": "PRY",
+    "nameAr": "باراغواي",
+    "nameEn": "Paraguay",
+    "flag": "🇵🇾",
+    "latitude": -23,
+    "longitude": -58,
+    "phoneCodes": [
+      "+595"
+    ],
+    "primaryPhone": "+595",
+    "currencies": [
+      {
+        "code": "PYG",
+        "ar": "غواراني باراغواي",
+        "en": "Paraguayan Guarani"
+      }
+    ],
+    "timezones": [
+      "America/Asuncion"
+    ]
+  },
+  {
+    "iso2": "PE",
+    "iso3": "PER",
+    "nameAr": "بيرو",
+    "nameEn": "Peru",
+    "flag": "🇵🇪",
+    "latitude": -10,
+    "longitude": -76,
+    "phoneCodes": [
+      "+51"
+    ],
+    "primaryPhone": "+51",
+    "currencies": [
+      {
+        "code": "PEN",
+        "ar": "سول بيروفي",
+        "en": "Peruvian Sol"
+      }
+    ],
+    "timezones": [
+      "America/Lima"
+    ]
+  },
+  {
+    "iso2": "PH",
+    "iso3": "PHL",
+    "nameAr": "الفلبين",
+    "nameEn": "Philippines",
+    "flag": "🇵🇭",
+    "latitude": 13,
+    "longitude": 122,
+    "phoneCodes": [
+      "+63"
+    ],
+    "primaryPhone": "+63",
+    "currencies": [
+      {
+        "code": "PHP",
+        "ar": "بيزو فلبيني",
+        "en": "Philippine Peso"
+      }
+    ],
+    "timezones": [
+      "Asia/Manila"
+    ]
+  },
+  {
+    "iso2": "PN",
+    "iso3": "PCN",
+    "nameAr": "جزر بيتكيرن",
+    "nameEn": "Pitcairn Islands",
+    "flag": "🇵🇳",
+    "latitude": -25.06666666,
+    "longitude": -130.1,
+    "phoneCodes": [
+      "+64"
+    ],
+    "primaryPhone": "+64",
+    "currencies": [
+      {
+        "code": "NZD",
+        "ar": "دولار نيوزيلندي",
+        "en": "New Zealand Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Pitcairn"
+    ]
+  },
+  {
+    "iso2": "PL",
+    "iso3": "POL",
+    "nameAr": "بولندا",
+    "nameEn": "Poland",
+    "flag": "🇵🇱",
+    "latitude": 52,
+    "longitude": 20,
+    "phoneCodes": [
+      "+48"
+    ],
+    "primaryPhone": "+48",
+    "currencies": [
+      {
+        "code": "PLN",
+        "ar": "زلوتي بولندي",
+        "en": "Polish Zloty"
+      }
+    ],
+    "timezones": [
+      "Europe/Warsaw"
+    ]
+  },
+  {
+    "iso2": "PT",
+    "iso3": "PRT",
+    "nameAr": "البرتغال",
+    "nameEn": "Portugal",
+    "flag": "🇵🇹",
+    "latitude": 39.5,
+    "longitude": -8,
+    "phoneCodes": [
+      "+351"
+    ],
+    "primaryPhone": "+351",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Atlantic/Azores",
+      "Atlantic/Madeira",
+      "Europe/Lisbon"
+    ]
+  },
+  {
+    "iso2": "PR",
+    "iso3": "PRI",
+    "nameAr": "بويرتوريكو",
+    "nameEn": "Puerto Rico",
+    "flag": "🇵🇷",
+    "latitude": 18.25,
+    "longitude": -66.5,
+    "phoneCodes": [
+      "+1787",
+      "+1939"
+    ],
+    "primaryPhone": "+1",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "QA",
+    "iso3": "QAT",
+    "nameAr": "قطر",
+    "nameEn": "Qatar",
+    "flag": "🇶🇦",
+    "latitude": 25.5,
+    "longitude": 51.25,
+    "phoneCodes": [
+      "+974"
+    ],
+    "primaryPhone": "+974",
+    "currencies": [
+      {
+        "code": "QAR",
+        "ar": "ريال قطري",
+        "en": "Qatari Riyal"
+      }
+    ],
+    "timezones": [
+      "Asia/Qatar"
+    ]
+  },
+  {
+    "iso2": "CG",
+    "iso3": "COG",
+    "nameAr": "جمهورية الكونغو",
+    "nameEn": "Republic of the Congo",
+    "flag": "🇨🇬",
+    "latitude": -1,
+    "longitude": 15,
+    "phoneCodes": [
+      "+242"
+    ],
+    "primaryPhone": "+242",
+    "currencies": [
+      {
+        "code": "XAF",
+        "ar": "فرنك وسط أفريقي",
+        "en": "Central African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Lagos"
+    ]
+  },
+  {
+    "iso2": "RE",
+    "iso3": "REU",
+    "nameAr": "لا ريونيون",
+    "nameEn": "Réunion",
+    "flag": "🇷🇪",
+    "latitude": -21.15,
+    "longitude": 55.5,
+    "phoneCodes": [
+      "+262"
+    ],
+    "primaryPhone": "+262",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Asia/Dubai"
+    ]
+  },
+  {
+    "iso2": "RO",
+    "iso3": "ROU",
+    "nameAr": "رومانيا",
+    "nameEn": "Romania",
+    "flag": "🇷🇴",
+    "latitude": 46,
+    "longitude": 25,
+    "phoneCodes": [
+      "+40"
+    ],
+    "primaryPhone": "+40",
+    "currencies": [
+      {
+        "code": "RON",
+        "ar": "ليو روماني",
+        "en": "Romanian Leu"
+      }
+    ],
+    "timezones": [
+      "Europe/Bucharest"
+    ]
+  },
+  {
+    "iso2": "RU",
+    "iso3": "RUS",
+    "nameAr": "روسيا",
+    "nameEn": "Russia",
+    "flag": "🇷🇺",
+    "latitude": 60,
+    "longitude": 100,
+    "phoneCodes": [
+      "+73",
+      "+74",
+      "+75",
+      "+78",
+      "+79"
+    ],
+    "primaryPhone": "+7",
+    "currencies": [
+      {
+        "code": "RUB",
+        "ar": "روبل روسي",
+        "en": "Russian Ruble"
+      }
+    ],
+    "timezones": [
+      "Asia/Anadyr",
+      "Asia/Barnaul",
+      "Asia/Chita",
+      "Asia/Irkutsk",
+      "Asia/Kamchatka",
+      "Asia/Khandyga",
+      "Asia/Krasnoyarsk",
+      "Asia/Magadan",
+      "Asia/Novokuznetsk",
+      "Asia/Novosibirsk",
+      "Asia/Omsk",
+      "Asia/Sakhalin",
+      "Asia/Srednekolymsk",
+      "Asia/Tomsk",
+      "Asia/Ust-Nera",
+      "Asia/Vladivostok",
+      "Asia/Yakutsk",
+      "Asia/Yekaterinburg",
+      "Europe/Astrakhan",
+      "Europe/Kaliningrad",
+      "Europe/Kirov",
+      "Europe/Moscow",
+      "Europe/Samara",
+      "Europe/Saratov",
+      "Europe/Simferopol",
+      "Europe/Ulyanovsk",
+      "Europe/Volgograd"
+    ]
+  },
+  {
+    "iso2": "RW",
+    "iso3": "RWA",
+    "nameAr": "رواندا",
+    "nameEn": "Rwanda",
+    "flag": "🇷🇼",
+    "latitude": -2,
+    "longitude": 30,
+    "phoneCodes": [
+      "+250"
+    ],
+    "primaryPhone": "+250",
+    "currencies": [
+      {
+        "code": "RWF",
+        "ar": "فرنك رواندي",
+        "en": "Rwandan Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Maputo"
+    ]
+  },
+  {
+    "iso2": "BL",
+    "iso3": "BLM",
+    "nameAr": "سان بارتليمي",
+    "nameEn": "Saint Barthélemy",
+    "flag": "🇧🇱",
+    "latitude": 18.5,
+    "longitude": -63.41666666,
+    "phoneCodes": [
+      "+590"
+    ],
+    "primaryPhone": "+590",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "SH",
+    "iso3": "SHN",
+    "nameAr": "سانت هيلينا وأسينشين وتريستان دا كونا",
+    "nameEn": "Saint Helena, Ascension and Tristan da Cunha",
+    "flag": "🇸🇭",
+    "latitude": -15.95,
+    "longitude": -5.72,
+    "phoneCodes": [
+      "+290",
+      "+247"
+    ],
+    "primaryPhone": "+2",
+    "currencies": [
+      {
+        "code": "GBP",
+        "ar": "جنيه إسترليني",
+        "en": "British Pound"
+      },
+      {
+        "code": "SHP",
+        "ar": "جنيه سانت هيلين",
+        "en": "St. Helena Pound"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "KN",
+    "iso3": "KNA",
+    "nameAr": "سانت كيتس ونيفيس",
+    "nameEn": "Saint Kitts and Nevis",
+    "flag": "🇰🇳",
+    "latitude": 17.33333333,
+    "longitude": -62.75,
+    "phoneCodes": [
+      "+1869"
+    ],
+    "primaryPhone": "+1869",
+    "currencies": [
+      {
+        "code": "XCD",
+        "ar": "دولار شرق الكاريبي",
+        "en": "East Caribbean Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "LC",
+    "iso3": "LCA",
+    "nameAr": "سانت لوسيا",
+    "nameEn": "Saint Lucia",
+    "flag": "🇱🇨",
+    "latitude": 13.88333333,
+    "longitude": -60.96666666,
+    "phoneCodes": [
+      "+1758"
+    ],
+    "primaryPhone": "+1758",
+    "currencies": [
+      {
+        "code": "XCD",
+        "ar": "دولار شرق الكاريبي",
+        "en": "East Caribbean Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "MF",
+    "iso3": "MAF",
+    "nameAr": "سانت مارتن",
+    "nameEn": "Saint Martin",
+    "flag": "🇲🇫",
+    "latitude": 18.08333333,
+    "longitude": -63.95,
+    "phoneCodes": [
+      "+590"
+    ],
+    "primaryPhone": "+590",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "PM",
+    "iso3": "SPM",
+    "nameAr": "سان بيير وميكلون",
+    "nameEn": "Saint Pierre and Miquelon",
+    "flag": "🇵🇲",
+    "latitude": 46.83333333,
+    "longitude": -56.33333333,
+    "phoneCodes": [
+      "+508"
+    ],
+    "primaryPhone": "+508",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "America/Miquelon"
+    ]
+  },
+  {
+    "iso2": "VC",
+    "iso3": "VCT",
+    "nameAr": "سانت فينسنت والغرينادين",
+    "nameEn": "Saint Vincent and the Grenadines",
+    "flag": "🇻🇨",
+    "latitude": 13.25,
+    "longitude": -61.2,
+    "phoneCodes": [
+      "+1784"
+    ],
+    "primaryPhone": "+1784",
+    "currencies": [
+      {
+        "code": "XCD",
+        "ar": "دولار شرق الكاريبي",
+        "en": "East Caribbean Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "WS",
+    "iso3": "WSM",
+    "nameAr": "ساموا",
+    "nameEn": "Samoa",
+    "flag": "🇼🇸",
+    "latitude": -13.58333333,
+    "longitude": -172.33333333,
+    "phoneCodes": [
+      "+685"
+    ],
+    "primaryPhone": "+685",
+    "currencies": [
+      {
+        "code": "WST",
+        "ar": "تالا ساموا",
+        "en": "Samoan Tala"
+      }
+    ],
+    "timezones": [
+      "Pacific/Apia"
+    ]
+  },
+  {
+    "iso2": "SM",
+    "iso3": "SMR",
+    "nameAr": "سان مارينو",
+    "nameEn": "San Marino",
+    "flag": "🇸🇲",
+    "latitude": 43.76666666,
+    "longitude": 12.41666666,
+    "phoneCodes": [
+      "+378"
+    ],
+    "primaryPhone": "+378",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Rome"
+    ]
+  },
+  {
+    "iso2": "ST",
+    "iso3": "STP",
+    "nameAr": "ساو تومي وبرينسيب",
+    "nameEn": "São Tomé and Príncipe",
+    "flag": "🇸🇹",
+    "latitude": 1,
+    "longitude": 7,
+    "phoneCodes": [
+      "+239"
+    ],
+    "primaryPhone": "+239",
+    "currencies": [
+      {
+        "code": "STN",
+        "ar": "دوبرا ساو تومي وبرينسيبي",
+        "en": "São Tomé & Príncipe Dobra"
+      }
+    ],
+    "timezones": [
+      "Africa/Sao_Tome"
+    ]
+  },
+  {
+    "iso2": "SA",
+    "iso3": "SAU",
+    "nameAr": "السعودية",
+    "nameEn": "Saudi Arabia",
+    "flag": "🇸🇦",
+    "latitude": 25,
+    "longitude": 45,
+    "phoneCodes": [
+      "+966"
+    ],
+    "primaryPhone": "+966",
+    "currencies": [
+      {
+        "code": "SAR",
+        "ar": "ريال سعودي",
+        "en": "Saudi Riyal"
+      }
+    ],
+    "timezones": [
+      "Asia/Riyadh"
+    ]
+  },
+  {
+    "iso2": "SN",
+    "iso3": "SEN",
+    "nameAr": "السنغال",
+    "nameEn": "Senegal",
+    "flag": "🇸🇳",
+    "latitude": 14,
+    "longitude": -14,
+    "phoneCodes": [
+      "+221"
+    ],
+    "primaryPhone": "+221",
+    "currencies": [
+      {
+        "code": "XOF",
+        "ar": "فرنك غرب أفريقي",
+        "en": "West African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "RS",
+    "iso3": "SRB",
+    "nameAr": "صيربيا",
+    "nameEn": "Serbia",
+    "flag": "🇷🇸",
+    "latitude": 44,
+    "longitude": 21,
+    "phoneCodes": [
+      "+381"
+    ],
+    "primaryPhone": "+381",
+    "currencies": [
+      {
+        "code": "RSD",
+        "ar": "دينار صربي",
+        "en": "Serbian Dinar"
+      }
+    ],
+    "timezones": [
+      "Europe/Belgrade"
+    ]
+  },
+  {
+    "iso2": "SC",
+    "iso3": "SYC",
+    "nameAr": "سيشل",
+    "nameEn": "Seychelles",
+    "flag": "🇸🇨",
+    "latitude": -4.58333333,
+    "longitude": 55.66666666,
+    "phoneCodes": [
+      "+248"
+    ],
+    "primaryPhone": "+248",
+    "currencies": [
+      {
+        "code": "SCR",
+        "ar": "روبية سيشيلية",
+        "en": "Seychellois Rupee"
+      }
+    ],
+    "timezones": [
+      "Asia/Dubai"
+    ]
+  },
+  {
+    "iso2": "SL",
+    "iso3": "SLE",
+    "nameAr": "سيراليون",
+    "nameEn": "Sierra Leone",
+    "flag": "🇸🇱",
+    "latitude": 8.5,
+    "longitude": -11.5,
+    "phoneCodes": [
+      "+232"
+    ],
+    "primaryPhone": "+232",
+    "currencies": [
+      {
+        "code": "SLL",
+        "ar": "ليون سيراليوني - 1964-2022",
+        "en": "Sierra Leonean Leone (1964—2022)"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "SG",
+    "iso3": "SGP",
+    "nameAr": "سنغافورة",
+    "nameEn": "Singapore",
+    "flag": "🇸🇬",
+    "latitude": 1.36666666,
+    "longitude": 103.8,
+    "phoneCodes": [
+      "+65"
+    ],
+    "primaryPhone": "+65",
+    "currencies": [
+      {
+        "code": "SGD",
+        "ar": "دولار سنغافوري",
+        "en": "Singapore Dollar"
+      }
+    ],
+    "timezones": [
+      "Asia/Singapore"
+    ]
+  },
+  {
+    "iso2": "SX",
+    "iso3": "SXM",
+    "nameAr": "سينت مارتن",
+    "nameEn": "Sint Maarten",
+    "flag": "🇸🇽",
+    "latitude": 18.033333,
+    "longitude": -63.05,
+    "phoneCodes": [
+      "+1721"
+    ],
+    "primaryPhone": "+1721",
+    "currencies": [
+      {
+        "code": "ANG",
+        "ar": "غيلدر أنتيلي هولندي",
+        "en": "Netherlands Antillean Guilder"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "SK",
+    "iso3": "SVK",
+    "nameAr": "سلوفاكيا",
+    "nameEn": "Slovakia",
+    "flag": "🇸🇰",
+    "latitude": 48.66666666,
+    "longitude": 19.5,
+    "phoneCodes": [
+      "+421"
+    ],
+    "primaryPhone": "+421",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Prague"
+    ]
+  },
+  {
+    "iso2": "SI",
+    "iso3": "SVN",
+    "nameAr": "سلوفينيا",
+    "nameEn": "Slovenia",
+    "flag": "🇸🇮",
+    "latitude": 46.11666666,
+    "longitude": 14.81666666,
+    "phoneCodes": [
+      "+386"
+    ],
+    "primaryPhone": "+386",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Belgrade"
+    ]
+  },
+  {
+    "iso2": "SB",
+    "iso3": "SLB",
+    "nameAr": "جزر سليمان",
+    "nameEn": "Solomon Islands",
+    "flag": "🇸🇧",
+    "latitude": -8,
+    "longitude": 159,
+    "phoneCodes": [
+      "+677"
+    ],
+    "primaryPhone": "+677",
+    "currencies": [
+      {
+        "code": "SBD",
+        "ar": "دولار جزر سليمان",
+        "en": "Solomon Islands Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Guadalcanal"
+    ]
+  },
+  {
+    "iso2": "SO",
+    "iso3": "SOM",
+    "nameAr": "الصومال",
+    "nameEn": "Somalia",
+    "flag": "🇸🇴",
+    "latitude": 10,
+    "longitude": 49,
+    "phoneCodes": [
+      "+252"
+    ],
+    "primaryPhone": "+252",
+    "currencies": [
+      {
+        "code": "SOS",
+        "ar": "شلن صومالي",
+        "en": "Somali Shilling"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "ZA",
+    "iso3": "ZAF",
+    "nameAr": "جنوب أفريقيا",
+    "nameEn": "South Africa",
+    "flag": "🇿🇦",
+    "latitude": -29,
+    "longitude": 24,
+    "phoneCodes": [
+      "+27"
+    ],
+    "primaryPhone": "+27",
+    "currencies": [
+      {
+        "code": "ZAR",
+        "ar": "راند جنوب أفريقيا",
+        "en": "South African Rand"
+      }
+    ],
+    "timezones": [
+      "Africa/Johannesburg"
+    ]
+  },
+  {
+    "iso2": "GS",
+    "iso3": "SGS",
+    "nameAr": "جورجيا الجنوبية",
+    "nameEn": "South Georgia",
+    "flag": "🇬🇸",
+    "latitude": -54.5,
+    "longitude": -37,
+    "phoneCodes": [
+      "+500"
+    ],
+    "primaryPhone": "+500",
+    "currencies": [
+      {
+        "code": "SHP",
+        "ar": "جنيه سانت هيلين",
+        "en": "St. Helena Pound"
+      }
+    ],
+    "timezones": [
+      "Atlantic/South_Georgia"
+    ]
+  },
+  {
+    "iso2": "KR",
+    "iso3": "KOR",
+    "nameAr": "كوريا الجنوبية",
+    "nameEn": "South Korea",
+    "flag": "🇰🇷",
+    "latitude": 37,
+    "longitude": 127.5,
+    "phoneCodes": [
+      "+82"
+    ],
+    "primaryPhone": "+82",
+    "currencies": [
+      {
+        "code": "KRW",
+        "ar": "وون كوريا الجنوبية",
+        "en": "South Korean Won"
+      }
+    ],
+    "timezones": [
+      "Asia/Seoul"
+    ]
+  },
+  {
+    "iso2": "SS",
+    "iso3": "SSD",
+    "nameAr": "جنوب السودان",
+    "nameEn": "South Sudan",
+    "flag": "🇸🇸",
+    "latitude": 7,
+    "longitude": 30,
+    "phoneCodes": [
+      "+211"
+    ],
+    "primaryPhone": "+211",
+    "currencies": [
+      {
+        "code": "SSP",
+        "ar": "جنيه جنوب السودان",
+        "en": "South Sudanese Pound"
+      }
+    ],
+    "timezones": [
+      "Africa/Juba"
+    ]
+  },
+  {
+    "iso2": "ES",
+    "iso3": "ESP",
+    "nameAr": "إسبانيا",
+    "nameEn": "Spain",
+    "flag": "🇪🇸",
+    "latitude": 40,
+    "longitude": -4,
+    "phoneCodes": [
+      "+34"
+    ],
+    "primaryPhone": "+34",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Africa/Ceuta",
+      "Atlantic/Canary",
+      "Europe/Madrid"
+    ]
+  },
+  {
+    "iso2": "LK",
+    "iso3": "LKA",
+    "nameAr": "سريلانكا",
+    "nameEn": "Sri Lanka",
+    "flag": "🇱🇰",
+    "latitude": 7,
+    "longitude": 81,
+    "phoneCodes": [
+      "+94"
+    ],
+    "primaryPhone": "+94",
+    "currencies": [
+      {
+        "code": "LKR",
+        "ar": "روبية سريلانكية",
+        "en": "Sri Lankan Rupee"
+      }
+    ],
+    "timezones": [
+      "Asia/Colombo"
+    ]
+  },
+  {
+    "iso2": "SD",
+    "iso3": "SDN",
+    "nameAr": "السودان",
+    "nameEn": "Sudan",
+    "flag": "🇸🇩",
+    "latitude": 15,
+    "longitude": 30,
+    "phoneCodes": [
+      "+249"
+    ],
+    "primaryPhone": "+249",
+    "currencies": [
+      {
+        "code": "SDG",
+        "ar": "جنيه سوداني",
+        "en": "Sudanese Pound"
+      }
+    ],
+    "timezones": [
+      "Africa/Khartoum"
+    ]
+  },
+  {
+    "iso2": "SR",
+    "iso3": "SUR",
+    "nameAr": "سورينام",
+    "nameEn": "Suriname",
+    "flag": "🇸🇷",
+    "latitude": 4,
+    "longitude": -56,
+    "phoneCodes": [
+      "+597"
+    ],
+    "primaryPhone": "+597",
+    "currencies": [
+      {
+        "code": "SRD",
+        "ar": "دولار سورينامي",
+        "en": "Surinamese Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Paramaribo"
+    ]
+  },
+  {
+    "iso2": "SJ",
+    "iso3": "SJM",
+    "nameAr": "سفالبارد ويان ماين",
+    "nameEn": "Svalbard and Jan Mayen",
+    "flag": "🇸🇯",
+    "latitude": 78,
+    "longitude": 20,
+    "phoneCodes": [
+      "+4779"
+    ],
+    "primaryPhone": "+4779",
+    "currencies": [
+      {
+        "code": "NOK",
+        "ar": "كرونة نرويجية",
+        "en": "Norwegian Krone"
+      }
+    ],
+    "timezones": [
+      "Europe/Berlin"
+    ]
+  },
+  {
+    "iso2": "SE",
+    "iso3": "SWE",
+    "nameAr": "السويد",
+    "nameEn": "Sweden",
+    "flag": "🇸🇪",
+    "latitude": 62,
+    "longitude": 15,
+    "phoneCodes": [
+      "+46"
+    ],
+    "primaryPhone": "+46",
+    "currencies": [
+      {
+        "code": "SEK",
+        "ar": "كرونة سويدية",
+        "en": "Swedish Krona"
+      }
+    ],
+    "timezones": [
+      "Europe/Berlin"
+    ]
+  },
+  {
+    "iso2": "CH",
+    "iso3": "CHE",
+    "nameAr": "سويسرا",
+    "nameEn": "Switzerland",
+    "flag": "🇨🇭",
+    "latitude": 47,
+    "longitude": 8,
+    "phoneCodes": [
+      "+41"
+    ],
+    "primaryPhone": "+41",
+    "currencies": [
+      {
+        "code": "CHF",
+        "ar": "فرنك سويسري",
+        "en": "Swiss Franc"
+      }
+    ],
+    "timezones": [
+      "Europe/Zurich"
+    ]
+  },
+  {
+    "iso2": "SY",
+    "iso3": "SYR",
+    "nameAr": "سوريا",
+    "nameEn": "Syria",
+    "flag": "🇸🇾",
+    "latitude": 35,
+    "longitude": 38,
+    "phoneCodes": [
+      "+963"
+    ],
+    "primaryPhone": "+963",
+    "currencies": [
+      {
+        "code": "SYP",
+        "ar": "ليرة سورية",
+        "en": "Syrian Pound"
+      }
+    ],
+    "timezones": [
+      "Asia/Damascus"
+    ]
+  },
+  {
+    "iso2": "TW",
+    "iso3": "TWN",
+    "nameAr": "تايوان",
+    "nameEn": "Taiwan",
+    "flag": "🇹🇼",
+    "latitude": 23.5,
+    "longitude": 121,
+    "phoneCodes": [
+      "+886"
+    ],
+    "primaryPhone": "+886",
+    "currencies": [
+      {
+        "code": "TWD",
+        "ar": "دولار تايواني",
+        "en": "New Taiwan Dollar"
+      }
+    ],
+    "timezones": [
+      "Asia/Taipei"
+    ]
+  },
+  {
+    "iso2": "TJ",
+    "iso3": "TJK",
+    "nameAr": "طاجيكستان",
+    "nameEn": "Tajikistan",
+    "flag": "🇹🇯",
+    "latitude": 39,
+    "longitude": 71,
+    "phoneCodes": [
+      "+992"
+    ],
+    "primaryPhone": "+992",
+    "currencies": [
+      {
+        "code": "TJS",
+        "ar": "سوموني طاجيكستاني",
+        "en": "Tajikistani Somoni"
+      }
+    ],
+    "timezones": [
+      "Asia/Dushanbe"
+    ]
+  },
+  {
+    "iso2": "TZ",
+    "iso3": "TZA",
+    "nameAr": "تنزانيا",
+    "nameEn": "Tanzania",
+    "flag": "🇹🇿",
+    "latitude": -6,
+    "longitude": 35,
+    "phoneCodes": [
+      "+255"
+    ],
+    "primaryPhone": "+255",
+    "currencies": [
+      {
+        "code": "TZS",
+        "ar": "شلن تنزاني",
+        "en": "Tanzanian Shilling"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "TH",
+    "iso3": "THA",
+    "nameAr": "تايلند",
+    "nameEn": "Thailand",
+    "flag": "🇹🇭",
+    "latitude": 15,
+    "longitude": 100,
+    "phoneCodes": [
+      "+66"
+    ],
+    "primaryPhone": "+66",
+    "currencies": [
+      {
+        "code": "THB",
+        "ar": "باخت تايلاندي",
+        "en": "Thai Baht"
+      }
+    ],
+    "timezones": [
+      "Asia/Bangkok"
+    ]
+  },
+  {
+    "iso2": "TL",
+    "iso3": "TLS",
+    "nameAr": "تيمور الشرقية",
+    "nameEn": "Timor-Leste",
+    "flag": "🇹🇱",
+    "latitude": -8.83333333,
+    "longitude": 125.91666666,
+    "phoneCodes": [
+      "+670"
+    ],
+    "primaryPhone": "+670",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Asia/Dili"
+    ]
+  },
+  {
+    "iso2": "TG",
+    "iso3": "TGO",
+    "nameAr": "توغو",
+    "nameEn": "Togo",
+    "flag": "🇹🇬",
+    "latitude": 8,
+    "longitude": 1.16666666,
+    "phoneCodes": [
+      "+228"
+    ],
+    "primaryPhone": "+228",
+    "currencies": [
+      {
+        "code": "XOF",
+        "ar": "فرنك غرب أفريقي",
+        "en": "West African CFA Franc"
+      }
+    ],
+    "timezones": [
+      "Africa/Abidjan"
+    ]
+  },
+  {
+    "iso2": "TK",
+    "iso3": "TKL",
+    "nameAr": "توكيلاو",
+    "nameEn": "Tokelau",
+    "flag": "🇹🇰",
+    "latitude": -9,
+    "longitude": -172,
+    "phoneCodes": [
+      "+690"
+    ],
+    "primaryPhone": "+690",
+    "currencies": [
+      {
+        "code": "NZD",
+        "ar": "دولار نيوزيلندي",
+        "en": "New Zealand Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Fakaofo"
+    ]
+  },
+  {
+    "iso2": "TO",
+    "iso3": "TON",
+    "nameAr": "تونغا",
+    "nameEn": "Tonga",
+    "flag": "🇹🇴",
+    "latitude": -20,
+    "longitude": -175,
+    "phoneCodes": [
+      "+676"
+    ],
+    "primaryPhone": "+676",
+    "currencies": [
+      {
+        "code": "TOP",
+        "ar": "بانغا تونغا",
+        "en": "Tongan Paʻanga"
+      }
+    ],
+    "timezones": [
+      "Pacific/Tongatapu"
+    ]
+  },
+  {
+    "iso2": "TT",
+    "iso3": "TTO",
+    "nameAr": "ترينيداد وتوباغو",
+    "nameEn": "Trinidad and Tobago",
+    "flag": "🇹🇹",
+    "latitude": 11,
+    "longitude": -61,
+    "phoneCodes": [
+      "+1868"
+    ],
+    "primaryPhone": "+1868",
+    "currencies": [
+      {
+        "code": "TTD",
+        "ar": "دولار ترينداد وتوباغو",
+        "en": "Trinidad & Tobago Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "TN",
+    "iso3": "TUN",
+    "nameAr": "تونس",
+    "nameEn": "Tunisia",
+    "flag": "🇹🇳",
+    "latitude": 34,
+    "longitude": 9,
+    "phoneCodes": [
+      "+216"
+    ],
+    "primaryPhone": "+216",
+    "currencies": [
+      {
+        "code": "TND",
+        "ar": "دينار تونسي",
+        "en": "Tunisian Dinar"
+      }
+    ],
+    "timezones": [
+      "Africa/Tunis"
+    ]
+  },
+  {
+    "iso2": "TR",
+    "iso3": "TUR",
+    "nameAr": "تركيا",
+    "nameEn": "Türkiye",
+    "flag": "🇹🇷",
+    "latitude": 39,
+    "longitude": 35,
+    "phoneCodes": [
+      "+90"
+    ],
+    "primaryPhone": "+90",
+    "currencies": [
+      {
+        "code": "TRY",
+        "ar": "ليرة تركية",
+        "en": "Turkish Lira"
+      }
+    ],
+    "timezones": [
+      "Europe/Istanbul"
+    ]
+  },
+  {
+    "iso2": "TM",
+    "iso3": "TKM",
+    "nameAr": "تركمانستان",
+    "nameEn": "Turkmenistan",
+    "flag": "🇹🇲",
+    "latitude": 40,
+    "longitude": 60,
+    "phoneCodes": [
+      "+993"
+    ],
+    "primaryPhone": "+993",
+    "currencies": [
+      {
+        "code": "TMT",
+        "ar": "مانات تركمانستان",
+        "en": "Turkmenistani Manat"
+      }
+    ],
+    "timezones": [
+      "Asia/Ashgabat"
+    ]
+  },
+  {
+    "iso2": "TC",
+    "iso3": "TCA",
+    "nameAr": "جزر توركس وكايكوس",
+    "nameEn": "Turks and Caicos Islands",
+    "flag": "🇹🇨",
+    "latitude": 21.75,
+    "longitude": -71.58333333,
+    "phoneCodes": [
+      "+1649"
+    ],
+    "primaryPhone": "+1649",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Grand_Turk"
+    ]
+  },
+  {
+    "iso2": "TV",
+    "iso3": "TUV",
+    "nameAr": "توفالو",
+    "nameEn": "Tuvalu",
+    "flag": "🇹🇻",
+    "latitude": -8,
+    "longitude": 178,
+    "phoneCodes": [
+      "+688"
+    ],
+    "primaryPhone": "+688",
+    "currencies": [
+      {
+        "code": "AUD",
+        "ar": "دولار أسترالي",
+        "en": "Australian Dollar"
+      },
+      {
+        "code": "TVD",
+        "ar": "TVD",
+        "en": "TVD"
+      }
+    ],
+    "timezones": [
+      "Pacific/Tarawa"
+    ]
+  },
+  {
+    "iso2": "UG",
+    "iso3": "UGA",
+    "nameAr": "أوغندا",
+    "nameEn": "Uganda",
+    "flag": "🇺🇬",
+    "latitude": 1,
+    "longitude": 32,
+    "phoneCodes": [
+      "+256"
+    ],
+    "primaryPhone": "+256",
+    "currencies": [
+      {
+        "code": "UGX",
+        "ar": "شلن أوغندي",
+        "en": "Ugandan Shilling"
+      }
+    ],
+    "timezones": [
+      "Africa/Nairobi"
+    ]
+  },
+  {
+    "iso2": "UA",
+    "iso3": "UKR",
+    "nameAr": "أوكرانيا",
+    "nameEn": "Ukraine",
+    "flag": "🇺🇦",
+    "latitude": 49,
+    "longitude": 32,
+    "phoneCodes": [
+      "+380"
+    ],
+    "primaryPhone": "+380",
+    "currencies": [
+      {
+        "code": "UAH",
+        "ar": "هريفنيا أوكراني",
+        "en": "Ukrainian Hryvnia"
+      }
+    ],
+    "timezones": [
+      "Europe/Kyiv",
+      "Europe/Simferopol"
+    ]
+  },
+  {
+    "iso2": "AE",
+    "iso3": "ARE",
+    "nameAr": "الإمارات",
+    "nameEn": "United Arab Emirates",
+    "flag": "🇦🇪",
+    "latitude": 24,
+    "longitude": 54,
+    "phoneCodes": [
+      "+971"
+    ],
+    "primaryPhone": "+971",
+    "currencies": [
+      {
+        "code": "AED",
+        "ar": "درهم إماراتي",
+        "en": "United Arab Emirates Dirham"
+      }
+    ],
+    "timezones": [
+      "Asia/Dubai"
+    ]
+  },
+  {
+    "iso2": "GB",
+    "iso3": "GBR",
+    "nameAr": "المملكة المتحدة",
+    "nameEn": "United Kingdom",
+    "flag": "🇬🇧",
+    "latitude": 54,
+    "longitude": -2,
+    "phoneCodes": [
+      "+44"
+    ],
+    "primaryPhone": "+44",
+    "currencies": [
+      {
+        "code": "GBP",
+        "ar": "جنيه إسترليني",
+        "en": "British Pound"
+      }
+    ],
+    "timezones": [
+      "Europe/London"
+    ]
+  },
+  {
+    "iso2": "US",
+    "iso3": "USA",
+    "nameAr": "الولايات المتحدة",
+    "nameEn": "United States",
+    "flag": "🇺🇸",
+    "latitude": 38,
+    "longitude": -97,
+    "phoneCodes": [
+      "+1201",
+      "+1202",
+      "+1203",
+      "+1205",
+      "+1206",
+      "+1207",
+      "+1208",
+      "+1209",
+      "+1210",
+      "+1212",
+      "+1213",
+      "+1214",
+      "+1215",
+      "+1216",
+      "+1217",
+      "+1218",
+      "+1219",
+      "+1220",
+      "+1223",
+      "+1224",
+      "+1225",
+      "+1227",
+      "+1228",
+      "+1229",
+      "+1231",
+      "+1234",
+      "+1239",
+      "+1240",
+      "+1248",
+      "+1251",
+      "+1252",
+      "+1253",
+      "+1254",
+      "+1256",
+      "+1260",
+      "+1262",
+      "+1267",
+      "+1269",
+      "+1270",
+      "+1272",
+      "+1274",
+      "+1276",
+      "+1279",
+      "+1281",
+      "+1283",
+      "+1301",
+      "+1302",
+      "+1303",
+      "+1304",
+      "+1305",
+      "+1307",
+      "+1308",
+      "+1309",
+      "+1310",
+      "+1312",
+      "+1313",
+      "+1314",
+      "+1315",
+      "+1316",
+      "+1317",
+      "+1318",
+      "+1319",
+      "+1320",
+      "+1321",
+      "+1323",
+      "+1325",
+      "+1326",
+      "+1327",
+      "+1330",
+      "+1331",
+      "+1332",
+      "+1334",
+      "+1336",
+      "+1337",
+      "+1339",
+      "+1341",
+      "+1346",
+      "+1347",
+      "+1351",
+      "+1352",
+      "+1360",
+      "+1361",
+      "+1364",
+      "+1380",
+      "+1385",
+      "+1386",
+      "+1401",
+      "+1402",
+      "+1404",
+      "+1405",
+      "+1406",
+      "+1407",
+      "+1408",
+      "+1409",
+      "+1410",
+      "+1412",
+      "+1413",
+      "+1414",
+      "+1415",
+      "+1417",
+      "+1419",
+      "+1423",
+      "+1424",
+      "+1425",
+      "+1430",
+      "+1432",
+      "+1434",
+      "+1435",
+      "+1440",
+      "+1442",
+      "+1443",
+      "+1445",
+      "+1447",
+      "+1448",
+      "+1458",
+      "+1463",
+      "+1464",
+      "+1469",
+      "+1470",
+      "+1475",
+      "+1478",
+      "+1479",
+      "+1480",
+      "+1484",
+      "+1500",
+      "+1501",
+      "+1502",
+      "+1503",
+      "+1504",
+      "+1505",
+      "+1507",
+      "+1508",
+      "+1509",
+      "+1510",
+      "+1512",
+      "+1513",
+      "+1515",
+      "+1516",
+      "+1517",
+      "+1518",
+      "+1520",
+      "+1521",
+      "+1522",
+      "+1523",
+      "+1524",
+      "+1525",
+      "+1526",
+      "+1527",
+      "+1528",
+      "+1529",
+      "+1530",
+      "+1531",
+      "+1532",
+      "+1533",
+      "+1534",
+      "+1535",
+      "+1538",
+      "+1539",
+      "+1540",
+      "+1541",
+      "+1542",
+      "+1543",
+      "+1544",
+      "+1545",
+      "+1546",
+      "+1547",
+      "+1549",
+      "+1550",
+      "+1551",
+      "+1552",
+      "+1553",
+      "+1554",
+      "+1556",
+      "+1557",
+      "+1558",
+      "+1559",
+      "+1561",
+      "+1562",
+      "+1563",
+      "+1564",
+      "+1566",
+      "+1567",
+      "+1569",
+      "+1570",
+      "+1571",
+      "+1572",
+      "+1573",
+      "+1574",
+      "+1575",
+      "+1577",
+      "+1578",
+      "+1580",
+      "+1582",
+      "+1585",
+      "+1586",
+      "+1588",
+      "+1589",
+      "+1601",
+      "+1602",
+      "+1603",
+      "+1605",
+      "+1606",
+      "+1607",
+      "+1608",
+      "+1609",
+      "+1610",
+      "+1612",
+      "+1614",
+      "+1615",
+      "+1616",
+      "+1617",
+      "+1618",
+      "+1619",
+      "+1620",
+      "+1623",
+      "+1626",
+      "+1628",
+      "+1629",
+      "+1630",
+      "+1631",
+      "+1636",
+      "+1640",
+      "+1641",
+      "+1646",
+      "+1650",
+      "+1651",
+      "+1656",
+      "+1657",
+      "+1659",
+      "+1660",
+      "+1661",
+      "+1662",
+      "+1667",
+      "+1669",
+      "+1678",
+      "+1679",
+      "+1680",
+      "+1681",
+      "+1682",
+      "+1689",
+      "+1700",
+      "+1701",
+      "+1702",
+      "+1703",
+      "+1704",
+      "+1706",
+      "+1707",
+      "+1708",
+      "+1710",
+      "+1712",
+      "+1713",
+      "+1714",
+      "+1715",
+      "+1716",
+      "+1717",
+      "+1718",
+      "+1719",
+      "+1720",
+      "+1724",
+      "+1725",
+      "+1726",
+      "+1727",
+      "+1730",
+      "+1731",
+      "+1732",
+      "+1734",
+      "+1737",
+      "+1740",
+      "+1743",
+      "+1747",
+      "+1754",
+      "+1757",
+      "+1760",
+      "+1762",
+      "+1763",
+      "+1765",
+      "+1769",
+      "+1770",
+      "+1771",
+      "+1772",
+      "+1773",
+      "+1774",
+      "+1775",
+      "+1779",
+      "+1781",
+      "+1785",
+      "+1786",
+      "+1801",
+      "+1802",
+      "+1803",
+      "+1804",
+      "+1805",
+      "+1806",
+      "+1808",
+      "+1810",
+      "+1812",
+      "+1813",
+      "+1814",
+      "+1815",
+      "+1816",
+      "+1817",
+      "+1818",
+      "+1820",
+      "+1826",
+      "+1828",
+      "+1830",
+      "+1831",
+      "+1832",
+      "+1838",
+      "+1839",
+      "+1840",
+      "+1843",
+      "+1845",
+      "+1847",
+      "+1848",
+      "+1850",
+      "+1854",
+      "+1856",
+      "+1857",
+      "+1858",
+      "+1859",
+      "+1860",
+      "+1862",
+      "+1863",
+      "+1864",
+      "+1865",
+      "+1870",
+      "+1872",
+      "+1878",
+      "+1901",
+      "+1903",
+      "+1904",
+      "+1906",
+      "+1907",
+      "+1908",
+      "+1909",
+      "+1910",
+      "+1912",
+      "+1913",
+      "+1914",
+      "+1915",
+      "+1916",
+      "+1917",
+      "+1918",
+      "+1919",
+      "+1920",
+      "+1925",
+      "+1928",
+      "+1929",
+      "+1930",
+      "+1931",
+      "+1934",
+      "+1936",
+      "+1937",
+      "+1938",
+      "+1940",
+      "+1941",
+      "+1943",
+      "+1945",
+      "+1947",
+      "+1948",
+      "+1949",
+      "+1951",
+      "+1952",
+      "+1954",
+      "+1956",
+      "+1959",
+      "+1970",
+      "+1971",
+      "+1972",
+      "+1973",
+      "+1975",
+      "+1978",
+      "+1979",
+      "+1980",
+      "+1983",
+      "+1984",
+      "+1985",
+      "+1986",
+      "+1989"
+    ],
+    "primaryPhone": "+1",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Adak",
+      "America/Anchorage",
+      "America/Boise",
+      "America/Chicago",
+      "America/Denver",
+      "America/Detroit",
+      "America/Indiana/Indianapolis",
+      "America/Indiana/Knox",
+      "America/Indiana/Marengo",
+      "America/Indiana/Petersburg",
+      "America/Indiana/Tell_City",
+      "America/Indiana/Vevay",
+      "America/Indiana/Vincennes",
+      "America/Indiana/Winamac",
+      "America/Juneau",
+      "America/Kentucky/Louisville",
+      "America/Kentucky/Monticello",
+      "America/Los_Angeles",
+      "America/Menominee",
+      "America/Metlakatla",
+      "America/New_York",
+      "America/Nome",
+      "America/North_Dakota/Beulah",
+      "America/North_Dakota/Center",
+      "America/North_Dakota/New_Salem",
+      "America/Phoenix",
+      "America/Sitka",
+      "America/Yakutat",
+      "Pacific/Honolulu"
+    ]
+  },
+  {
+    "iso2": "UM",
+    "iso3": "UMI",
+    "nameAr": "جزر الولايات المتحدة الصغيرة النائية",
+    "nameEn": "United States Minor Outlying Islands",
+    "flag": "🇺🇲",
+    "latitude": 19.3,
+    "longitude": 166.633333,
+    "phoneCodes": [
+      "+268"
+    ],
+    "primaryPhone": "+268",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "Pacific/Pago_Pago",
+      "Pacific/Tarawa"
+    ]
+  },
+  {
+    "iso2": "VI",
+    "iso3": "VIR",
+    "nameAr": "جزر العذراء الامريكية",
+    "nameEn": "United States Virgin Islands",
+    "flag": "🇻🇮",
+    "latitude": 18.35,
+    "longitude": -64.933333,
+    "phoneCodes": [
+      "+1340"
+    ],
+    "primaryPhone": "+1340",
+    "currencies": [
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      }
+    ],
+    "timezones": [
+      "America/Puerto_Rico"
+    ]
+  },
+  {
+    "iso2": "UY",
+    "iso3": "URY",
+    "nameAr": "الأوروغواي",
+    "nameEn": "Uruguay",
+    "flag": "🇺🇾",
+    "latitude": -33,
+    "longitude": -56,
+    "phoneCodes": [
+      "+598"
+    ],
+    "primaryPhone": "+598",
+    "currencies": [
+      {
+        "code": "UYU",
+        "ar": "بيزو اوروغواي",
+        "en": "Uruguayan Peso"
+      }
+    ],
+    "timezones": [
+      "America/Montevideo"
+    ]
+  },
+  {
+    "iso2": "UZ",
+    "iso3": "UZB",
+    "nameAr": "أوزباكستان",
+    "nameEn": "Uzbekistan",
+    "flag": "🇺🇿",
+    "latitude": 41,
+    "longitude": 64,
+    "phoneCodes": [
+      "+998"
+    ],
+    "primaryPhone": "+998",
+    "currencies": [
+      {
+        "code": "UZS",
+        "ar": "سوم أوزبكستاني",
+        "en": "Uzbekistani Som"
+      }
+    ],
+    "timezones": [
+      "Asia/Samarkand",
+      "Asia/Tashkent"
+    ]
+  },
+  {
+    "iso2": "VU",
+    "iso3": "VUT",
+    "nameAr": "فانواتو",
+    "nameEn": "Vanuatu",
+    "flag": "🇻🇺",
+    "latitude": -16,
+    "longitude": 167,
+    "phoneCodes": [
+      "+678"
+    ],
+    "primaryPhone": "+678",
+    "currencies": [
+      {
+        "code": "VUV",
+        "ar": "فاتو فانواتو",
+        "en": "Vanuatu Vatu"
+      }
+    ],
+    "timezones": [
+      "Pacific/Efate"
+    ]
+  },
+  {
+    "iso2": "VA",
+    "iso3": "VAT",
+    "nameAr": "مدينة الفاتيكان",
+    "nameEn": "Vatican City",
+    "flag": "🇻🇦",
+    "latitude": 41.9,
+    "longitude": 12.45,
+    "phoneCodes": [
+      "+3906698",
+      "+379"
+    ],
+    "primaryPhone": "+3",
+    "currencies": [
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      }
+    ],
+    "timezones": [
+      "Europe/Rome"
+    ]
+  },
+  {
+    "iso2": "VE",
+    "iso3": "VEN",
+    "nameAr": "فنزويلا",
+    "nameEn": "Venezuela",
+    "flag": "🇻🇪",
+    "latitude": 8,
+    "longitude": -66,
+    "phoneCodes": [
+      "+58"
+    ],
+    "primaryPhone": "+58",
+    "currencies": [
+      {
+        "code": "VES",
+        "ar": "بوليفار فنزويلي",
+        "en": "Venezuelan Bolívar"
+      }
+    ],
+    "timezones": [
+      "America/Caracas"
+    ]
+  },
+  {
+    "iso2": "VN",
+    "iso3": "VNM",
+    "nameAr": "فيتنام",
+    "nameEn": "Vietnam",
+    "flag": "🇻🇳",
+    "latitude": 16.16666666,
+    "longitude": 107.83333333,
+    "phoneCodes": [
+      "+84"
+    ],
+    "primaryPhone": "+84",
+    "currencies": [
+      {
+        "code": "VND",
+        "ar": "دونج فيتنامي",
+        "en": "Vietnamese Dong"
+      }
+    ],
+    "timezones": [
+      "Asia/Bangkok",
+      "Asia/Ho_Chi_Minh"
+    ]
+  },
+  {
+    "iso2": "WF",
+    "iso3": "WLF",
+    "nameAr": "واليس وفوتونا",
+    "nameEn": "Wallis and Futuna",
+    "flag": "🇼🇫",
+    "latitude": -13.3,
+    "longitude": -176.2,
+    "phoneCodes": [
+      "+681"
+    ],
+    "primaryPhone": "+681",
+    "currencies": [
+      {
+        "code": "XPF",
+        "ar": "فرنك سي إف بي",
+        "en": "CFP Franc"
+      }
+    ],
+    "timezones": [
+      "Pacific/Tarawa"
+    ]
+  },
+  {
+    "iso2": "EH",
+    "iso3": "ESH",
+    "nameAr": "الصحراء الغربية",
+    "nameEn": "Western Sahara",
+    "flag": "🇪🇭",
+    "latitude": 24.5,
+    "longitude": -13,
+    "phoneCodes": [
+      "+2125288",
+      "+2125289"
+    ],
+    "primaryPhone": "+2",
+    "currencies": [
+      {
+        "code": "DZD",
+        "ar": "دينار جزائري",
+        "en": "Algerian Dinar"
+      },
+      {
+        "code": "MAD",
+        "ar": "درهم مغربي",
+        "en": "Moroccan Dirham"
+      },
+      {
+        "code": "MRU",
+        "ar": "أوقية موريتانية",
+        "en": "Mauritanian Ouguiya"
+      }
+    ],
+    "timezones": [
+      "Africa/El_Aaiun"
+    ]
+  },
+  {
+    "iso2": "YE",
+    "iso3": "YEM",
+    "nameAr": "اليمن",
+    "nameEn": "Yemen",
+    "flag": "🇾🇪",
+    "latitude": 15,
+    "longitude": 48,
+    "phoneCodes": [
+      "+967"
+    ],
+    "primaryPhone": "+967",
+    "currencies": [
+      {
+        "code": "YER",
+        "ar": "ريال يمني",
+        "en": "Yemeni Rial"
+      }
+    ],
+    "timezones": [
+      "Asia/Riyadh"
+    ]
+  },
+  {
+    "iso2": "ZM",
+    "iso3": "ZMB",
+    "nameAr": "زامبيا",
+    "nameEn": "Zambia",
+    "flag": "🇿🇲",
+    "latitude": -15,
+    "longitude": 30,
+    "phoneCodes": [
+      "+260"
+    ],
+    "primaryPhone": "+260",
+    "currencies": [
+      {
+        "code": "ZMW",
+        "ar": "كواشا زامبي",
+        "en": "Zambian Kwacha"
+      }
+    ],
+    "timezones": [
+      "Africa/Maputo"
+    ]
+  },
+  {
+    "iso2": "ZW",
+    "iso3": "ZWE",
+    "nameAr": "زيمبابوي",
+    "nameEn": "Zimbabwe",
+    "flag": "🇿🇼",
+    "latitude": -20,
+    "longitude": 30,
+    "phoneCodes": [
+      "+263"
+    ],
+    "primaryPhone": "+263",
+    "currencies": [
+      {
+        "code": "BWP",
+        "ar": "بولا بتسواني",
+        "en": "Botswanan Pula"
+      },
+      {
+        "code": "CNY",
+        "ar": "يوان صيني",
+        "en": "Chinese Yuan"
+      },
+      {
+        "code": "EUR",
+        "ar": "يورو",
+        "en": "Euro"
+      },
+      {
+        "code": "GBP",
+        "ar": "جنيه إسترليني",
+        "en": "British Pound"
+      },
+      {
+        "code": "INR",
+        "ar": "روبية هندي",
+        "en": "Indian Rupee"
+      },
+      {
+        "code": "JPY",
+        "ar": "ين ياباني",
+        "en": "Japanese Yen"
+      },
+      {
+        "code": "USD",
+        "ar": "دولار أمريكي",
+        "en": "US Dollar"
+      },
+      {
+        "code": "ZAR",
+        "ar": "راند جنوب أفريقيا",
+        "en": "South African Rand"
+      },
+      {
+        "code": "ZWB",
+        "ar": "ZWB",
+        "en": "ZWB"
+      }
+    ],
+    "timezones": [
+      "Africa/Maputo"
+    ]
+  }
+]

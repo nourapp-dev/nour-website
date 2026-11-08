@@ -1,4 +1,5 @@
 "use client";
+import {useUnsaved,serializeDraft} from "../admin-workspace/useUnsaved";
 
 import {
   useMemo,
@@ -240,6 +241,9 @@ export default function VisasPage() {
       );
     }, [rows, search]);
 
+  const [formBaseline,setFormBaseline]=useState(()=>serializeDraft(defaultValues));
+  useUnsaved(isFormOpen && serializeDraft(values)!==formBaseline, isArabic ? 'لديك تعديلات غير محفوظة. هل تريد المغادرة؟' : 'Unsaved changes. Leave?');
+  const [validationError,setValidationError]=useState('');
   function updateValue<
     K extends keyof VisaFormValues,
   >(
@@ -269,6 +273,7 @@ export default function VisasPage() {
   }
 
   function closeForm() {
+    if(serializeDraft(values)!==formBaseline && !window.confirm(isArabic ? 'تجاهل التعديلات غير المحفوظة؟' : 'Unsaved changes. Close?'))return;
     if (isSaving) {
       return;
     }
@@ -295,12 +300,14 @@ export default function VisasPage() {
       React.FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault();
+    if(isSaving)return;
+    setValidationError('');
 
     if (
       !values.nameAr.trim() ||
       !values.nameEn.trim()
     ) {
-      window.alert(
+      setValidationError(
         isArabic
           ? "أدخل اسم التأشيرة بالعربية والإنجليزية."
           : "Enter the visa name in Arabic and English.",
@@ -326,11 +333,11 @@ export default function VisasPage() {
       }
 
       await refresh();
-      closeForm();
+      setIsFormOpen(false);setEditingVisa(null);setValues(defaultValues);setFormBaseline(serializeDraft(defaultValues));
     } catch (error) {
       console.error(error);
 
-      window.alert(
+      setValidationError(
         isArabic
           ? "تعذر حفظ التأشيرة."
           : "Unable to save visa.",
@@ -354,7 +361,7 @@ export default function VisasPage() {
     } catch (error) {
       console.error(error);
 
-      window.alert(
+      setValidationError(
         isArabic
           ? "تعذر تحديث حالة التأشيرة."
           : "Unable to update visa status.",
@@ -386,7 +393,7 @@ export default function VisasPage() {
     } catch (error) {
       console.error(error);
 
-      window.alert(
+      setValidationError(
         isArabic
           ? "تعذر حذف التأشيرة."
           : "Unable to delete visa.",
@@ -407,7 +414,7 @@ export default function VisasPage() {
     } catch (error) {
       console.error(error);
 
-      window.alert(
+      setValidationError(
         isArabic
           ? "تعذر استعادة التأشيرة."
           : "Unable to restore visa.",
@@ -427,6 +434,7 @@ export default function VisasPage() {
 
   return (
     <div className="nr-admin-page nr-visas-admin">
+      {validationError && !isFormOpen && <p className="aw-error" role="alert">{validationError}</p>}
       <div className="nr-admin-page-header">
         <div>
           <span className="nr-admin-kicker">
@@ -767,6 +775,8 @@ export default function VisasPage() {
                 handleSubmit
               }
             >
+      {validationError && <p className="aw-error" role="alert">{validationError}</p>}
+
               <div className="nr-country-form-grid">
                 <label>
                   <span>

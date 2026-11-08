@@ -17,10 +17,14 @@ import {
 
 import { getCities } from "../journeys/journey.service";
 
+import { ianaTimezones } from "../countries/directory";
+import { localTime, zonedInstant } from "../journeys/timezone";
 type Props = { programId: string };
 
 type FormState = {
   originCityId: string;
+  meetingPointId: string;
+  departureTimezone: string;
   startAt: string;
   endAt: string;
   bookingDeadline: string;
@@ -35,6 +39,8 @@ type FormState = {
 
 const emptyForm: FormState = {
   originCityId: "",
+  meetingPointId: "",
+  departureTimezone: "UTC",
   startAt: "",
   endAt: "",
   bookingDeadline: "",
@@ -46,9 +52,6 @@ const emptyForm: FormState = {
   sortOrder: "0",
   isActive: true,
 };
-
-const toLocalInput = (value: string | null) =>
-  value ? new Date(value).toISOString().slice(0, 16) : "";
 
 export default function ProgramDeparturesPage({ programId }: Props) {
   const supabase = useMemo(() => createClient(), []);
@@ -71,9 +74,24 @@ export default function ProgramDeparturesPage({ programId }: Props) {
 
   const citiesQuery = useQuery({
     queryKey: ["admin", "cities", "active"],
-    queryFn: () => getCities(supabase),
+    queryFn: () => getCities(supabase, true),
   });
 
+  const pointsQuery = useQuery({
+    queryKey: ["admin", "departure-points", form.originCityId, programId],
+    enabled: Boolean(form.originCityId),
+    queryFn: async () => {
+      const r = await supabase
+        .from("program_meeting_points")
+        .select("id,name_ar,name_en,program_id")
+        .eq("city_id", form.originCityId)
+        .eq("is_active", true)
+        .is("deleted_at", null)
+        .or("program_id.is.null,program_id.eq." + programId);
+      if (r.error) throw r.error;
+      return r.data;
+    },
+  });
   const departuresQuery = useQuery({
     queryKey: ["admin", "program", programId, "departures"],
     queryFn: () => getProgramDepartures(supabase, programId),
@@ -88,10 +106,14 @@ export default function ProgramDeparturesPage({ programId }: Props) {
         throw new Error("المقاعد المتاحة لا يمكن أن تتجاوز السعة الإجمالية.");
       const payload = {
         origin_city_id: form.originCityId || null,
-        start_at: new Date(form.startAt).toISOString(),
-        end_at: form.endAt ? new Date(form.endAt).toISOString() : null,
+        meeting_point_id: form.meetingPointId || null,
+        departure_timezone: form.departureTimezone,
+        start_at: zonedInstant(form.startAt, form.departureTimezone),
+        end_at: form.endAt
+          ? zonedInstant(form.endAt, form.departureTimezone)
+          : null,
         booking_deadline: form.bookingDeadline
-          ? new Date(form.bookingDeadline).toISOString()
+          ? zonedInstant(form.bookingDeadline, form.departureTimezone)
           : null,
         capacity_total: total,
         seats_available: available,
@@ -126,9 +148,14 @@ export default function ProgramDeparturesPage({ programId }: Props) {
     setEditingId(item.id);
     setForm({
       originCityId: item.originCityId ?? "",
-      startAt: toLocalInput(item.startAt),
-      endAt: toLocalInput(item.endAt),
-      bookingDeadline: toLocalInput(item.bookingDeadline),
+      meetingPointId: item.meetingPointId ?? "",
+      departureTimezone: item.departureTimezone || "UTC",
+      startAt: localTime(item.startAt, item.departureTimezone || "UTC"),
+      endAt: localTime(item.endAt, item.departureTimezone || "UTC"),
+      bookingDeadline: localTime(
+        item.bookingDeadline,
+        item.departureTimezone || "UTC",
+      ),
       capacityTotal: String(item.capacityTotal),
       seatsAvailable: String(item.seatsAvailable),
       status: item.status,
@@ -171,13 +198,62 @@ export default function ProgramDeparturesPage({ programId }: Props) {
             {editingId ? "تعديل موعد الانطلاق" : "إضافة موعد انطلاق"}
           </strong>
         </div>
+        <p>
+          توقيت الموعد محفوظ بمنطقته الزمنية. المواعيد القديمة دون منطقة تظهر
+          بتوقيت UTC. حجز الموقع متوقف.
+        </p>
         <div className="pdep-grid">
+          <label>
+            المنطقة الزمنية / Timezone
+            <select
+              value={form.departureTimezone}
+              onChange={(e) =>
+                setForm({ ...form, departureTimezone: e.target.value })
+              }
+            >
+              {ianaTimezones.map((z) => (
+                <option key={z}>{z}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            نقطة التجمع / Meeting point
+            <select
+              value={form.meetingPointId}
+              disabled={!form.originCityId || pointsQuery.isError}
+              onChange={(e) =>
+                setForm({ ...form, meetingPointId: e.target.value })
+              }
+            >
+              <option value="">غير محددة / Unassigned</option>
+              {pointsQuery.data?.map((p) => (
+                <option value={p.id} key={p.id}>
+                  {p.name_ar} · {p.name_en}
+                </option>
+              ))}
+            </select>
+          </label>
+          {pointsQuery.isError && (
+            <p role="alert">
+              تعذر تحميل نقاط التجمع{" "}
+              <button onClick={() => void pointsQuery.refetch()}>
+                إعادة المحاولة
+              </button>
+            </p>
+          )}
           <label>
             مدينة الانطلاق
             <select
               value={form.originCityId}
               onChange={(e) =>
-                setForm({ ...form, originCityId: e.target.value })
+                setForm({
+                  ...form,
+                  originCityId: e.target.value,
+                  meetingPointId: "",
+                  departureTimezone:
+                    citiesQuery.data?.find((c) => c.id === e.target.value)
+                      ?.timezone || "UTC",
+                })
               }
             >
               <option value="">غير محددة</option>
@@ -271,7 +347,7 @@ export default function ProgramDeparturesPage({ programId }: Props) {
               checked={form.isActive}
               onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
             />{" "}
-            نشط ويظهر للعامة
+            نشط — يظهر عند نشر البرنامج والمدينة
           </label>
           <label className="pdep-wide">
             ملاحظات بالعربية
@@ -317,7 +393,16 @@ export default function ProgramDeparturesPage({ programId }: Props) {
       </section>
 
       <section className="pdep-list">
-        {(departuresQuery.data ?? []).length === 0 ? (
+        {departuresQuery.isPending ? (
+          <p role="status">جارٍ تحميل المواعيد…</p>
+        ) : departuresQuery.isError ? (
+          <p role="alert">
+            تعذر تحميل المواعيد{" "}
+            <button onClick={() => void departuresQuery.refetch()}>
+              إعادة المحاولة
+            </button>
+          </p>
+        ) : (departuresQuery.data ?? []).length === 0 ? (
           <div className="pdep-empty">
             <Plus size={18} /> لا توجد مواعيد انطلاق مضافة بعد.
           </div>
@@ -329,6 +414,7 @@ export default function ProgramDeparturesPage({ programId }: Props) {
                 {new Intl.DateTimeFormat("ar-SA", {
                   dateStyle: "medium",
                   timeStyle: "short",
+                  timeZone: item.departureTimezone || "UTC",
                 }).format(new Date(item.startAt))}
               </strong>
               <span>
@@ -363,7 +449,7 @@ export default function ProgramDeparturesPage({ programId }: Props) {
           padding: 24px;
           display: grid;
           gap: 20px;
-          color: #14253d;
+          color: var(--aw-text);
         }
         .pdep-head {
           display: flex;
@@ -391,13 +477,13 @@ export default function ProgramDeparturesPage({ programId }: Props) {
           padding: 10px 14px;
           border: 1px solid #dce5f0;
           border-radius: 12px;
-          background: #fff;
+          background: var(--aw-surface);
         }
         .pdep-form-card {
           padding: 22px;
           border: 1px solid #dce5f0;
           border-radius: 20px;
-          background: #fff;
+          background: var(--aw-surface);
           box-shadow: 0 16px 45px rgba(20, 59, 102, 0.06);
         }
         .pdep-card-title {
@@ -416,7 +502,7 @@ export default function ProgramDeparturesPage({ programId }: Props) {
           gap: 7px;
           font-size: 12px;
           font-weight: 800;
-          color: #50647d;
+          color: var(--aw-muted);
         }
         .pdep-grid input,
         .pdep-grid select,
@@ -425,7 +511,7 @@ export default function ProgramDeparturesPage({ programId }: Props) {
           padding: 10px 12px;
           border: 1px solid #dce5f0;
           border-radius: 11px;
-          background: #fbfcfe;
+          background: var(--aw-bg);
           color: #14253d;
         }
         .pdep-grid textarea {
@@ -486,7 +572,7 @@ export default function ProgramDeparturesPage({ programId }: Props) {
           padding: 17px 18px;
           border: 1px solid #dce5f0;
           border-radius: 16px;
-          background: #fff;
+          background: var(--aw-surface);
         }
         .pdep-item > div:first-child {
           display: grid;
@@ -516,7 +602,7 @@ export default function ProgramDeparturesPage({ programId }: Props) {
           border: 1px dashed #cdd9e7;
           border-radius: 15px;
           color: #718198;
-          background: #fbfcfe;
+          background: var(--aw-bg);
         }
         @media (max-width: 760px) {
           .pdep-admin {

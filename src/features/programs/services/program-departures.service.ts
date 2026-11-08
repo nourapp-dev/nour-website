@@ -11,6 +11,8 @@ export type ProgramDeparture = {
   id: string;
   programId: string;
   originCityId: string | null;
+  meetingPointId: string | null;
+  departureTimezone: string | null;
   startAt: string;
   endAt: string | null;
   bookingDeadline: string | null;
@@ -27,6 +29,8 @@ type DepartureRow = {
   id: string;
   program_id: string;
   origin_city_id: string | null;
+  meeting_point_id: string | null;
+  departure_timezone: string | null;
   start_at: string;
   end_at: string | null;
   booking_deadline: string | null;
@@ -40,13 +44,15 @@ type DepartureRow = {
 };
 
 const select =
-  "id,program_id,origin_city_id,start_at,end_at,booking_deadline,capacity_total,seats_available,status,notes_ar,notes_en,is_active,sort_order";
+  "id,program_id,origin_city_id,meeting_point_id,departure_timezone,start_at,end_at,booking_deadline,capacity_total,seats_available,status,notes_ar,notes_en,is_active,sort_order";
 
 function mapRow(row: DepartureRow): ProgramDeparture {
   return {
     id: row.id,
     programId: row.program_id,
     originCityId: row.origin_city_id,
+    meetingPointId: row.meeting_point_id,
+    departureTimezone: row.departure_timezone,
     startAt: row.start_at,
     endAt: row.end_at,
     bookingDeadline: row.booking_deadline,
@@ -166,8 +172,8 @@ export async function createProgramDepartures(
   payloads: Record<string, unknown>[],
 ) {
   if (!payloads.length) return;
-  const { error } = await supabase.from("program_departures").insert(
-    payloads.map((payload) => ({ ...payload, program_id: programId })),
-  );
+  const { error } = await supabase
+    .from("program_departures")
+    .insert(payloads.map((payload) => ({ ...payload, program_id: programId })));
   if (error) throw new Error(`تعذر حفظ مواعيد الرحلات: ${error.message}`);
 }

@@ -22,11 +22,13 @@ import Payments from "./components/home/Payments";
 import CTA from "./components/home/CTA";
 import { copy, sectionIds, type SectionId, type Theme } from "./data/home";
 
+import { usePresentation } from "../src/features/website/usePresentation";
 export default function Home() {
+  const presentation = usePresentation();
   const { language, toggleLanguage } = useLanguage();
   const [theme, setTheme] = usePersistentState<Theme>("nour-theme", "light", {
     serialize: (value) => value,
-    deserialize: (value) => value === "dark" ? "dark" : "light",
+    deserialize: (value) => (value === "dark" ? "dark" : "light"),
   });
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("home");
@@ -50,8 +52,8 @@ export default function Home() {
       (entries) => {
         const current = entries
           .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-          ?.target.id as SectionId | undefined;
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]?.target
+          .id as SectionId | undefined;
         if (current) setActiveSection(current);
       },
       {
@@ -66,111 +68,120 @@ export default function Home() {
 
   return (
     <MotionConfig reducedMotion="user">
-    <main className="nour-redesign">
-      <SiteIntro language={language} />
-      <SiteEnhancements />
-      <PublicHeader
-        t={t}
-        language={language}
-        theme={theme}
-        menuOpen={menuOpen}
-        activeSection={activeSection}
-        navItems={navItems}
-        onLanguageChange={toggleLanguage}
-        onThemeChange={() => setTheme((current) => (current === "light" ? "dark" : "light"))}
-        onMenuToggle={() => setMenuOpen((current) => !current)}
-        onMenuClose={() => setMenuOpen(false)}
-      />
-      <Hero t={t} />
-      <ProgramsPreview language={language} />
-      <Services language={language} />
-      <div id="world-map">
-        <NourWorldMap language={language} />
-      </div>
-      <Journey t={t} language={language} />
-      <Showcase
-        t={t}
-        language={language}
-      />
-      <div id="about">
-        <WhyNour language={language} />
-      </div>
-      <Statistics language={language} />
-      <CeoMessage language={language} />
-      <ArticlesPreview language={language} />
-      <Payments language={language} />
-      <CTA t={t} language={language} />
-      <Footer t={t} language={language} />
-
-      <style jsx global>{`
-        .nr-map-focus-line {
-          --nr-journey-dot-size: 9px;
-        }
-
-        .nr-map-focus-line > i {
-          display: none !important;
-        }
-
-        .nr-map-focus-line::after {
-          content: "";
-          position: absolute;
-          z-index: 6;
-          top: 50%;
-          left: 0;
-          right: auto;
-          width: var(--nr-journey-dot-size);
-          height: var(--nr-journey-dot-size);
-          transform: translateY(-50%);
-          border: 2px solid rgba(255, 255, 255, 0.92);
-          border-radius: 50%;
-          background: #ffc313;
-          box-shadow:
-            0 0 0 4px rgba(255, 195, 19, 0.2),
-            0 0 20px rgba(255, 195, 19, 0.95);
-          animation: nrJourneyDotLtr 2.35s linear infinite;
-          will-change: left, right;
-        }
-
-        [dir="rtl"] .nr-map-focus-line::after {
-          left: auto;
-          right: 0;
-          animation-name: nrJourneyDotRtl;
-        }
-
-        @keyframes nrJourneyDotLtr {
-          from {
-            left: 0;
+      <main className="nour-redesign">
+        <SiteIntro language={language} />
+        <SiteEnhancements />
+        <PublicHeader
+          t={t}
+          language={language}
+          theme={theme}
+          menuOpen={menuOpen}
+          activeSection={activeSection}
+          navItems={navItems}
+          onLanguageChange={toggleLanguage}
+          onThemeChange={() =>
+            setTheme((current) => (current === "light" ? "dark" : "light"))
           }
-          to {
-            left: calc(100% - var(--nr-journey-dot-size));
-          }
-        }
+          onMenuToggle={() => setMenuOpen((current) => !current)}
+          onMenuClose={() => setMenuOpen(false)}
+        />
+        <Hero t={t} />
+        <ProgramsPreview language={language} />
+        {presentation.sections.services.visible && (
+          <Services language={language} />
+        )}
+        <div id="world-map">
+          {presentation.sections.map.visible && (
+            <NourWorldMap language={language} />
+          )}
+        </div>
+        {presentation.sections.journey.visible && (
+          <Journey t={t} language={language} />
+        )}
+        <Showcase t={t} language={language} />
+        <div id="about">
+          {presentation.sections.why.visible && <WhyNour language={language} />}
+        </div>
+        {presentation.sections.priorities.visible && (
+          <Statistics language={language} />
+        )}
+        <CeoMessage language={language} />
+        <ArticlesPreview language={language} />
+        {presentation.sections.payments.visible && (
+          <Payments language={language} />
+        )}
+        <CTA t={t} language={language} />
+        <Footer t={t} language={language} />
 
-        @keyframes nrJourneyDotRtl {
-          from {
-            right: 0;
-          }
-          to {
-            right: calc(100% - var(--nr-journey-dot-size));
-          }
-        }
-
-        @media (max-width: 760px) {
+        <style jsx global>{`
           .nr-map-focus-line {
-            --nr-journey-dot-size: 11px;
-            min-width: 54px;
-            height: 3px !important;
+            --nr-journey-dot-size: 9px;
+          }
+
+          .nr-map-focus-line > i {
+            display: none !important;
           }
 
           .nr-map-focus-line::after {
-            border-width: 2px;
+            content: "";
+            position: absolute;
+            z-index: 6;
+            top: 50%;
+            left: 0;
+            right: auto;
+            width: var(--nr-journey-dot-size);
+            height: var(--nr-journey-dot-size);
+            transform: translateY(-50%);
+            border: 2px solid rgba(255, 255, 255, 0.92);
+            border-radius: 50%;
+            background: #ffc313;
             box-shadow:
-              0 0 0 5px rgba(255, 195, 19, 0.22),
-              0 0 24px rgba(255, 195, 19, 1);
+              0 0 0 4px rgba(255, 195, 19, 0.2),
+              0 0 20px rgba(255, 195, 19, 0.95);
+            animation: nrJourneyDotLtr 2.35s linear infinite;
+            will-change: left, right;
           }
-        }
-      `}</style>
-    </main>
+
+          [dir="rtl"] .nr-map-focus-line::after {
+            left: auto;
+            right: 0;
+            animation-name: nrJourneyDotRtl;
+          }
+
+          @keyframes nrJourneyDotLtr {
+            from {
+              left: 0;
+            }
+            to {
+              left: calc(100% - var(--nr-journey-dot-size));
+            }
+          }
+
+          @keyframes nrJourneyDotRtl {
+            from {
+              right: 0;
+            }
+            to {
+              right: calc(100% - var(--nr-journey-dot-size));
+            }
+          }
+
+          @media (max-width: 760px) {
+            .nr-map-focus-line {
+              --nr-journey-dot-size: 11px;
+              min-width: 54px;
+              height: 3px !important;
+            }
+
+            .nr-map-focus-line::after {
+              border-width: 2px;
+              box-shadow:
+                0 0 0 5px rgba(255, 195, 19, 0.22),
+                0 0 24px rgba(255, 195, 19, 1);
+            }
+          }
+        `}</style>
+      </main>
     </MotionConfig>
   );
 }

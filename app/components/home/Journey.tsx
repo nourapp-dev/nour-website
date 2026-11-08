@@ -1,28 +1,43 @@
 "use client";
 
 import type { HomeCopy, Language } from "../../data/home";
+import { usePresentation } from "../../../src/features/website/usePresentation";
 import styles from "./HomeCards.module.css";
 
 type Props = { t: HomeCopy; language: Language };
 
 export default function Journey({ t, language }: Props) {
   const isArabic = language === "ar";
+  const content = usePresentation().sections.journey;
   return (
-    <section className={styles.section} id="journey" dir={isArabic ? "rtl" : "ltr"} lang={language} aria-labelledby="nr-journey-title">
+    <section
+      className={styles.section}
+      id="journey"
+      dir={isArabic ? "rtl" : "ltr"}
+      lang={language}
+      aria-labelledby="nr-journey-title"
+    >
       <div className={"nr-container " + styles.inner}>
         <header className={styles.heading}>
-          <span className={styles.kicker}><RouteIcon />{t.journeyLabel}</span>
-          <h2 id="nr-journey-title">{t.journeyTitle}</h2>
-          <p>{t.journeyText}</p>
+          <span className={styles.kicker}>
+            <RouteIcon />
+            {t.journeyLabel}
+          </span>
+          <h2 id="nr-journey-title">{content.title[language]}</h2>
+          <p>{content.description[language]}</p>
         </header>
         <div className={styles.grid}>
           {t.journeySteps.map((step, index) => (
             <article className={styles.card} key={step.number}>
               <span className={styles.icon}>{getJourneyIcon(index)}</span>
               <div className={styles.copy}>
-                <span className={styles.step}>{isArabic ? "الخطوة" : "Step"} <bdi>{step.number}</bdi></span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
+                <span className={styles.step}>
+                  {isArabic ? "الخطوة" : "Step"} <bdi>{step.number}</bdi>
+                </span>
+                <h3>{content.items[index]?.title[language] ?? step.title}</h3>
+                <p>
+                  {content.items[index]?.description[language] ?? step.text}
+                </p>
               </div>
             </article>
           ))}
@@ -83,8 +98,16 @@ function CompareIcon() {
       strokeWidth="1.9"
       aria-hidden="true"
     >
-      <path d="M4 7h13M14 4l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M20 17H7M10 14l-3 3 3 3" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M4 7h13M14 4l3 3-3 3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20 17H7M10 14l-3 3 3 3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -99,7 +122,11 @@ function CheckIcon() {
       aria-hidden="true"
     >
       <circle cx="12" cy="12" r="9" />
-      <path d="m8 12 2.6 2.6L16.5 9" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="m8 12 2.6 2.6L16.5 9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
