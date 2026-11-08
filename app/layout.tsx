@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Cairo } from "next/font/google";
+import localFont from "next/font/local";
 
 import QueryProvider from "../src/components/providers/QueryProvider";
 import PrivacyPreferences from "./components/PrivacyPreferences";
@@ -20,9 +20,14 @@ import {
   getServerTextSetting,
 } from "./metadata-settings";
 
-const cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700", "800"],
+const cairo = localFont({
+  src: [
+    { path: "./fonts/cairo-400.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/cairo-500.ttf", weight: "500", style: "normal" },
+    { path: "./fonts/cairo-600.ttf", weight: "600", style: "normal" },
+    { path: "./fonts/cairo-700.ttf", weight: "700", style: "normal" },
+    { path: "./fonts/cairo-800.ttf", weight: "800", style: "normal" }
+  ],
   variable: "--font-cairo",
   display: "swap",
 });
