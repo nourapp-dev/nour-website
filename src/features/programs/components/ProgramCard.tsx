@@ -1,6 +1,8 @@
 "use client";
-import {durationLabel,stayNights} from "../../../core/i18n/counts";
-import {useState} from "react";
+import { countLabel, durationLabel, stayNights } from "../../../core/i18n/counts";
+import { useState } from "react";
+import { MapPin, CalendarDays, BedDouble, Route } from "lucide-react";
+import publicStyles from "../../../styles/public-content.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import type { PublicProgram } from "../services/public-programs.service";
@@ -25,7 +27,7 @@ export default function ProgramCard({
   compact?: boolean;
   preview?: boolean;
 }) {
-  const [failedSource,setFailedSource]=useState<string|null>(null);
+  const [failedSource, setFailedSource] = useState<string | null>(null);
   const ar = language === "ar",
     facts = program.display,
     dates = upcomingDepartures(facts),
@@ -35,8 +37,7 @@ export default function ProgramCard({
     .join("، ");
   const stays = facts?.stays
     .map(
-      (h) =>
-        `${ar ? h.nameAr : h.nameEn} · ${stayNights(h.nights,language)}`,
+      (h) => `${ar ? h.nameAr : h.nameEn} · ${stayNights(h.nights, language)}`,
     )
     .join(" / ");
   let href = languageHref(
@@ -51,16 +52,19 @@ export default function ProgramCard({
   }
   return (
     <article
-      className={`${styles.card} ${compact ? styles.compact : ""} ${compact ? "nr-map-program-card" : "nr-all-programs-card"} nr-program-display-card`}
+      className={`${publicStyles.surface} ${styles.card} ${compact ? styles.compact : ""} ${compact ? "nr-map-program-card" : "nr-all-programs-card"} nr-program-display-card`}
       dir={ar ? "rtl" : "ltr"}
     >
       {!compact && (
         <div className={styles.image}>
-          {program.coverUrl &&failedSource!==program.coverUrl ? (
+          {program.coverUrl && failedSource !== program.coverUrl ? (
             <Image
               src={program.coverUrl}
-              alt={(ar ? program.coverAltAr : program.coverAltEn)||(ar ? program.titleAr : program.titleEn)}
-              onError={()=>setFailedSource(program.coverUrl)}
+              alt={
+                (ar ? program.coverAltAr : program.coverAltEn) ||
+                (ar ? program.titleAr : program.titleEn)
+              }
+              onError={() => setFailedSource(program.coverUrl)}
               fill
               sizes="(max-width:760px) 100vw, (max-width:1100px) 50vw, 380px"
               unoptimized
@@ -78,18 +82,45 @@ export default function ProgramCard({
         </div>
       )}
       <div className={styles.body}>
-        <h3>{ar ? program.titleAr : program.titleEn}</h3>
-        {!compact&&<p>
-          {origin ? `${origin} · ` : ""}
-          {ar ? program.countryNameAr : program.countryNameEn}
-        </p>}
-        <p>
-          {durationLabel(program.durationDays,program.durationNights,language)} ·{" "}
-          {travelLabel(travelMode(facts), ar)}
+        <h3
+          className={`${publicStyles.cardTitle} ${styles.title}`}
+          title={ar ? program.titleAr : program.titleEn}
+        >
+          {ar ? program.titleAr : program.titleEn}
+        </h3>
+        {!compact && (
+          <p className={styles.row}>
+            <MapPin aria-hidden="true" size={16} />
+            <span>
+              {origin ? `${origin} · ` : ""}
+              {ar ? program.countryNameAr : program.countryNameEn}
+            </span>
+          </p>
+        )}
+        <p className={styles.row}>
+          <Route aria-hidden="true" size={16} />
+          <span>
+            {!compact && program.durationNights === 0 ? countLabel(program.durationDays,"day",language) : durationLabel(
+              program.durationDays,
+              program.durationNights,
+              language,
+            )}{" "}
+            · {travelLabel(travelMode(facts), ar)}
+          </span>
         </p>
         {!compact && (
-          <p className={styles.summary}>
-            {stays || (ar ? program.summaryAr : program.summaryEn)}
+          <p className={`${styles.row} ${styles.summary}`}>
+            <BedDouble aria-hidden="true" size={16} />
+            <span>
+              {stays ||
+                (program.durationNights === 0
+                  ? ar
+                    ? "دون إقامة فندقية"
+                    : "No hotel stay"
+                  : ar
+                    ? "تفاصيل الإقامة غير محددة"
+                    : "Accommodation details unspecified")}
+            </span>
           </p>
         )}
         {program.displayError ? (
@@ -99,29 +130,37 @@ export default function ProgramCard({
               : "Origin and departure details could not be loaded."}
           </p>
         ) : first ? (
-          <p>
-            {ar ? "أقرب موعد: " : "Next departure: "}
-            {new Intl.DateTimeFormat(ar ? "ar-SA" : "en-GB", {
-              dateStyle: "medium",
-              timeZone: first.timezone || "UTC",
-            }).format(new Date(first.startAt))}
+          <p className={styles.row}>
+            <CalendarDays aria-hidden="true" size={16} />
+            <span>
+              {ar ? "أقرب موعد: " : "Next departure: "}
+              {new Intl.DateTimeFormat(ar ? "ar-SA" : "en-GB", {
+                dateStyle: "medium",
+                timeZone: first.timezone || "UTC",
+              }).format(new Date(first.startAt))}
+            </span>
           </p>
         ) : (
-          <p>
-            {ar
-              ? "لا توجد مواعيد قادمة منشورة"
-              : "No upcoming published departures"}
+          <p className={styles.row}>
+            <CalendarDays aria-hidden="true" size={16} />
+            <span>
+              {ar
+                ? "لا توجد مواعيد قادمة منشورة"
+                : "No upcoming published departures"}
+            </span>
           </p>
         )}
         <div className={styles.price}>
           <span>{ar ? "السعر الابتدائي" : "Starting price"}</span>
-          <strong>
-            {Number.isFinite(program.basePrice)
-              ? new Intl.NumberFormat(ar ? "ar-SA" : "en-GB", {
-                  maximumFractionDigits: 2,
-                }).format(program.basePrice)
-              : "—"}{" "}
-            <bdi>{program.currencyCode}</bdi>
+          <strong className={styles.amount} dir="ltr">
+            <bdi>
+              {Number.isFinite(program.basePrice)
+                ? new Intl.NumberFormat(ar ? "ar-SA" : "en-GB", {
+                    maximumFractionDigits: 2,
+                  }).format(program.basePrice)
+                : "—"}
+            </bdi>
+            <bdi className={styles.currency}>{program.currencyCode}</bdi>
           </strong>
           <small className="program-price-note">
             {priceDescription(facts, ar, compact)}

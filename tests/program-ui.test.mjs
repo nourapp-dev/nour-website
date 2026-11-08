@@ -25,11 +25,31 @@ const program = {
 };
 const result = (data, extra = {}) => ({ data, isLoading: false, isPending: false, isError: false, refetch() {}, ...extra });
 
+for(const language of ['ar','en'])for(const theme of ['light','dark'])test(`${language} ${theme}: programme title, isolated price and short no-stay state retain their semantics`,async()=>{
+ const title='Very long programme title '.repeat(12);const fixture={...program,titleAr:title,titleEn:title,durationNights:0,summaryAr:'UNWANTED LONG DESCRIPTION',summaryEn:'UNWANTED LONG DESCRIPTION'};
+ await withUI('src/features/programs/components/ProgramCard.tsx',{props:{program:fixture,language}},async()=>{
+  document.documentElement.dataset.theme=theme;
+  const css=document.createElement('style');css.textContent=(readFileSync(resolve(repo,'src/styles/public-content.module.css'),'utf8')+'\n'+readFileSync(resolve(repo,'src/features/programs/components/ProgramCard.module.css'),'utf8')).replaceAll(':global(html[data-theme="dark"])','html[data-theme="dark"]');document.head.append(css);
+  const heading=document.querySelector('h3');assert.equal(heading.textContent,title);assert.equal(heading.title,title);assert.equal(window.getComputedStyle(heading).getPropertyValue('-webkit-line-clamp'),'2');
+  const amount=document.querySelector('.amount');assert.equal(amount.dir,'ltr');assert.equal(amount.querySelectorAll('bdi').length,2);assert.equal(amount.lastElementChild.textContent,'SAR');assert.equal(window.getComputedStyle(amount).direction,'ltr');
+  assert.doesNotMatch(document.body.textContent,/UNWANTED LONG DESCRIPTION/);assert.match(document.querySelector('.summary').textContent,language==='ar'?/دون إقامة فندقية/:/No hotel stay/);
+ });
+});
+
+for(const language of ['ar','en'])for(const theme of ['light','dark'])test(`${language} ${theme}: article card reserves image space and separates metadata, clamped copy and action`,async()=>{
+ const title='A long article title '.repeat(10),article={id:'test',slug:'test',title_ar:title,title_en:title,image:'',excerpt_ar:'ملخص اختبار '.repeat(20),excerpt_en:'Test excerpt '.repeat(20),article_categories:{id:'c',name_ar:'تصنيف',name_en:'Category'},published_at:'2026-01-08T10:00:00Z'};
+ await withUI('src/features/articles/ArticleCard.tsx',{props:{article,language}},async()=>{
+  document.documentElement.dataset.theme=theme;const css=document.createElement('style');css.textContent=(readFileSync(resolve(repo,'src/styles/public-content.module.css'),'utf8')+'\n'+readFileSync(resolve(repo,'src/features/articles/ArticleCard.module.css'),'utf8')).replaceAll(':global(html[data-theme="dark"])','html[data-theme="dark"]');document.head.append(css);
+  assert.equal(window.getComputedStyle(document.querySelector('.image')).aspectRatio,'16/9');assert.equal(window.getComputedStyle(document.querySelector('h3')).getPropertyValue('-webkit-line-clamp'),'2');assert.equal(document.querySelector('h3').title,title);assert.equal(window.getComputedStyle(document.querySelector('.excerpt')).getPropertyValue('-webkit-line-clamp'),'3');
+  assert.ok(document.querySelector('.meta time'));assert.equal(document.querySelectorAll('article a').length,1);assert.match(document.querySelector('article a').textContent,language==='ar'?/قراءة المقال/:/Read article/);assert.equal(document.querySelector('.meta a'),null);
+ });
+});
+
 for(const language of ['ar','en'])for(const theme of ['light','dark'])for(const width of [390,768,1024,1440])test(`${language} ${theme} ${width}: map card owns its palette and compact layout`,async()=>{
  const facts={travelMode:'bus',priceBasis:'per_person',taxStatus:'included',origins:[{nameAr:'مدينة لا تتكرر',nameEn:'Do not repeat city'}],departures:[],stays:[],transports:[],actualFlightCount:0};
  await withUI('src/features/programs/components/ProgramCard.tsx',{props:{language,compact:true,program:{...program,titleAr:'عنوان طويل '.repeat(20),titleEn:'Long title '.repeat(20),display:facts}}},async()=>{
   document.documentElement.dataset.theme=theme;const root=document.getElementById('root');root.className='panel details';root.style.width=width+'px';
-  const css=document.createElement('style');const card=readFileSync(resolve(repo,'src/features/programs/components/ProgramCard.module.css'),'utf8').replaceAll(':global(html[data-theme="dark"])','html[data-theme="dark"]');css.textContent=card+'\n'+readFileSync(resolve(repo,'app/components/home/why-nour/NourWorldMap.module.css'),'utf8');document.head.append(css);
+  const css=document.createElement('style');const card=(readFileSync(resolve(repo,'src/styles/public-content.module.css'),'utf8')+'\n'+readFileSync(resolve(repo,'src/features/programs/components/ProgramCard.module.css'),'utf8')).replaceAll(':global(html[data-theme="dark"])','html[data-theme="dark"]');css.textContent=card+'\n'+readFileSync(resolve(repo,'app/components/home/why-nour/NourWorldMap.module.css'),'utf8');document.head.append(css);
   const article=document.querySelector('article');const style=window.getComputedStyle(article);
   const resolveColor=(element,property)=>{let color=window.getComputedStyle(element).getPropertyValue(property);if(color.startsWith('var(')){const key=color.slice(4,-1);let current=element;while(current){const value=window.getComputedStyle(current).getPropertyValue(key);if(value)return value.trim();current=current.parentElement;}}return color;};
   const luminance=color=>{let c=color.startsWith('#')?color.slice(1).match(/../g).map(v=>parseInt(v,16)):color.match(/[\d.]+/g).slice(0,3).map(Number);return c.map(v=>{const s=v/255;return s<=.04045?s/12.92:((s+.055)/1.055)**2.4;}).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);};
@@ -1124,7 +1144,7 @@ test("privacy banner stays out of account and admin screens", async () => {
 
 
 for (const language of ["ar", "en"]) {
-  test(language + ": payment cards preserve provider identities, shared terms and paused payment notice", async () => {
+  test(language + ": payment cards preserve provider identities and editable copy without an operational notice", async () => {
     await withUI("app/components/home/Payments.tsx", {props:{language}}, async () => {
       assert.equal(document.getElementById("payments").dir, language === "ar" ? "rtl" : "ltr");
       const cards = [...document.querySelectorAll(".payment-logos figure")];
@@ -1142,8 +1162,7 @@ for (const language of ["ar", "en"]) {
       ]);
       assert.equal(document.querySelectorAll(".nr-payment-flex-badge").length,0);
       assert.equal(document.querySelector("#payments a, #payments button"), null);
-      assert.match(document.querySelector("#payments").textContent,
-        language === "ar" ? /الحجز والدفع عبر الموقع متوقفان حاليًا/ : /Website booking and payment are (currently )?paused/);
+      assert.doesNotMatch(document.querySelector("#payments").textContent, /الحجز والدفع عبر الموقع متوقفان حاليًا|الشعارات تعريفية فقط|Website booking and payment are (currently )?paused|Logos are informational only/);
       assert.match(document.querySelector("#payments h2").textContent, language === "ar" ? /وسائل الدفع/ : /Payment methods/);
     });
   });

@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import publicStyles from "../../../src/styles/public-content.module.css";
 import Link from "next/link";
 import { createClient } from "../../../src/lib/supabase/client";
 import { getPublicArticles } from "../../../src/features/articles/public-articles";
@@ -20,15 +21,21 @@ export default function ArticlesPreview({
   });
   if (!q.isPending && !q.isError && !q.data?.length) return null;
   return (
-    <section className="articles-preview" dir={ar ? "rtl" : "ltr"}>
+    <section
+      className={publicStyles.surface + " articles-preview"}
+      dir={ar ? "rtl" : "ltr"}
+    >
       <div className="nr-container">
         <header>
-          <h2>
+          <h2 className={publicStyles.sectionTitle}>
             {ar
               ? "مقالات وإرشادات تساعدك في رحلتك"
               : "Articles and guides for your journey"}
           </h2>
-          <Link href={languageHref("/articles", language)}>
+          <Link
+            className={publicStyles.textLink}
+            href={languageHref("/articles", language)}
+          >
             {ar ? "جميع المقالات" : "All articles"}
           </Link>
         </header>
@@ -57,9 +64,9 @@ export default function ArticlesPreview({
       </div>
       <style jsx>{`
         .articles-preview {
-          padding: 70px 0;
-          background: var(--nour-background);
-          color: var(--nour-text-primary);
+          padding: 48px 0 28px;
+          background: var(--public-surface);
+          color: var(--public-ink);
         }
         header {
           display: flex;
@@ -67,10 +74,6 @@ export default function ArticlesPreview({
           gap: 20px;
           align-items: center;
           margin-bottom: 26px;
-        }
-        h2 {
-          font-size: clamp(26px, 3vw, 36px);
-          line-height: 1.5;
         }
         .articles-grid {
           display: grid;
@@ -81,7 +84,7 @@ export default function ArticlesPreview({
           gap: 24px;
         }
         a {
-          color: #176fe8;
+          color: var(--public-link);
           font-weight: 700;
           white-space: nowrap;
         }

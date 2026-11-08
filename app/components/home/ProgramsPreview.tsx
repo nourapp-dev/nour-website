@@ -1,5 +1,6 @@
 "use client";
 import { usePresentation } from "../../../src/features/website/usePresentation";
+import publicStyles from "../../../src/styles/public-content.module.css";
 import Link from "next/link";
 import type { Language } from "../../data/home";
 import { languageHref } from "../../../src/core/i18n/public-language";
@@ -21,7 +22,7 @@ export default function ProgramsPreview({ language }: { language: Language }) {
     : programs.slice(0, 3);
   return (
     <section
-      className="nr-programs-preview"
+      className={publicStyles.surface + " nr-programs-preview"}
       id="programs"
       dir={ar ? "rtl" : "ltr"}
       aria-labelledby="nr-programs-title"
@@ -30,10 +31,17 @@ export default function ProgramsPreview({ language }: { language: Language }) {
         <header>
           <div>
             <span>{ar ? "استكشف برامج العمرة" : "Explore Umrah programs"}</span>
-            <h2 id="nr-programs-title">{content.title[language]}</h2>
-            <p>{content.description[language]}</p>
+            <h2 id="nr-programs-title" className={publicStyles.sectionTitle}>
+              {content.title[language]}
+            </h2>
+            <p className={publicStyles.sectionDescription}>
+              {content.description[language]}
+            </p>
           </div>
-          <Link href={languageHref("/programs", language)}>
+          <Link
+            className={publicStyles.textLink}
+            href={languageHref("/programs", language)}
+          >
             {ar ? "جميع البرامج" : "All programs"}{" "}
             <span aria-hidden="true">{ar ? "←" : "→"}</span>
           </Link>
@@ -91,15 +99,6 @@ export default function ProgramsPreview({ language }: { language: Language }) {
           font-size: 13px;
           font-weight: 700;
         }
-        h2 {
-          font-size: clamp(26px, 3vw, 38px);
-          margin: 12px 0;
-          line-height: 1.5;
-        }
-        header p {
-          margin: 0;
-          line-height: 1.8;
-        }
         header a {
           white-space: nowrap;
           color: var(--nr-blue, #176fe8);
@@ -114,7 +113,7 @@ export default function ProgramsPreview({ language }: { language: Language }) {
           gap: 24px;
         }
         .nr-programs-grid[data-count="1"] {
-          max-width: 780px;
+          max-width: 460px;
           margin: auto;
           grid-template-columns: minmax(0, 1fr);
         }
