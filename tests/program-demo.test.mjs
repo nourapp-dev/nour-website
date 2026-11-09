@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { PGlite } from '@electric-sql/pglite';
 import { priceDescription } from '../src/features/programs/display.ts';
 
-const migration = readFileSync(new URL('../supabase/migrations/20261109105406_program_demo_display.sql', import.meta.url), 'utf8');
+const migration = readFileSync(new URL('../supabase/migrations/20261109162521_program_demo_display.sql', import.meta.url), 'utf8');
 
 test('demo prices remain explicit in both languages even if display facts fail', () => {
   assert.match(priceDescription(undefined, true, true, true), /عرض تجريبي.*أسعار مؤقتة.*يُؤكَّد لاحقًا.*غير متاح للحجز/);

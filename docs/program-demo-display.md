@@ -10,7 +10,7 @@ Demo bookings are rejected by a database trigger for inserts and program reassig
 
 ## Rollout
 
-1. Apply `20261109105406_program_demo_display.sql` through the normal migration process before deploying the frontend that selects `is_demo`. It creates no new public RPC and does not publish or modify any content rows.
+1. Apply `20261109162521_program_demo_display.sql` through the normal migration process before deploying the frontend that selects `is_demo`. It creates no new public RPC and does not publish or modify any content rows.
 2. Deploy the reviewed application commit following `hostinger-vps.md`; keep website booking, UI preview and app links disabled.
 3. In the CMS, mark each intended draft as a demo. Save and review readiness. Publish the country through the existing authorized country workflow, then publish programs through their normal controls.
 4. Verify anonymous Arabic/English cards and detail pages, the provisional-price notice, and the booking pause. Do not create real reservations to test.
@@ -22,3 +22,5 @@ The four California drafts created on 2026-11-09 are the intended initial conten
 `npm run quality`, `npm test`, and `npm run build -- --webpack`.
 
 `tests/program-demo.test.mjs` runs the actual new migration in isolated PGlite PostgreSQL, using a minimal existing-schema fixture and a standard-readiness contract. It verifies the demo exception boundary, unchanged regular readiness, retained authorization/market/content errors, non-bookability, and draft-only mode changes. This is not a full production migration replay or a live deployment check.
+
+Production database migration applied on 2026-11-09 as `20261109162521_program_demo_display`. The four California drafts are opted into demo mode; they remain unpublished pending market publication and application deployment.
