@@ -9,6 +9,7 @@ import SiteEnhancements from "./components/SiteEnhancements";
 import PublicHeader from "./components/layout/PublicHeader";
 import Footer from "./components/layout/Footer";
 import Hero from "./components/home/Hero";
+import VideoShowcase from "../src/features/videos/VideoShowcase";
 import ProgramsPreview from "./components/home/ProgramsPreview";
 import Services from "./components/home/Services";
 import NourWorldMap from "./components/home/why-nour/NourWorldMapMobileLayout";
@@ -87,6 +88,7 @@ export default function Home() {
         />
         <Hero t={t} />
         <ProgramsPreview language={language} />
+        <VideoShowcase language={language} />
         {presentation.sections.services.visible && (
           <Services language={language} />
         )}

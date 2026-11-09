@@ -67,6 +67,8 @@ const contentSecurityPolicy = `
     ${supabaseOrigin};
 
   frame-src
+    https://www.youtube-nocookie.com
+    https://player.vimeo.com
     ${isUiPreview ? "'self'" : "https://eauthenticate.saudibusiness.gov.sa"};
 
   worker-src

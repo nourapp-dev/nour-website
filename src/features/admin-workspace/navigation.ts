@@ -41,6 +41,7 @@ export const navigation = [
       ["articles", "المقالات", "Articles", "articles"],
       ["ceo-message", "كلمة الرئيس التنفيذي", "CEO message", "settings"],
       ["media", "الوسائط", "Media", "media"],
+      ["videos", "الفيديوهات", "Videos", "website"],
       ["website", "واجهة الموقع", "Website showcase", "website"],
     ],
   ],

@@ -8,6 +8,7 @@ export type TextSection = {
   items: { id: string; title: Localized; description: Localized }[];
 };
 export const sectionKeys = [
+  "videos",
   "services",
   "map",
   "journey",
@@ -18,6 +19,7 @@ export const sectionKeys = [
 export type TextSectionKey = (typeof sectionKeys)[number];
 const pair = (ar: string, en: string) => ({ ar, en });
 export const defaultSections: Record<TextSectionKey, TextSection> = {
+  videos: {visible:true,title:pair("شاهد تجربة نور آب","Discover Nour App in motion"),description:pair("حكايات وإرشادات مرئية تقرّب لك التجربة، من التخطيط حتى تفاصيل الرحلة.","Stories and visual guides that bring the experience closer, from planning to the journey itself."),items:[]},
   priorities: {
     visible: true,
     title: pair(

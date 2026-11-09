@@ -1413,3 +1413,26 @@ for(const scenario of [{demo:true,ports:true},{demo:false,ports:true},{demo:true
   if(name.endsWith('/ProgramCard')||name.endsWith('/MediaUploader')||name==='./DepartureFields')return {__esModule:true,default:()=>null};
  });
 });
+
+for(const language of ['ar','en']) test(`video section ${language} defers playback, labels the dialog and closes it`,async()=>{
+ const video={id:'v',title_ar:'فيديو نور آب',title_en:'Nour App video',description_ar:'تجربة مرئية',description_en:'Visual experience',cover_url:'/images/videos/nour-teaser.jpg',source_kind:'link',source_url:'/videos/nour-teaser.mp4',orientation:'portrait',category:'about',duration_seconds:32,show_on_home:true,status:'published',is_featured:true,sort_order:0,updated_at:'today',cta_href:'/programs',cta_ar:'البرامج',cta_en:'Programs'};
+ const state={language,props:{language},setupDom:dom=>{dom.window.HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','');};},query:({queryKey})=>result(queryKey.includes('video-source')?{kind:'native',url:'/videos/nour-teaser.mp4'}:[video])};
+ await withUI('src/features/videos/VideoShowcase.tsx',state,async({click})=>{
+  assert.equal(document.querySelector('video'),null);assert.equal(document.querySelector('iframe'),null);
+  assert.equal(document.querySelectorAll('article').length,1);
+  const open=[...document.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')?.startsWith(language==='ar'?'مشاهدة:':'Watch:'));
+  await click(open);assert.ok(document.querySelector('dialog[open]'));assert.ok(document.querySelector('video[controls]'));assert.equal(document.querySelector('video').hasAttribute('autoplay'),false);assert.equal(document.querySelector('video').getAttribute('preload'),'metadata');assert.equal(document.body.style.overflow,'hidden');
+  await click(document.querySelector(`button[aria-label="${language==='ar'?'إغلاق الفيديو':'Close video'}"]`));assert.equal(document.querySelector('dialog'),null);assert.equal(document.body.style.overflow,'');
+ },name=>name.endsWith('usePresentation')?{usePresentation:()=>({...defaultPresentation})}:undefined);
+});
+test('empty homepage video section hides while gallery offers an explicit empty state',async()=>{
+ await withUI('src/features/videos/VideoShowcase.tsx',{props:{language:'en'},query:()=>result([])},async()=>assert.equal(document.querySelector('section'),null));
+ await withUI('src/features/videos/VideoShowcase.tsx',{props:{language:'en',gallery:true},query:()=>result([])},async()=>assert.match(document.body.textContent,/No matching published videos/));
+});
+test('video gallery filters categories without confusing empty content and a failed request',async()=>{
+ const state={props:{language:'en',gallery:true},query:()=>result(undefined,{isError:true})};
+ await withUI('src/features/videos/VideoShowcase.tsx',state,async({render,select})=>{
+  assert.ok(document.querySelector('[role="alert"]'));assert.doesNotMatch(document.body.textContent,/No matching/);
+  state.query=()=>result([{id:'one',title_ar:'تعريف',title_en:'Introduction',description_ar:'',description_en:'',cover_url:'/images/videos/nour-teaser.jpg',orientation:'landscape',category:'about',duration_seconds:30,show_on_home:true,cta_href:''}]);await render();assert.equal(document.querySelectorAll('article').length,1);await select(document.querySelector('select'),'app');assert.equal(document.querySelectorAll('article').length,0);assert.match(document.body.textContent,/No matching published videos/);
+ });
+});
