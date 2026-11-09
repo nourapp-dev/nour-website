@@ -1474,6 +1474,7 @@ export default function ProgramsPage() {
                       originCityId: editingProgram.originCityId ?? "",
                       travelMode: editingProgram.travelMode ?? "",
                       priceBasis: editingProgram.priceBasis ?? "",
+                      isDemo: editingProgram.isDemo ?? false,
                       taxStatus: editingProgram.taxStatus ?? "",
                       visaStatus: editingProgram.visaStatus ?? "",
                       titleAr: editingProgram.titleAr,

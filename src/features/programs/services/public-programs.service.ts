@@ -14,6 +14,7 @@ type CountryRow = {
 };
 
 type ProgramRow = {
+  is_demo: boolean;
   id: string;
   title_ar: string;
   title_en: string;
@@ -33,6 +34,7 @@ type ProgramRow = {
 };
 
 export type PublicProgram = {
+  isDemo?: boolean;
   coverAltAr?:string;coverAltEn?:string;
   display?:ProgramDisplayFacts;displayError?:boolean;
   id: string;
@@ -77,6 +79,7 @@ export async function getPublicPrograms(
     .from("programs")
     .select(`
       id,
+      is_demo,
       title_ar,
       title_en,
       slug,
@@ -174,6 +177,7 @@ export async function getPublicPrograms(
       getCoverMedia(program.cover_media);
 
     return {
+      isDemo: program.is_demo,
       id: program.id,
       display:facts.get(program.id),displayError,
       titleAr: program.title_ar,

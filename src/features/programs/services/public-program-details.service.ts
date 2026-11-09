@@ -8,6 +8,7 @@ type MediaRow = {
 };
 
 type ProgramRow = {
+  is_demo: boolean;
   visa_status:import("../labels").VisaStatus;
   id: string;
   title_ar: string;
@@ -196,6 +197,7 @@ export type PublicProgramHotel = {
 };
 
 export type PublicProgramDetails = {
+  isDemo?: boolean;
   visaStatus?:import("../labels").VisaStatus;
   sectionErrors?:string[];
   display?:ProgramDisplayFacts;displayError?:boolean;
@@ -285,7 +287,7 @@ export async function getPublicProgramBySlug(
       summary_en,
       description_ar,
       description_en,
-      country_id,visa_status,
+      is_demo,country_id,visa_status,
       duration_days,
       duration_nights,
       base_price,
@@ -679,6 +681,7 @@ export async function getPublicProgramBySlug(
 
   let display:ProgramDisplayFacts|undefined;let displayError=false;try{display=(await loadDisplayFacts(supabase,[program.id])).get(program.id);}catch{displayError=true;}
   return {
+    isDemo:program.is_demo,
     visaStatus:program.visa_status,display,displayError,sectionErrors,
     id: program.id,
 

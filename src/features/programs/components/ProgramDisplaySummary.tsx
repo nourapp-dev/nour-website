@@ -29,7 +29,7 @@ export default function ProgramDisplaySummary({
         {durationLabel(program.durationDays,program.durationNights,language)} ·{" "}
         {travelLabel(travelMode(facts), ar)}
       </p>
-      <p>{priceDescription(facts, ar)}</p>
+      <p>{priceDescription(facts, ar, false, program.isDemo)}</p>
       {program.displayError ? (
         <p role="alert">
           {ar
@@ -38,7 +38,7 @@ export default function ProgramDisplaySummary({
         </p>
       ) : (
         <p>
-          {dates.length
+          {program.isDemo ? (ar ? "جدول تجريبي للعرض فقط — لا توجد مقاعد للحجز" : "Illustrative itinerary only — no bookable seats") : dates.length
             ? countLabel(dates.length,"departure",language,"upcoming")
             : ar
               ? "برنامج منشور دون مواعيد قادمة"
