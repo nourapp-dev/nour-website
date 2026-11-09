@@ -45,6 +45,7 @@ const EditLanguage = createContext<"ar" | "en">("ar");
 const labels = {
   programs: ["البرامج المختارة", "Featured programs"],
   hero: ["الواجهة الرئيسية", "Hero"],
+  videos: ["الفيديوهات", "Videos"],
   services: ["الخدمات", "Services"],
   map: ["الخريطة", "Map"],
   journey: ["كيف تعمل نور آب", "How it works"],
@@ -60,6 +61,7 @@ const links = [
   ["cities", "المدن ونقاط التجمع", "Cities and meeting points"],
   ["ceo-message", "كلمة الرئيس التنفيذي", "CEO message"],
   ["articles", "المقالات", "Articles"],
+  ["videos", "مكتبة الفيديوهات", "Video library"],
   ["legal", "المحتوى القانوني", "Legal content"],
   ["settings", "التواصل والتذييل", "Contact and footer"],
 ] as const;
