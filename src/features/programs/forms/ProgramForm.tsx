@@ -521,8 +521,7 @@ export default function ProgramForm({
 
     const invalidFlight = values.flights.find(
       (flight: ProgramFlightFormValue) =>
-        !flight.airlineNameAr.trim() ||
-        !flight.airlineNameEn.trim() ||
+        (!values.isDemo && (!flight.airlineNameAr.trim() || !flight.airlineNameEn.trim())) ||
         !flight.departureAirportAr.trim() ||
         !flight.departureAirportEn.trim() ||
         !flight.arrivalAirportAr.trim() ||
@@ -1573,7 +1572,7 @@ export default function ProgramForm({
                           )
                         }
                         placeholder="الخطوط السعودية"
-                        required={values.status === "published"}
+                        required={values.status === "published" && !values.isDemo}
                       />
                     </label>
 
@@ -1594,7 +1593,7 @@ export default function ProgramForm({
                           )
                         }
                         placeholder="Saudia"
-                        required={values.status === "published"}
+                        required={values.status === "published" && !values.isDemo}
                       />
                     </label>
 

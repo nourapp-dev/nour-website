@@ -564,6 +564,7 @@ export default function CountriesPage() {
             ) : null}
 
             <CountryForm
+              canPublish={canPublish}
               onSubmit={handleCreateCountry}
               isSubmitting={createMutation.isPending}
             />
@@ -616,7 +617,19 @@ export default function CountriesPage() {
 
             <CountryForm
               key={`${editingCountry.id}-${editingCountry.updatedAt}`}
+              canPublish={canPublish}
               initialValues={{
+                marketStatus: editingCountry.marketStatus ?? null,
+                publicationStatus: editingCountry.publicationStatus ?? null,
+                showPublic: editingCountry.showPublic ?? null,
+                showOnMap: editingCountry.showOnMap ?? null,
+                statusLabelAr: editingCountry.statusLabelAr ?? "",
+                statusLabelEn: editingCountry.statusLabelEn ?? "",
+                phoneCodes: editingCountry.phoneCodes ?? [],
+                currencyCodes: editingCountry.currencyCodes ?? [],
+                timezones: editingCountry.timezones ?? [],
+                directorySource: editingCountry.directorySource ?? "",
+                flagEmoji: editingCountry.flagEmoji ?? "",
                 nameAr: editingCountry.nameAr,
                 nameEn: editingCountry.nameEn,
                 iso2: editingCountry.iso2,

@@ -1374,3 +1374,42 @@ for(const [name,file] of [['services','Services'],['map','why-nour/NourWorldMap'
  const {copy}=await import('../app/data/home.ts');const presentation=structuredClone(defaultPresentation);presentation.sections[name].title={ar:'عنوان مسودة فعلي',en:'Actual draft heading'};presentation.sections[name].description={ar:'وصف مسودة فعلي',en:'Actual draft description'};
  for(const language of ['ar','en'])await withUI('app/components/home/'+file+'.tsx',{props:{language,t:copy[language]},query:()=>result(mapCatalog)},async()=>{assert.equal(document.querySelector('h2').textContent,language==='ar'?'عنوان مسودة فعلي':'Actual draft heading');assert.match(document.body.textContent,language==='ar'?/وصف مسودة فعلي/:/Actual draft description/);},module=>module.endsWith('usePresentation')?{usePresentation:()=>presentation}:undefined);
 });
+
+for (const canPublish of [true, false]) test(`country create/edit forms receive publication permission ${canPublish} and preserve saved market state`, async () => {
+ const country={id:'us',nameAr:'الولايات المتحدة',nameEn:'United States',iso2:'US',iso3:'USA',phoneCode:'+1',currencyCode:'USD',currencyNameAr:'دولار',currencyNameEn:'US Dollar',timezone:'America/Los_Angeles',latitude:38,longitude:-97,status:'active',sortOrder:0,updatedAt:'2026-11-09',marketStatus:'browsable',publicationStatus:'published',showPublic:true,showOnMap:true,statusLabelAr:'أسعار مؤقتة',statusLabelEn:'Provisional prices',phoneCodes:['+1'],currencyCodes:['USD'],timezones:['America/Los_Angeles'],directorySource:'directory',flagEmoji:'🇺🇸'};
+ let formProps;
+ const permissions={'countries.create':true,'countries.update':true,'countries.publish':canPublish,'countries.delete':false,'countries.archive':false};
+ await withUI('src/features/countries/index.tsx',{url:'https://nour.test/admin/countries'},async({click})=>{
+  await click([...document.querySelectorAll('button')].find(b=>b.textContent==='Add country'));
+  assert.equal(formProps.canPublish,canPublish);
+  await click(document.querySelector('[aria-label="Close dialog"]'));
+  await click(document.querySelector('[data-edit-country]'));
+  assert.equal(formProps.canPublish,canPublish);
+  for(const key of ['marketStatus','publicationStatus','showPublic','showOnMap','statusLabelAr','statusLabelEn','phoneCodes','currencyCodes','timezones','directorySource','flagEmoji']) assert.deepEqual(JSON.parse(JSON.stringify(formProps.initialValues[key])),country[key],key);
+ }, name=>{
+  if(name==='@tanstack/react-query')return {useQuery:({queryKey})=>result(queryKey.includes('permissions')?permissions:queryKey.includes('deleted')?[]:[country]),useMutation:()=>({isPending:false,mutate(){},mutateAsync:async()=>{}}),useQueryClient:()=>({invalidateQueries:async()=>{}})};
+  if(name.endsWith('core/i18n'))return {useLanguage:()=>({language:'en'}),getAdminTranslations:()=>({countries:{pageTitle:'Countries',pageDescription:'Manage countries',recycleBin:'Trash',addCountry:'Add country'}})};
+  if(name.endsWith('core/hooks'))return {usePersistentState:(_key,value)=>React.useState(value)};
+  if(name.endsWith('core/notifications'))return {useToast:()=>({showToast(){}})};
+  if(name.endsWith('core/dialogs'))return {ConfirmDialog:()=>null};
+  if(name.endsWith('core/pagination'))return {Pagination:()=>null};
+  if(name.endsWith('core/states'))return {ErrorState:()=>null,TableSkeleton:()=>null};
+  if(name==='./services')return {countriesQuery:()=>({queryKey:['countries']}),deletedCountriesQuery:()=>({queryKey:['countries','deleted']})};
+  if(name==='./tables/CountriesTable')return {__esModule:true,default:({onEdit})=>React.createElement('button',{'data-edit-country':true,onClick:()=>onEdit(country)},'Edit country')};
+  if(name==='./forms/CountryForm')return {__esModule:true,default:props=>{formProps=props;return React.createElement('output',null,'Country form');}};
+ });
+});
+
+for(const scenario of [{demo:true,ports:true},{demo:false,ports:true},{demo:true,ports:false}]) test(`program form accepts pending demo airline only with route airports: ${JSON.stringify(scenario)}`,async()=>{
+ let submitted=0;
+ const flight={direction:'outbound',airlineNameAr:'',airlineNameEn:'',flightNumber:'',departureAirportAr:scenario.ports?'لوس أنجلوس':'',departureAirportEn:scenario.ports?'LAX':'',arrivalAirportAr:'جدة',arrivalAirportEn:'JED',departureAt:'',arrivalAt:'',flightType:'direct',transitAirportAr:'',transitAirportEn:'',transitDurationMinutes:null,cabinClassAr:'',cabinClassEn:'',baggageAllowanceKg:null,notesAr:'مسار مقترح',notesEn:'Proposed route',sortOrder:0};
+ await withUI('src/features/programs/forms/ProgramForm.tsx',{url:'https://nour.test/admin/programs',props:{initialValues:{...program,status:'published',isDemo:scenario.demo,flights:[flight],transports:[],visas:[],departures:[],flightNotesAr:'',flightNotesEn:''},countries:[{id:'sa',nameAr:'السعودية',nameEn:'Saudi Arabia'}],onSubmit:async()=>{submitted++;}}},async({dom})=>{
+  const airline=[...document.querySelectorAll('label')].find(l=>l.textContent.includes('Airline Arabic')).querySelector('input');
+  assert.equal(airline.required,!scenario.demo);
+  await act(async()=>document.querySelector('form').dispatchEvent(new dom.window.Event('submit',{bubbles:true,cancelable:true})));
+  assert.equal(submitted,scenario.demo&&scenario.ports?1:0);
+ },name=>{
+  if(name.endsWith('useUnsaved'))return {useDraftGuard:()=>()=>{}};
+  if(name.endsWith('/ProgramCard')||name.endsWith('/MediaUploader')||name==='./DepartureFields')return {__esModule:true,default:()=>null};
+ });
+});
