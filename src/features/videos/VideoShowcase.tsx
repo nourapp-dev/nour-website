@@ -73,7 +73,7 @@ export default function VideoShowcase({
             fill
             sizes={
               large
-                ? "(max-width:760px) 100vw, 720px"
+                ? "(max-width:760px) 100vw, 840px"
                 : "(max-width:760px) 100vw, 380px"
             }
             unoptimized
@@ -81,6 +81,17 @@ export default function VideoShowcase({
               objectFit: v.orientation === "portrait" ? "contain" : "cover",
             }}
           />
+          {large && (
+            <span className={styles.posterBrand} aria-hidden="true">
+              <Image
+                src="/images/brand/nour-horizontal-light.svg"
+                alt=""
+                width={180}
+                height={61}
+                unoptimized
+              />
+            </span>
+          )}
           <span className={styles.play}>
             <Play
               fill="currentColor"
@@ -100,10 +111,6 @@ export default function VideoShowcase({
           </span>
           <h3>{ar ? v.title_ar : v.title_en}</h3>
           <p>{ar ? v.description_ar : v.description_en}</p>
-          <button className={styles.watch} onClick={() => setActive(v)}>
-            <Play size={15} aria-hidden="true" />
-            {ar ? "شاهد الفيديو" : "Watch video"}
-          </button>
           {v.cta_href && (
             <Link
               className={styles.cta}
@@ -111,7 +118,7 @@ export default function VideoShowcase({
             >
               {(ar ? v.cta_ar : v.cta_en) ||
                 (ar ? "اكتشف المزيد" : "Discover more")}
-              <ArrowUpLeft aria-hidden="true" size={17} />
+              <ArrowUpLeft className={styles.linkArrow} aria-hidden="true" size={17} />
             </Link>
           )}
         </div>
