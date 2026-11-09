@@ -132,6 +132,7 @@
   border-radius: 10px;
 }
 .dialog {
+  margin: auto;
   background: var(--aw-surface, #fff);
   color: var(--aw-text, #16324e);
   border: 1px solid var(--aw-border, #ced9e5);
