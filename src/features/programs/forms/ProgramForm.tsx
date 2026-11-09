@@ -101,6 +101,7 @@ type ProgramFormProps = {
 };
 
 const defaultValues: ProgramFormSubmitValues = {
+  isDemo: false,
   originCityId: "",
   travelMode: "",
   priceBasis: "",
@@ -260,6 +261,7 @@ export default function ProgramForm({
   const country = countries.find((c) => c.id === values.countryId);
   const origin = citiesQuery.data?.find((c) => c.id === values.originCityId);
   const display: ProgramDisplayFacts = {
+    isDemo: values.isDemo,
     travelMode:
       (values.travelMode as ProgramDisplayFacts["travelMode"]) || null,
     priceBasis:
@@ -677,6 +679,7 @@ export default function ProgramForm({
               slug: values.slug,
               titleAr: values.titleAr,
               titleEn: values.titleEn,
+              isDemo: values.isDemo,
               summaryAr: values.summaryAr,
               summaryEn: values.summaryEn,
               countryId: values.countryId,
@@ -702,6 +705,20 @@ export default function ProgramForm({
           {isArabic
             ? "تغيير المدة أو الغرف أو الخدمات يستلزم مراجعة الوصف الحر. هذه الحقول توضح السعر المسجل دون إعادة حسابه."
             : "Review free text after duration, room or service changes. These fields describe the stored price without recalculating it."}
+        </p>
+        <label>
+          <input
+            type="checkbox"
+            checked={values.isDemo ?? false}
+            disabled={initialValues?.status !== undefined && initialValues.status !== "draft"}
+            onChange={(event) => updateValue("isDemo", event.target.checked)}
+          />
+          {isArabic ? "عرض تجريبي بأسعار مؤقتة — غير قابل للحجز" : "Demo with provisional prices — booking unavailable"}
+        </label>
+        <p>
+          {isArabic
+            ? "السعر النهائي يُؤكَّد لاحقًا. لا يتطلب العرض التجريبي بيانات طيران فعلية أو حسم الضريبة أو مدينة انطلاق، لكنه يتطلب دولة منشورة ومحتوى مكتملًا. لتغيير نوع العرض، احفظ البرنامج كمسودة أولًا."
+            : "Final price is confirmed later. Demo display allows pending flights, tax and origin city, but still requires a published country and complete content. Save as draft before changing the display type."}
         </p>
         <label>
           {isArabic ? "مدينة الانطلاق الأساسية" : "Primary origin city"}

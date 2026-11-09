@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 export type ProgramDisplayFacts = {
+  isDemo?: boolean;
   travelMode: "bus" | "air" | "own" | "mixed" | null;
   priceBasis: "per_person" | "per_room" | "per_group" | null;
   taxStatus: "included" | "excluded" | null;
@@ -99,6 +100,7 @@ export function priceDescription(
   facts: ProgramDisplayFacts | undefined,
   ar: boolean,
   onlyRegistered = false,
+  isDemo = facts?.isDemo ?? false,
 ) {
   const basis =
     (
@@ -121,6 +123,9 @@ export function priceDescription(
         : ar
           ? "حالة الضريبة غير محددة"
           : "Tax status unspecified";
+  if (isDemo) return [basis, ar
+    ? "عرض تجريبي · أسعار مؤقتة · السعر النهائي يُؤكَّد لاحقًا · غير متاح للحجز"
+    : "Demo · Provisional prices · Final price confirmed later · Booking unavailable"].join(" · ");
   return onlyRegistered ? [facts?.priceBasis?basis:"",facts?.taxStatus?tax:""].filter(Boolean).join(" · ") : `${basis} · ${tax}`;
 }
 export function locationLabel(value: string, ar: boolean) {

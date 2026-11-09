@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createClient } from "../../../lib/supabase/client";
 import { useLanguage } from "../../../core/i18n";
 export const readinessLabels: Record<string, [string, string]> = {
+ demo_display_only: ["عرض تجريبي بأسعار مؤقتة؛ السعر النهائي يُؤكَّد لاحقًا والحجز غير متاح", "Demo with provisional prices; final price confirmed later, booking unavailable"],
  visa_status_unspecified:["حالة التأشيرة غير محددة؛ راجع انطباقها","Visa applicability is unspecified; review it"],
  visa_details_required:["أضف خدمة تأشيرة فعالة عند تحديد انطباقها","Link an active visa service when applicable"],
  visa_not_applicable_has_services:["أزل روابط التأشيرة أو صحح حالة الانطباق","Remove visa links or correct applicability"],

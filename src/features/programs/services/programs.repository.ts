@@ -12,6 +12,7 @@ type CoverMediaRow = {
 };
 
 type ProgramRow = {
+  is_demo: boolean;
   visa_status:import("../labels").VisaStatus;
   origin_city_id:string|null;travel_mode:string|null;price_basis:string|null;tax_status:string|null;
   id: string;
@@ -76,6 +77,7 @@ function mapProgram(row: ProgramRow): Program {
   const coverMedia = getCoverMedia(row.cover_media);
 
   return {
+    isDemo: row.is_demo,
     id: row.id,visaStatus:row.visa_status,originCityId:row.origin_city_id,travelMode:row.travel_mode,priceBasis:row.price_basis,taxStatus:row.tax_status,
     titleAr: row.title_ar,
     titleEn: row.title_en,
@@ -117,6 +119,7 @@ const programSelect = `
   summary_en,
   description_ar,
   description_en,
+  is_demo,
   country_id,visa_status,origin_city_id,travel_mode,price_basis,tax_status,
   duration_days,
   duration_nights,
@@ -149,6 +152,7 @@ export async function createProgram(
   const { data, error } = await supabase
     .from("programs")
     .insert({
+      is_demo: values.isDemo,
       title_ar: values.titleAr.trim(),
       title_en: values.titleEn.trim(),
       slug: values.slug.trim(),
@@ -227,6 +231,7 @@ export async function updateProgram(
   const { data, error } = await supabase
     .from("programs")
     .update({
+      is_demo: values.isDemo,
       title_ar: values.titleAr.trim(),
       title_en: values.titleEn.trim(),
       slug: values.slug.trim(),

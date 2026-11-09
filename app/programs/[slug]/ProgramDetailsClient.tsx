@@ -1165,7 +1165,7 @@ export default function PublicProgramDetailsPage() {
               ? "استعرض تفاصيل الإقامة والنقل والخدمات، وتواصل معنا إذا احتجت إلى معلومات إضافية."
               : "Explore accommodation, transport, and services, and contact us if you need more information."}
           </p>
-          <ProgramPriceNote language={language} facts={program.display} />
+          <ProgramPriceNote language={language} facts={program.display} isDemo={program.isDemo} />
           <WebsiteBookingNotice language={language} />
 
           <div className="nr-program-details-booking-trust">

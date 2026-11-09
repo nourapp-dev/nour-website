@@ -163,7 +163,7 @@ export default function ProgramCard({
             <bdi className={styles.currency}>{program.currencyCode}</bdi>
           </strong>
           <small className="program-price-note">
-            {priceDescription(facts, ar, compact)}
+            {priceDescription(facts, ar, compact, program.isDemo)}
           </small>
         </div>
         <Link

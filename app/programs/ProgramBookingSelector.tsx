@@ -47,7 +47,7 @@ function EnabledProgramBookingSelector() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("programs")
-        .select("id,title_ar,title_en")
+        .select("id,title_ar,title_en,is_demo")
         .eq("slug", slug)
         .eq("status", "published")
         .eq("is_active", true)
@@ -102,7 +102,7 @@ function EnabledProgramBookingSelector() {
   };
 
   if (!slug || programQuery.isLoading || departuresQuery.isLoading || pricingQuery.isLoading) return null;
-  if (!programQuery.data || !eligibleDepartures.length) return null;
+  if (!programQuery.data || programQuery.data.is_demo || !eligibleDepartures.length) return null;
 
   const minTravelers = selectedTier?.minTravelers ?? 1;
   const maxTravelers = selectedTier
@@ -116,7 +116,7 @@ function EnabledProgramBookingSelector() {
   const prepared = canContinue && preparedKey === selectionKey;
 
   const prepareSelection = () => {
-    if (!programQuery.data || !selectedDeparture || !selectedTier || !canContinue) return;
+    if (!programQuery.data || programQuery.data.is_demo || !selectedDeparture || !selectedTier || !canContinue) return;
 
     const selection: PreparedBookingSelection = {
       programId: programQuery.data.id,
