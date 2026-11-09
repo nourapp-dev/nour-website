@@ -231,6 +231,7 @@
   color: #fff;
 }
 .dialog {
+  margin: auto;
   width: min(1000px, calc(100% - 24px));
   max-height: 94dvh;
   border: 1px solid #ffffff28;
