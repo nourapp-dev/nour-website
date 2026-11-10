@@ -61,7 +61,7 @@ export async function getPublicServerSettings(): Promise<PublicServerSettingsMap
     const { data, error } =
       await supabase.rpc(
         "get_public_platform_settings",
-      );
+      ).abortSignal(AbortSignal.timeout(3_000));
 
     /*
      * لا نستخدم console.error هنا.
