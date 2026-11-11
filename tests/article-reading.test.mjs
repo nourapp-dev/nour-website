@@ -17,3 +17,9 @@ test('search matches Arabic diacritics, alef variants, tags and multiple words; 
  const a={title_ar:'الاستعداد لرحلة العمرة',title_en:'Prepare for Umrah',excerpt_ar:'إرشادات السفر',excerpt_en:'Travel tips',tags:['حقيبة السفر']};
  assert.equal(articleMatches(a,'إسْتِعْداد عُمْرَة','ar'),true);assert.equal(articleMatches(a,'حقيبة','ar'),true);assert.equal(articleMatches(a,'TRAVEL umrah','en'),true);assert.equal(articleMatches(a,'Prepare','ar'),false);assert.equal(articleMatches(a,'فندق','ar'),false);assert.equal(articleMatches(a,'','ar'),true);
 });
+
+test('numbered editorial section labels enter the table of contents and genuine lists keep their starting number',()=>{
+ const blocks=toContentBlocks('2. Entering Masjid al-Haram\n\nWhen you arrive at the mosque, follow the official instructions and move calmly through the entry points.\n\n3. First step\n4. Second step');
+ assert.equal(blocks[0].type,'heading');assert.equal(blocks[0].text,'2. Entering Masjid al-Haram');assert.equal(blocks[2].type,'list');assert.equal(blocks[2].start,3);
+ assert.equal(toContentBlocks('٣. الأول\n٤. الثاني')[0].start,3);
+});

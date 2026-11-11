@@ -1,4 +1,4 @@
-.page{font-family:var(--font-cairo),sans-serif;background:var(--nr-bg);color:var(--nr-text);min-height:100vh;text-align:start}
+.page{--nr-muted:#536880;font-family:var(--font-cairo),sans-serif;background:var(--nr-bg);color:var(--nr-text);min-height:100vh;text-align:start}
 .container{width:min(1180px,calc(100% - 48px));margin-inline:auto}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;border-bottom:1px solid var(--nr-border)}
 .topbar>a:first-child{display:flex;align-items:center;background:#fff;border-radius:10px;padding:6px 10px}.topbar img{width:145px;height:auto}.back{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--nr-text);text-decoration:none}

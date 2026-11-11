@@ -1,10 +1,12 @@
-export type ContentBlock = {type: 'heading' | 'paragraph'; text: string; id: string} | {type: 'list'; items: string[]; ordered: boolean; id: string};
+export type ContentBlock = {type: 'heading' | 'paragraph'; text: string; id: string} | {type: 'list'; items: string[]; ordered: boolean; start?: number; id: string};
 export function toContentBlocks(content: string): ContentBlock[] {
   const parts = content.replace(/\r\n?/g, '\n').replace(/^(#{1,6}\s+[^\n]+)\n(?!\n)/gm, '$1\n\n').replace(/\n(?=#{1,6}\s)/g,'\n\n').split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
   return parts.flatMap((part, index): ContentBlock[] => {
     const lines = part.split('\n').map(l => l.trim()).filter(Boolean);
+    const numberedHeading = lines.length === 1 && /^(?:\d+|[٠-٩]+)[.)]\s+/.test(part) && part.length <= 90 && !/[.!؟?؛]$/.test(part) && (parts[index + 1]?.length ?? 0) > 60;
+    if (numberedHeading) return [{type:'heading',text:part,id:`section-${index}`}];
     if (lines.length && lines.every(l => /^(?:[-*•]|\d+[.)]|[٠-٩]+[.)])\s+/.test(l)))
-      return [{type: 'list', id: `section-${index}`, items: lines.map(l => l.replace(/^(?:[-*•]|\d+[.)]|[٠-٩]+[.)])\s+/, '')), ordered: /^(?:\d+|[٠-٩]+)[.)]/.test(lines[0])}];
+      return [{type: 'list', id: `section-${index}`, items: lines.map(l => l.replace(/^(?:[-*•]|\d+[.)]|[٠-٩]+[.)])\s+/, '')), ordered: /^(?:\d+|[٠-٩]+)[.)]/.test(lines[0]), start: Number(lines[0].match(/^(?:\d+|[٠-٩]+)/)?.[0].replace(/[٠-٩]/g,c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c))) ?? 1)}];
     // Editors also use plain standalone subheads. Recognise short labels followed
     // by prose, without turning complete sentences or list items into headings.
     const heading = /^#{1,6}\s+/.test(part) || (lines.length === 1 && part.length <= 90 && !/[.!؟?؛،]$/.test(part) && !/^[-*•\d٠-٩]/.test(part) && (parts[index + 1]?.length ?? 0) > 100);
