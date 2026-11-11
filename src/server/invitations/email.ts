@@ -11,7 +11,7 @@ export function invitationEmail(i: {
 }) {
     if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(i.email))
         throw Error('invalid_email');
-    const subject = '=?UTF-8?B?' + Buffer.from('دعوتك إلى فريق نور آب | Nour App team invitation').toString('base64') + '?=';
+    const subject = '=?UTF-8?B?' + Buffer.from('دعوة فريق نور آب | Nour App').toString('base64') + '?=';
     const html = `<!doctype html><html lang="ar" dir="rtl"><body style="background:#eff4fa;font-family:Tahoma,Arial;color:#102e50"><div style="max-width:600px;margin:32px auto;background:white;border-radius:20px;overflow:hidden"><div style="background:#092545;padding:28px;color:white;font-size:26px;font-weight:bold">نور آب | NOUR APP</div><div style="padding:30px"><h1>مرحبًا ${esc(i.name)}</h1><p>دعاك <strong>${esc(i.inviter)}</strong> للانضمام إلى لوحة إدارة نور آب بدور <strong>${esc(i.role)}</strong>.</p><p>أنشئ كلمة المرور لتفعيل حسابك. الرابط صالح لمدة 24 ساعة ولمرة واحدة.</p><p style="margin:32px 0"><a href="${esc(i.link)}" style="background:#ffc400;color:#092545;padding:15px 28px;text-decoration:none;border-radius:10px;font-weight:bold">تفعيل حساب الموظف</a></p><p>Activate your Nour App staff account. This invitation expires in 24 hours and can only be used once.</p><p style="color:#65758a;font-size:13px">إذا لم تتوقع هذه الدعوة، تجاهلها أو تواصل مع support@nourappglobal.com.</p></div></div></body></html>`;
     const text = `Nour App | نور آب\nمرحبًا ${i.name}\nدعاك ${i.inviter} بدور ${i.role}.\nتفعيل حساب الموظف / Activate staff account:\n${i.link}\nصالح 24 ساعة ولمرة واحدة. Expires in 24 hours; single use.\nالدعم: support@nourappglobal.com`;
     const boundary = 'nour-' + randomBytes(16).toString('hex');
