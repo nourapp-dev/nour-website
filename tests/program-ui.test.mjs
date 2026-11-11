@@ -79,7 +79,7 @@ test('missing full-card cover has a stable 16:9 placeholder and compact form lea
 for(const language of ['ar','en'])test(language+': article service failure can retry and is distinct from an unpublished article',async()=>{
  let retries=0;const state={language,query:()=>result(undefined,{isError:true,refetch:()=>retries++})};
  await withUI('app/articles/[slug]/ArticleDetailsClient.tsx',state,async({click,render})=>{
-  assert.ok(document.querySelector('[role="alert"]'));assert.doesNotMatch(document.body.textContent,/404/);await click(document.querySelector('button'));assert.equal(retries,1);
+  assert.ok(document.querySelector('[role="alert"]'));assert.doesNotMatch(document.body.textContent,/404/);await click(document.querySelector('[role="alert"] button'));assert.equal(retries,1);
   state.query=()=>result(null);await render();assert.match(document.body.textContent,/404/);assert.equal(document.querySelector('[role="alert"]'),null);
  });
 });
