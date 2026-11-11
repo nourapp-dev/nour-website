@@ -1,590 +1,72 @@
 "use client";
-
-import { useMemo, useState } from "react";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-
-import { useLanguage } from "../../core/i18n";
-import { createClient } from "../../lib/supabase/client";
-import RolePanel from "../admin-workspace/RolePanel";
-
-import {
-  deleteAdminUser,
-  getAdminUsers,
-  getAvailableRoles,
-  getCurrentUserId,
-  inviteAdminUser,
-  updateAdminUserAccess,
-  type AdminUser,
-  type AdminUserStatus,
-} from "./services";
-
-type UserDraft = {
-  status: AdminUserStatus;
-  roleId: string;
-};
-
+import { useMemo, useRef, useState, useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useLanguage } from '../../core/i18n';
+import { createClient } from '../../lib/supabase/client';
+import { useWorkspace } from '../admin-workspace/WorkspaceProvider';
+import RolePanel from '../admin-workspace/RolePanel';
+import { deleteAdminUser, getAdminUsers, getCurrentUserId, updateAdminUserAccess, type AdminUser, type AdminUserStatus } from './services';
+import { invitationState, type EmployeeInvitation, type InvitationRole } from './invitations';
+import styles from './employees.module.css';
+async function api(url: string, body?: unknown) { const r = await fetch(url, { method: body ? 'POST' : 'GET', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' }); const d = await r.json(); if (!r.ok)
+    throw Error(d.message ?? 'تعذر إكمال الطلب'); return d; }
 export default function UsersPage() {
-  const { language } = useLanguage();
-  const isArabic = language === "ar";
-  const queryClient = useQueryClient();
-
-  const [drafts, setDrafts] = useState<Record<string, UserDraft>>({});
-  const [isInviteOpen, setIsInviteOpen] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRoleId, setInviteRoleId] = useState("");
-  const [userPendingDelete, setUserPendingDelete] =
-    useState<AdminUser | null>(null);
-
-  const supabase = useMemo(() => createClient(), []);
-
-  const usersQuery = useQuery<AdminUser[]>({
-    queryKey: ["admin-users"],
-    queryFn: () => getAdminUsers(supabase),
-  });
-
-  const rolesQuery = useQuery({
-    queryKey: ["admin-roles"],
-    queryFn: () => getAvailableRoles(supabase),
-  });
-
-  const currentUserQuery = useQuery({
-    queryKey: ["current-admin-user"],
-    queryFn: () => getCurrentUserId(supabase),
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: updateAdminUserAccess.bind(null, supabase),
-    onSuccess: async () => {
-      setDrafts({});
-      await queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-    },
-  });
-
-  const inviteMutation = useMutation({
-    mutationFn: inviteAdminUser,
-    onSuccess: async () => {
-      setInviteEmail("");
-      setInviteRoleId("");
-      setIsInviteOpen(false);
-      await queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteAdminUser,
-    onSuccess: async () => {
-      setUserPendingDelete(null);
-      await queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-    },
-  });
-
-  const users = usersQuery.data ?? [];
-  const roles = rolesQuery.data ?? [];
-
-  const isLoading =
-    usersQuery.isLoading ||
-    rolesQuery.isLoading ||
-    currentUserQuery.isLoading;
-
-  const getDraft = (user: AdminUser): UserDraft =>
-    drafts[user.id] ?? {
-      status: user.status,
-      roleId: user.roles[0]?.id ?? "",
-    };
-
-  const updateDraft = (
-    user: AdminUser,
-    values: Partial<UserDraft>,
-  ) => {
-    setDrafts((current) => ({
-      ...current,
-      [user.id]: {
-        ...getDraft(user),
-        ...values,
-      },
-    }));
-  };
-
-  const handleSave = (user: AdminUser) => {
-    const draft = getDraft(user);
-
-    if (!draft.roleId) return;
-
-    updateMutation.mutate({
-      userId: user.id,
-      status: draft.status,
-      roleId: draft.roleId,
-    });
-  };
-
-  const handleInviteSubmit = (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault();
-
-    const email = inviteEmail.trim();
-    if (!email || !inviteRoleId) return;
-
-    inviteMutation.mutate({
-      email,
-      roleId: inviteRoleId,
-    });
-  };
-
-  const closeInviteModal = () => {
-    if (inviteMutation.isPending) return;
-    setIsInviteOpen(false);
-    inviteMutation.reset();
-  };
-
-  const closeDeleteModal = () => {
-    if (deleteMutation.isPending) return;
-    setUserPendingDelete(null);
-    deleteMutation.reset();
-  };
-
-  return (
-    <section className="nr-dashboard">
-      <RolePanel />
-      <div className="nr-dashboard-heading">
-        <div>
-          <span className="nr-dashboard-kicker">
-            {isArabic ? "إدارة النظام" : "System Management"}
-          </span>
-
-          <h1>
-            {isArabic
-              ? "المستخدمون والصلاحيات"
-              : "Users and Permissions"}
-          </h1>
-
-          <p>
-            {isArabic
-              ? "إدارة مستخدمي لوحة التحكم وحالاتهم وأدوارهم."
-              : "Manage admin users, statuses, and roles."}
-          </p>
-        </div>
-
-        <button
-          type="button"
-          className="nr-button"
-          onClick={() => {
-            inviteMutation.reset();
-            setIsInviteOpen(true);
-          }}
-        >
-          {isArabic ? "دعوة مستخدم" : "Invite User"}
-        </button>
-      </div>
-
-      {updateMutation.isSuccess && (
-        <div className="nr-state nr-state-success">
-          <strong>
-            {isArabic
-              ? "تم تحديث المستخدم بنجاح."
-              : "User updated successfully."}
-          </strong>
-        </div>
-      )}
-
-      {updateMutation.isError && (
-        <div className="nr-state">
-          <strong>
-            {isArabic ? "تعذر تحديث المستخدم" : "Unable to update user"}
-          </strong>
-          <p>
-            {updateMutation.error instanceof Error
-              ? updateMutation.error.message
-              : isArabic
-                ? "حدث خطأ غير متوقع."
-                : "An unexpected error occurred."}
-          </p>
-        </div>
-      )}
-
-      {isLoading ? (
-        <div className="nr-state">
-          <strong>
-            {isArabic ? "جاري تحميل المستخدمين..." : "Loading users..."}
-          </strong>
-        </div>
-      ) : usersQuery.isError ? (
-        <div className="nr-state">
-          <strong>
-            {isArabic ? "تعذر تحميل المستخدمين" : "Unable to load users"}
-          </strong>
-          <p>
-            {usersQuery.error instanceof Error
-              ? usersQuery.error.message
-              : isArabic
-                ? "حدث خطأ غير متوقع."
-                : "An unexpected error occurred."}
-          </p>
-        </div>
-      ) : users.length === 0 ? (
-        <div className="nr-state">
-          <strong>{isArabic ? "لا يوجد مستخدمون" : "No users found"}</strong>
-        </div>
-      ) : (
-        <div className="nr-users-table-wrap">
-          <table className="nr-users-table">
-            <thead>
-              <tr>
-                <th>{isArabic ? "الاسم" : "Name"}</th>
-                <th>{isArabic ? "البريد الإلكتروني" : "Email"}</th>
-                <th>{isArabic ? "الحالة" : "Status"}</th>
-                <th>{isArabic ? "الدور" : "Role"}</th>
-                <th>{isArabic ? "آخر دخول" : "Last Login"}</th>
-                <th>{isArabic ? "الإجراءات" : "Actions"}</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {users.map((user) => {
-                const draft = getDraft(user);
-                const isCurrentUser = currentUserQuery.data === user.id;
-
-                return (
-                  <tr key={user.id}>
-                    <td>
-                      {user.displayName ||
-                        (isArabic ? "بدون اسم" : "No name")}
-
-                      {isCurrentUser && (
-                        <small className="nr-current-user-label">
-                          {isArabic ? " حسابك" : " Your account"}
-                        </small>
-                      )}
-                    </td>
-
-                    <td>
-                      {user.email ||
-                        (isArabic ? "غير متوفر" : "Unavailable")}
-                    </td>
-
-                    <td>
-                      <select
-                        className="nr-input"
-                        value={draft.status}
-                        disabled={isCurrentUser}
-                        onChange={(event) =>
-                          updateDraft(user, {
-                            status: event.target.value as AdminUserStatus,
-                          })
-                        }
-                      >
-                        <option value="active">
-                          {isArabic ? "نشط" : "Active"}
-                        </option>
-                        <option value="suspended">
-                          {isArabic ? "موقوف" : "Suspended"}
-                        </option>
-                        <option value="invited">
-                          {isArabic ? "مدعو" : "Invited"}
-                        </option>
-                      </select>
-                    </td>
-
-                    <td>
-                      <select
-                        className="nr-input"
-                        value={draft.roleId}
-                        disabled={isCurrentUser}
-                        onChange={(event) =>
-                          updateDraft(user, {
-                            roleId: event.target.value,
-                          })
-                        }
-                      >
-                        <option value="">
-                          {isArabic ? "اختر الدور" : "Select role"}
-                        </option>
-                        {roles.map((role) => (
-                          <option key={role.id} value={role.id}>
-                            {isArabic ? role.nameAr : role.nameEn}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-
-                    <td>
-                      {user.lastLoginAt
-                        ? new Date(user.lastLoginAt).toLocaleString(
-                            isArabic ? "ar-SA" : "en-GB",
-                          )
-                        : isArabic
-                          ? "لم يسجل الدخول"
-                          : "Never logged in"}
-                    </td>
-
-                    <td>
-                      <div className="nr-user-actions">
-                        <button
-                          type="button"
-                          className="nr-button"
-                          disabled={
-                            isCurrentUser ||
-                            !draft.roleId ||
-                            updateMutation.isPending ||
-                            deleteMutation.isPending
-                          }
-                          onClick={() => handleSave(user)}
-                        >
-                          {updateMutation.isPending
-                            ? isArabic
-                              ? "جارٍ الحفظ..."
-                              : "Saving..."
-                            : isArabic
-                              ? "حفظ"
-                              : "Save"}
-                        </button>
-
-                        <button
-                          type="button"
-                          className="nr-button-danger"
-                          disabled={
-                            isCurrentUser ||
-                            deleteMutation.isPending
-                          }
-                          onClick={() => {
-                            deleteMutation.reset();
-                            setUserPendingDelete(user);
-                          }}
-                        >
-                          {isArabic ? "حذف" : "Delete"}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {userPendingDelete && (
-        <div
-          className="nr-modal-backdrop"
-          role="presentation"
-          onClick={closeDeleteModal}
-        >
-          <div
-            className="nr-modal nr-delete-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="delete-user-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="nr-modal-heading">
-              <div>
-                <h2 id="delete-user-title">
-                  {isArabic ? "حذف المستخدم" : "Delete User"}
-                </h2>
-
-                <p>
-                  {isArabic
-                    ? "سيتم حذف الحساب وملفه الإداري وأدواره نهائيًا."
-                    : "The account, profile, and roles will be permanently deleted."}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                className="nr-modal-close"
-                aria-label={isArabic ? "إغلاق" : "Close"}
-                disabled={deleteMutation.isPending}
-                onClick={closeDeleteModal}
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="nr-delete-user-summary">
-              <strong>
-                {userPendingDelete.displayName ||
-                  (isArabic ? "بدون اسم" : "No name")}
-              </strong>
-
-              <span>{userPendingDelete.email}</span>
-            </div>
-
-            {deleteMutation.isError && (
-              <div className="nr-state">
-                <strong>
-                  {isArabic
-                    ? "تعذر حذف المستخدم"
-                    : "Unable to delete user"}
-                </strong>
-
-                <p>
-                  {deleteMutation.error instanceof Error
-                    ? deleteMutation.error.message
-                    : isArabic
-                      ? "حدث خطأ غير متوقع."
-                      : "An unexpected error occurred."}
-                </p>
-              </div>
-            )}
-
-            <div className="nr-modal-actions">
-              <button
-                type="button"
-                className="nr-button-secondary"
-                disabled={deleteMutation.isPending}
-                onClick={closeDeleteModal}
-              >
-                {isArabic ? "إلغاء" : "Cancel"}
-              </button>
-
-              <button
-                type="button"
-                className="nr-button-danger"
-                disabled={deleteMutation.isPending}
-                onClick={() =>
-                  deleteMutation.mutate(userPendingDelete.id)
-                }
-              >
-                {deleteMutation.isPending
-                  ? isArabic
-                    ? "جارٍ الحذف..."
-                    : "Deleting..."
-                  : isArabic
-                    ? "تأكيد الحذف"
-                    : "Confirm Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isInviteOpen && (
-        <div
-          className="nr-modal-backdrop"
-          role="presentation"
-          onClick={closeInviteModal}
-        >
-          <div
-            className="nr-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="invite-user-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="nr-modal-heading">
-              <div>
-                <h2 id="invite-user-title">
-                  {isArabic ? "دعوة مستخدم إداري" : "Invite Admin User"}
-                </h2>
-                <p>
-                  {isArabic
-                    ? "أدخل البريد الإلكتروني وحدد الدور."
-                    : "Enter the email and select a role."}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                className="nr-modal-close"
-                aria-label={isArabic ? "إغلاق" : "Close"}
-                disabled={inviteMutation.isPending}
-                onClick={closeInviteModal}
-              >
-                ×
-              </button>
-            </div>
-
-            <form
-              className="nr-user-invite-form"
-              onSubmit={handleInviteSubmit}
-            >
-              <label>
-                <span>{isArabic ? "البريد الإلكتروني" : "Email"}</span>
-                <input
-                  type="email"
-                  className="nr-input"
-                  value={inviteEmail}
-                  placeholder="name@example.com"
-                  autoComplete="email"
-                  required
-                  disabled={inviteMutation.isPending}
-                  onChange={(event) => setInviteEmail(event.target.value)}
-                />
-              </label>
-
-              <label>
-                <span>{isArabic ? "الدور" : "Role"}</span>
-                <select
-                  className="nr-input"
-                  value={inviteRoleId}
-                  required
-                  disabled={inviteMutation.isPending}
-                  onChange={(event) => setInviteRoleId(event.target.value)}
-                >
-                  <option value="">
-                    {isArabic ? "اختر الدور" : "Select role"}
-                  </option>
-                  {roles.map((role) => (
-                    <option key={role.id} value={role.id}>
-                      {isArabic ? role.nameAr : role.nameEn}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              {inviteMutation.isError && (
-                <div className="nr-state">
-                  <strong>
-                    {isArabic
-                      ? "تعذر إرسال الدعوة"
-                      : "Unable to send invitation"}
-                  </strong>
-                  <p>
-                    {inviteMutation.error instanceof Error
-                      ? inviteMutation.error.message
-                      : isArabic
-                        ? "حدث خطأ غير متوقع."
-                        : "An unexpected error occurred."}
-                  </p>
-                </div>
-              )}
-
-              <div className="nr-modal-actions">
-                <button
-                  type="button"
-                  className="nr-button-secondary"
-                  disabled={inviteMutation.isPending}
-                  onClick={closeInviteModal}
-                >
-                  {isArabic ? "إلغاء" : "Cancel"}
-                </button>
-
-                <button
-                  type="submit"
-                  className="nr-button"
-                  disabled={
-                    inviteMutation.isPending ||
-                    !inviteEmail.trim() ||
-                    !inviteRoleId
-                  }
-                >
-                  {inviteMutation.isPending
-                    ? isArabic
-                      ? "جارٍ الإرسال..."
-                      : "Sending..."
-                    : isArabic
-                      ? "إرسال الدعوة"
-                      : "Send Invitation"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </section>
-  );
+    const { language } = useLanguage(), ar = language === 'ar', identity = useWorkspace(), cache = useQueryClient();
+    const client = useMemo(() => createClient('admin'), []);
+    const [now, setNow] = useState(Date.now);
+    useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 10000); return () => clearInterval(timer); }, []);
+    const [tab, setTab] = useState<'employees' | 'invitations' | 'roles'>('employees');
+    const [search, setSearch] = useState(''), [message, setMessage] = useState(''), [email, setEmail] = useState(''), [name, setName] = useState(''), [role, setRole] = useState('');
+    const [drafts, setDrafts] = useState<Record<string, {
+        status: AdminUserStatus;
+        roleId: string;
+    }>>({});
+    const [confirmation, setConfirmation] = useState<{
+        kind: 'delete';
+        user: AdminUser;
+    } | {
+        kind: 'revoke';
+        row: EmployeeInvitation;
+    } | null>(null);
+    const inviteDialog = useRef<HTMLDialogElement>(null), confirmDialog = useRef<HTMLDialogElement>(null);
+    const canManage = identity.superAdmin || identity.permissions.includes('users.manage');
+    const usersQuery = useQuery({ queryKey: ['admin-users'], queryFn: () => getAdminUsers(client) });
+    const current = useQuery({ queryKey: ['current-admin-user'], queryFn: () => getCurrentUserId(client) });
+    const invitations = useQuery<{
+        invitations: EmployeeInvitation[];
+        roles: InvitationRole[];
+    }>({ queryKey: ['employee-invitations'], queryFn: () => api('/api/admin/users/invitations'), enabled: canManage, refetchInterval: 30000 });
+    const users = usersQuery.data ?? [], rows = invitations.data?.invitations ?? [], roles = invitations.data?.roles ?? [];
+    const reload = async () => { await Promise.all([cache.invalidateQueries({ queryKey: ['admin-users'] }), cache.invalidateQueries({ queryKey: ['employee-invitations'] }), cache.invalidateQueries({ queryKey: ['admin-roles'] })]); };
+    const mutation = useMutation({ mutationFn: async (action: {
+            kind: 'invite' | 'resend' | 'revoke';
+            id?: string;
+        }) => action.kind === 'invite' ? api('/api/admin/users/invite', { email, fullName: name, roleId: role }) : api(`/api/admin/users/invitations/${action.id}`, { action: action.kind }), onSuccess: async (d) => { setMessage(d.message); inviteDialog.current?.close(); confirmDialog.current?.close(); await reload(); }, onError: e => setMessage(e.message) });
+    const update = useMutation({ mutationFn: (u: AdminUser) => updateAdminUserAccess(client, { userId: u.id, ...(drafts[u.id] ?? { status: u.status, roleId: u.roles[0]?.id ?? '' }) }), onSuccess: async () => { setDrafts({}); setMessage(ar ? 'تم تحديث وصول الموظف.' : 'Employee access updated.'); await reload(); }, onError: e => setMessage(e.message) });
+    const remove = useMutation({ mutationFn: deleteAdminUser, onSuccess: async () => { confirmDialog.current?.close(); setMessage(ar ? 'حُذف الحساب.' : 'Account deleted.'); await reload(); }, onError: e => setMessage(e.message) });
+    const busy = mutation.isPending || update.isPending || remove.isPending;
+    const selected = roles.find(r => r.id === role);
+    const fmt = (value: string | null) => value ? new Date(value).toLocaleString(ar ? 'ar-SA' : 'en-GB', { timeZone: 'Asia/Riyadh' }) : '—';
+    const statusLabel = (r: EmployeeInvitation) => ({ pending: ar ? 'بانتظار التفعيل' : 'Pending', processing: ar ? 'جارٍ التفعيل' : 'Activating', accepted: ar ? 'مفعّلة' : 'Accepted', revoked: ar ? 'ملغاة' : 'Revoked', failed: ar ? 'فشل تسليم البريد' : 'Mail queue failed', expired: ar ? 'منتهية' : 'Expired' }[invitationState(r, now)]);
+    function openInvite(user?: AdminUser) { setMessage(''); setName(user?.displayName ?? ''); setEmail(user?.email ?? ''); setRole(user?.roles[0]?.id ?? ''); inviteDialog.current?.showModal(); }
+    function ask(value: typeof confirmation) { setConfirmation(value); confirmDialog.current?.showModal(); }
+    const legacy = users.filter(u => u.status === 'invited' && !rows.some(r => r.email.toLowerCase() === u.email.toLowerCase()));
+    const visible = users.filter(u => u.status !== 'invited' && `${u.displayName} ${u.email}`.toLowerCase().includes(search.toLowerCase()));
+    return <section className={styles.page}>
+  <header className={styles.heading}><div><span>{ar ? 'إدارة فريق نور آب' : 'Nour App team'}</span><h1>{ar ? 'الموظفون والأدوار' : 'Employees and roles'}</h1><p>{ar ? 'دعوات واضحة، أدوار محددة، ومتابعة وصول الموظفين.' : 'Invite staff, assign roles, and manage access.'}</p></div>{canManage && <button className="aw-primary" onClick={() => openInvite()}>{ar ? '+ دعوة موظف' : '+ Invite employee'}</button>}</header>
+  <div className={styles.stats}><div><strong>{users.filter(u => u.status === 'active').length}</strong><span>{ar ? 'موظفون نشطون' : 'Active staff'}</span></div><div><strong>{rows.filter(r => invitationState(r, now) === 'pending').length + legacy.length}</strong><span>{ar ? 'دعوات بانتظار التفعيل' : 'Pending invitations'}</span></div><div><strong>{users.filter(u => u.status === 'suspended').length}</strong><span>{ar ? 'حسابات موقوفة' : 'Suspended accounts'}</span></div></div>
+  <div className={styles.tabs} role="tablist" aria-label={ar ? 'إدارة الفريق' : 'Team management'}>{(['employees', 'invitations', ...(identity.superAdmin ? ['roles'] as const : [])] as const).map(t => <button key={t} role="tab" id={`team-tab-${t}`} aria-selected={tab === t} aria-controls={`team-panel-${t}`} onClick={() => setTab(t)}>{({ employees: ar ? 'الموظفون' : 'Employees', invitations: ar ? 'الدعوات' : 'Invitations', roles: ar ? 'الأدوار والصلاحيات' : 'Roles and permissions' })[t]}</button>)}</div>
+  {message && <p className={styles.notice} role="status">{message}</p>}
+  <div id="team-panel-roles" role="tabpanel" aria-labelledby="team-tab-roles" hidden={tab !== 'roles'}><RolePanel /></div>
+  {tab === 'employees' && <div id="team-panel-employees" role="tabpanel" aria-labelledby="team-tab-employees"><label className={styles.search}>{ar ? 'البحث عن موظف' : 'Find an employee'}<input value={search} onChange={e => setSearch(e.target.value)} placeholder={ar ? 'الاسم أو البريد الإلكتروني' : 'Name or email'}/></label>
+   {usersQuery.isPending ? <p role="status">{ar ? 'جارٍ تحميل الموظفين…' : 'Loading staff…'}</p> : usersQuery.isError ? <p role="alert">{usersQuery.error.message}</p> : <div className={styles.table}><table><thead><tr>{(ar ? ['الموظف', 'الحالة', 'الدور', 'آخر دخول — الرياض', 'الإجراءات'] : ['Employee', 'Status', 'Role', 'Last login — Riyadh', 'Actions']).map(h => <th key={h}>{h}</th>)}</tr></thead><tbody>{visible.map(u => { const d = drafts[u.id] ?? { status: u.status, roleId: u.roles[0]?.id ?? '' }, own = current.data === u.id; return <tr key={u.id}><td><strong>{u.displayName}</strong>{own && <small>{ar ? 'حسابك' : 'Your account'}</small>}<small dir="ltr">{u.email}</small></td><td><select aria-label={`${ar ? 'حالة' : 'Status'} ${u.displayName}`} value={d.status} disabled={own || !identity.superAdmin || busy} onChange={e => setDrafts(v => ({ ...v, [u.id]: { ...d, status: e.target.value as AdminUserStatus } }))}><option value="active">{ar ? 'نشط' : 'Active'}</option><option value="suspended">{ar ? 'موقوف' : 'Suspended'}</option></select></td><td><select aria-label={`${ar ? 'دور' : 'Role'} ${u.displayName}`} value={d.roleId} disabled={own || !identity.superAdmin || busy} onChange={e => setDrafts(v => ({ ...v, [u.id]: { ...d, roleId: e.target.value } }))}><option value="">{u.roles[0] ? (ar ? u.roles[0].nameAr : u.roles[0].nameEn) : (ar ? 'غير محدد' : 'Unassigned')}</option>{roles.map(r => <option key={r.id} value={r.id}>{ar ? r.name_ar : r.name_en}</option>)}{!roles.some(r => r.id === d.roleId) && u.roles[0] && <option value={u.roles[0].id}>{ar ? u.roles[0].nameAr : u.roles[0].nameEn}</option>}</select></td><td>{fmt(u.lastLoginAt)}</td><td><div className={styles.actions}><button disabled={own || !identity.superAdmin || busy || !drafts[u.id] || !d.roleId} onClick={() => update.mutate(u)}>{ar ? 'حفظ' : 'Save'}</button>{identity.superAdmin && <button className={styles.danger} disabled={own || busy} onClick={() => ask({ kind: 'delete', user: u })}>{ar ? 'حذف' : 'Delete'}</button>}</div></td></tr>; })}</tbody></table>{!visible.length && <p>{ar ? 'لا يوجد موظفون مطابقون.' : 'No matching employees.'}</p>}</div>}</div>}
+  {tab === 'invitations' && <div id="team-panel-invitations" role="tabpanel" aria-labelledby="team-tab-invitations"><p className={styles.hint}>{ar ? 'ترسل الدعوات من noreply@nourappglobal.com. صلاحية الرابط 24 ساعة ولمرة واحدة. إعادة الإرسال تُبطل الرابط السابق.' : 'Invitations are sent from noreply@nourappglobal.com. Links expire in 24 hours and are single use. Resending invalidates the previous link.'}</p>{invitations.isPending ? <p role="status">{ar ? 'جارٍ تحميل الدعوات…' : 'Loading invitations…'}</p> : invitations.isError ? <p role="alert">{invitations.error.message}</p> : <div className={styles.table}><table><thead><tr>{(ar ? ['الموظف', 'الدور', 'الحالة', 'الإرسال / الانتهاء — الرياض', 'الإجراءات'] : ['Employee', 'Role', 'Status', 'Sent / expires — Riyadh', 'Actions']).map(h => <th key={h}>{h}</th>)}</tr></thead><tbody>{rows.map(r => <tr key={r.id}><td><strong>{r.full_name}</strong><small dir="ltr">{r.email}</small><small>{ar ? 'بواسطة' : 'By'} {r.invited_by_name}</small></td><td>{roles.find(x => x.id === r.role_id)?.[ar ? 'name_ar' : 'name_en'] ?? '—'}</td><td><span className={styles.badge}>{statusLabel(r)}</span>{r.status === 'pending' && <small>{r.sent_at ? (ar ? 'قُبلت لدى خدمة البريد' : 'Accepted by mail queue') : (ar ? 'جارٍ تسليم البريد' : 'Submitting email')}</small>}</td><td><small>{fmt(r.sent_at)}</small><small>{fmt(r.expires_at)}</small></td><td><div className={styles.actions}>{['pending', 'failed'].includes(r.status) && <button disabled={busy || now - Date.parse(r.created_at) < 60000} onClick={() => mutation.mutate({ kind: 'resend', id: r.id })}>{ar ? 'إعادة الإرسال' : 'Resend'}</button>}{['pending', 'processing', 'failed'].includes(r.status) && <button className={styles.danger} disabled={busy} onClick={() => ask({ kind: 'revoke', row: r })}>{ar ? 'إلغاء الدعوة' : 'Revoke'}</button>}</div></td></tr>)}</tbody></table>{!rows.length && <p>{ar ? 'لا توجد دعوات مسجلة بعد.' : 'No invitations yet.'}</p>}</div>}{legacy.length > 0 && <section className={styles.legacy}><h2>{ar ? 'دعوات سابقة تحتاج رابطًا جديدًا' : 'Legacy invitations need a new link'}</h2><p>{ar ? 'اختر الدور وأرسل دعوة جديدة للموظف. لم نُغيّر حساباته أو نرسل رسائل تلقائيًا.' : 'Choose the role and send a new invitation. No accounts were changed or emails sent automatically.'}</p>{legacy.map(u => <div key={u.id}><span>{u.displayName} — {u.email}</span><button disabled={!canManage || busy} onClick={() => openInvite(u)}>{ar ? 'تجهيز الدعوة' : 'Prepare invitation'}</button></div>)}</section>}</div>}
+  <dialog ref={inviteDialog} className={styles.dialog} onCancel={e => { if (busy)
+        e.preventDefault(); }}><form onSubmit={e => { e.preventDefault(); setMessage(''); mutation.mutate({ kind: 'invite' }); }}><div className={styles.dialogHeading}><h2>{ar ? 'دعوة موظف إلى نور آب' : 'Invite a Nour App employee'}</h2><button type="button" aria-label={ar ? 'إغلاق' : 'Close'} disabled={busy} onClick={() => inviteDialog.current?.close()}>×</button></div><p>{ar ? 'راجع الدور والصلاحيات قبل إرسال الدعوة.' : 'Review the role and permissions before sending.'}</p><label>{ar ? 'اسم الموظف' : 'Employee name'}<input autoComplete="name" required maxLength={100} value={name} onChange={e => setName(e.target.value)} disabled={busy}/></label><label>{ar ? 'البريد الإلكتروني للعمل' : 'Work email'}<input type="email" autoComplete="email" required maxLength={254} dir="ltr" value={email} onChange={e => setEmail(e.target.value)} disabled={busy}/></label><label>{ar ? 'الدور' : 'Role'}<select required value={role} onChange={e => setRole(e.target.value)} disabled={busy}><option value="">{ar ? 'اختر الدور' : 'Choose a role'}</option>{roles.map(r => <option value={r.id} key={r.id}>{ar ? r.name_ar : r.name_en}</option>)}</select></label>{selected && <aside className={styles.summary}><strong>{ar ? 'ملخص الصلاحيات' : 'Permission summary'}</strong><ul>{selected.permissions.map(p => <li key={p.key}>{ar ? p.name_ar : p.name_en}</li>)}</ul></aside>}<p className={styles.hint}>{ar ? 'سيصل رابط تفعيل صالح 24 ساعة. لا تُمنح صلاحية الدخول قبل التفعيل.' : 'A 24-hour activation link will be emailed. Access starts only after activation.'}</p>{message && <p role="alert">{message}</p>}<div className={styles.actions}><button type="submit" className="aw-primary" disabled={busy || !selected || !email.trim() || !name.trim()}>{busy ? (ar ? 'جارٍ الإرسال…' : 'Sending…') : (ar ? 'إرسال الدعوة' : 'Send invitation')}</button><button type="button" disabled={busy} onClick={() => inviteDialog.current?.close()}>{ar ? 'رجوع' : 'Back'}</button></div></form></dialog>
+  <dialog ref={confirmDialog} className={styles.dialog} onCancel={e => { if (busy)
+        e.preventDefault(); }}><h2>{confirmation?.kind === 'delete' ? (ar ? 'حذف حساب الموظف نهائيًا؟' : 'Permanently delete this account?') : (ar ? 'إلغاء الدعوة؟' : 'Revoke invitation?')}</h2><p dir="ltr">{confirmation?.kind === 'delete' ? confirmation.user.email : confirmation?.row.email}</p><p>{confirmation?.kind === 'delete' ? (ar ? 'سيُحذف الحساب وملفه وأدواره. هذا الإجراء غير قابل للتراجع.' : 'The account, profile and roles will be permanently deleted.') : (ar ? 'سيصبح رابط التفعيل غير صالح ولن يتمكن الموظف من استخدامه.' : 'The activation link will no longer work.')}</p>{message && <p role="alert">{message}</p>}<div className={styles.actions}><button className={styles.danger} disabled={busy} onClick={() => { if (confirmation?.kind === 'delete')
+        remove.mutate(confirmation.user.id);
+    else if (confirmation)
+        mutation.mutate({ kind: 'revoke', id: confirmation.row.id }); }}>{ar ? 'تأكيد' : 'Confirm'}</button><button disabled={busy} onClick={() => confirmDialog.current?.close()}>{ar ? 'رجوع' : 'Back'}</button></div></dialog>
+ </section>;
 }
