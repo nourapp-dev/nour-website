@@ -61,6 +61,7 @@ test('expiry, cancellation, resend rotation and role escalation are enforced in 
 test('branded email safely escapes content and never places the token in the HTTP URL',()=>{
  const link='https://nourappglobal.com/admin/login/invite#token=example';
  const message=invitationEmail({email:'employee@example.test',name:'<script>alert(1)</script>',inviter:'Manager',role:'Content',link});
+ assert.ok(message.match(/^Subject: (.+)$/m)[1].trim().length<=75);
  assert.match(message,/From: Nour App <noreply@nourappglobal.com>/);assert.match(message,/Reply-To: support@nourappglobal.com/);
  const bodies=[...message.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([A-Za-z0-9+/=\r\n]+)\r\n--/g)].map(m=>Buffer.from(m[1].replace(/\s/g,''),'base64').toString());
  assert.equal(bodies.length,2);assert.ok(bodies[1].includes('&lt;script&gt;'));assert.ok(!bodies[1].includes('<script>'));assert.ok(bodies[1].includes('#token=example'));
