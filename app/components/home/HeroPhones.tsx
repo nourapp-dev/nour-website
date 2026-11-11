@@ -26,7 +26,7 @@ export default function HeroPhones({ t, hero }: Props) {
 
   return (
     <section className="nr-premium-hero" id="home" dir={isArabic ? "rtl" : "ltr"}>
-      <HeroBackground />
+      <HeroBackground orbit={false} />
       <div className="nr-container nr-premium-hero-grid">
         <motion.div
           className="nr-premium-copy"

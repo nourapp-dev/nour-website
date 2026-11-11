@@ -10,7 +10,7 @@ const rayEnds = [
   [344, 189], [393, 161], [411, 150], [441, 134],
 ];
 
-export default function HeroBackground({ orbit = false }: { orbit?: boolean }) {
+export default function HeroBackground({ orbit = true }: { orbit?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
