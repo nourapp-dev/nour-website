@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createClient } from "../../../../src/server/supabase/session";
+import { canAccessAdmin } from "../../../../src/features/auth/services/account-access";
 import { createAdminClient } from "../../../../src/server/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -51,39 +52,9 @@ export async function GET() {
       );
     }
 
-    const {
-      data: isSuperAdmin,
-      error: permissionError,
-    } = await supabase.rpc(
-      "is_super_admin",
-      {
-        user_id: currentUser.id,
-      },
-    );
-
-    if (permissionError) {
-      return NextResponse.json(
-        {
-          message:
-            `تعذر التحقق من الصلاحية: ${permissionError.message}`,
-        },
-        {
-          status: 500,
-        },
-      );
-    }
-
-    if (!isSuperAdmin) {
-      return NextResponse.json(
-        {
-          message:
-            "ليس لديك صلاحية عرض المستخدمين.",
-        },
-        {
-          status: 403,
-        },
-      );
-    }
+    const permissions = await Promise.all(["users.read", "users.manage"].map(permission_code => supabase.rpc("current_user_has_permission", { permission_code })));
+    if (permissions.some(result => result.error)) return NextResponse.json({ message: "تعذر التحقق من الصلاحيات." }, { status: 503 });
+    if (!permissions.some(result => result.data === true) || !(await canAccessAdmin(supabase, currentUser.id))) return NextResponse.json({ message: "ليس لديك صلاحية عرض الموظفين." }, { status: 403 });
 
     const adminClient =
       createAdminClient();
@@ -230,7 +201,7 @@ export async function GET() {
     });
 
     const users =
-      authUsersResult.users.map(
+      authUsersResult.users.filter(authUser => profilesById.has(authUser.id)).map(
         (authUser) => {
           const profile =
             profilesById.get(
