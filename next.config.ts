@@ -119,6 +119,16 @@ const nextConfig: NextConfig = {
   distDir: isUiPreview ? ".next-ui-preview" : ".next",
   poweredByHeader: false,
 
+  async redirects() {
+    return [
+      {
+        source: "/login",
+        destination: "/admin/login",
+        permanent: false,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {
