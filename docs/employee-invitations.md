@@ -36,9 +36,10 @@ Nodemailer submits to loopback port 25 with verified STARTTLS and TLS server nam
 `mail.nourappglobal.com`. It does not disable certificate validation or use a
 setuid sendmail executable under the application's NoNewPrivileges restriction.
 Queue acceptance is shown separately from inbox delivery. Failures are retained
-as failed invitations and can be retried. Actual SMTP/TLS/relay verification on
-this host is a required deployment check; it was interrupted when the browser
-connection to the VPS became unavailable. No employee emails were sent in tests.
+as failed invitations and can be retried. On 2026-11-11, verified STARTTLS, certificate validation, sender and local
+recipient acceptance on this host, followed by RSET/QUIT without DATA. Also
+verified Nodemailer under the nourapp user with NoNewPrivileges. No employee
+emails were sent during verification.
 
 ## Deployment
 
@@ -61,3 +62,17 @@ resend cooldown/rotation, cancellation during acceptance, role escalation, and
 activation with role assignment. MIME and SMTP transport tests make no real sends.
 The directory DOM test opens a legacy invite without invoking a mutation and
 checks that unsaved role choices survive tab changes.
+
+## Production verification — 2026-11-11
+
+Published application commit `8c710c3febdb7d484dcb268acf07af6fd1a95df0` at
+02:28 UTC. The release script passed candidate preview, public/internal HTTP,
+asset identity, and paused-booking checks. Reviewed the live employee directory,
+invitation form and permission summary, invitation/legacy tab, and grouped role
+editor. Arabic/English and light/dark display checks passed. Unauthenticated
+invitation listing returned 401; invalid-token preview/accept returned 410/400.
+The ledger still contained zero invitations after verification.
+
+Existing role definitions were preserved. In particular, the legacy
+`content_manager` role currently has only applications.view and partners.view;
+configure its desired content permissions explicitly before assigning it.
