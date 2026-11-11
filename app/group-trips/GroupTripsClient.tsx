@@ -5,6 +5,7 @@ import PublicPageShell from "../components/layout/PublicPageShell";
 import { useLanguage } from "../../src/core/i18n";
 import usePublicContact from "../../src/features/settings/hooks/usePublicContact";
 import styles from "./groups.module.css";
+import publicStyles from "../../src/styles/public-content.module.css";
 
 export default function GroupTripsClient() {
   const {language} = useLanguage();
@@ -27,8 +28,8 @@ export default function GroupTripsClient() {
     const url = new URL(contact.whatsappHref); url.searchParams.set("text", message);
     setPrepared({message, href: url.href});
   }
-  return <PublicPageShell><main className={styles.page} dir={ar ? "rtl" : "ltr"}>
-    <header className={styles.hero}><span><Users size={20}/>{t("عمرة للمجموعات", "Umrah for groups")}</span><h1>{t("رحلة تجمعكم… نرتّب تفاصيلها معكم", "Travel together. Plan the details with us.")}</h1><p>{t("للعائلات والشركات والمجموعات؛ حدّدوا نقطة الانطلاق والفترة والخدمات، لنتواصل بشأن برنامج يناسبكم.", "For families, organizations and groups: share your departure point, preferred period and services to discuss a suitable program.")}</p><a href="#group-request">{t("جهّز طلب مجموعتك", "Prepare your group request")} ←</a></header>
+  return <PublicPageShell activeSection="journey"><main className={`${publicStyles.surface} ${styles.page}`} dir={ar ? "rtl" : "ltr"}>
+    <header className={styles.hero}><span><Users size={20}/>{t("عمرة للمجموعات", "Umrah for groups")}</span><h1>{t("رحلة تجمعكم… نرتّب تفاصيلها معكم", "Travel together. Plan the details with us.")}</h1><p>{t("للعائلات والشركات والمجموعات؛ حدّدوا نقطة الانطلاق والفترة والخدمات، لنتواصل بشأن برنامج يناسبكم.", "For families, organizations and groups: share your departure point, preferred period and services to discuss a suitable program.")}</p><a href="#group-request">{t("جهّز طلب مجموعتك", "Prepare your group request")} {ar ? "←" : "→"}</a></header>
     <div className={styles.steps}><article><MapPin/><h2>{t("من مدينتكم", "From your city")}</h2><p>{t("خيارات حسب بلد ومدينة الانطلاق.", "Options based on your departure country and city.")}</p></article><article><CalendarDays/><h2>{t("حسب خطتكم", "Around your plans")}</h2><p>{t("فترة مقترحة وإقامة وخدمات تناسب المجموعة.", "A preferred period, accommodation and services for your group.")}</p></article><article><MessageCircle/><h2>{t("بتواصل مباشر", "Direct conversation")}</h2><p>{t("نراجع الاحتياجات قبل تأكيد السعر والتوافر.", "Discuss requirements before confirming price and availability.")}</p></article></div>
     <section id="group-request" className={styles.request}><div><span>{t("ابدأ بالتفاصيل", "Start with the details")}</span><h2>{t("اطلب برنامجًا لمجموعتك", "Request a group program")}</h2><p>{t("جهّز الطلب، راجع ملخصه، ثم افتح واتساب لإرساله إلى فريق نور آب.", "Prepare your request, review the summary, then open WhatsApp to send it to the Nour App team.")}</p><p>{t("هذا طلب استفسار ولا يؤكد حجزًا أو سعرًا أو توافرًا.", "This is an enquiry and does not confirm a booking, price or availability.")}</p></div>
     <form onSubmit={prepare} onChange={()=>setPrepared(null)}><div className={styles.fields}>
