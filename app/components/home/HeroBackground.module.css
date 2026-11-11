@@ -1,4 +1,4 @@
-/* Decorative only: never changes hero content, grid or phone geometry. */
+/* Decorative background; the brand plane is anchored to the phone scene. */
 .background {
   position: absolute;
   inset: 0;
@@ -8,19 +8,30 @@
     radial-gradient(ellipse at 25% 48%, rgba(35, 111, 197, .4), transparent 54%),
     linear-gradient(110deg, #123e70 0%, #0d3159 48%, #092644 100%);
 }
-.background::before,
-.shimmer {
+.orbitBackground {
   position: absolute;
-  inset-inline-end: -36px;
-  top: 24%;
-  width: min(32%, 440px);
+  width: 115%;
   aspect-ratio: 460 / 270;
+  left: -7.5%;
+  top: 48%;
+  transform: translateY(-50%);
+  z-index: 0;
   pointer-events: none;
 }
-.background::before {
+.orbitBackground::before,
+.shimmer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.orbitBackground::before {
   content: "";
   background: url("/images/brand/nour-hero-lines.svg") center / contain no-repeat;
-  opacity: .07;
+  opacity: .10;
+  animation: brandBreath 16s ease-in-out infinite;
+  animation-play-state: var(--hero-play-state, paused);
 }
 :global(.nr-premium-hero[dir="ltr"]) .background {
   background:
@@ -34,17 +45,8 @@
       radial-gradient(ellipse at 50% 80%, rgba(35, 111, 197, .28), transparent 48%),
       linear-gradient(180deg, #092644, #10365f);
   }
-  .background::before,
-  .shimmer {
-    top: auto;
-    bottom: 7%;
-    width: min(30%, 240px);
-  }
-  .background::before { opacity: .05; }
 }
-@container (max-width: 600px) {
-  .background::before, .shimmer { inset-inline-end: -24px; bottom: 5%; width: 160px; }
-}
+
 
 .shimmer {
   display: block;
@@ -69,7 +71,8 @@
   filter: drop-shadow(0 0 2px #ffc313);
   opacity: .7;
 }
-.background[data-active="true"] :is(.ray, .gold) { animation-play-state: running; }
+.orbitBackground[data-active="true"] :is(.ray, .gold) { animation-play-state: var(--hero-play-state, paused); }
+@keyframes brandBreath { 0%, 100% { opacity: .08; } 50% { opacity: .13; } }
 /* One normalized dash period per cycle: the end matches the start without a pause. */
 @keyframes traceRay {
   from { stroke-dashoffset: 0; }
@@ -80,5 +83,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .shimmer { display: none; }
-  .ray, .gold { animation: none; }
+  .ray, .gold, .orbitBackground::before { animation: none; }
 }
+

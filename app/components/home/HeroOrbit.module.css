@@ -1,0 +1,144 @@
+.scene {
+  --hero-play-state: paused;
+  position: relative;
+  min-width: 0;
+  height: 610px;
+  isolation: isolate;
+  perspective: 1000px;
+}
+.scene[data-active="true"] { --hero-play-state: running; }
+.scene:focus-within { --hero-play-state: paused; }
+.scene:focus-visible { outline: 2px solid #ffffff70; outline-offset: 4px; border-radius: 24px; }
+@media (hover: hover) and (pointer: fine) {
+  .scene:hover { --hero-play-state: paused; }
+}
+.animated { animation-play-state: var(--hero-play-state); }
+.glow {
+  position: absolute;
+  inset: 15% -8%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #438ce54a, #2a73bc18 48%, transparent 70%);
+  pointer-events: none;
+}
+.ring {
+  position: absolute;
+  inset: 16% 6%;
+  border: 1px solid #a6d4ff24;
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  box-shadow: 0 0 40px #459ce70d, inset 0 0 40px #459ce70d;
+  pointer-events: none;
+}
+.ring::after {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border: 1px dashed #a6d4ff12;
+  border-radius: inherit;
+}
+.phone {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  will-change: transform;
+}
+.phone img { display: block; width: 100%; height: auto; object-fit: contain; }
+.back {
+  width: 340px;
+  z-index: 2;
+  transform: translate(-50%, -50%) translate(-46px, -65px) scale(.84) rotate(-7deg);
+  animation: backOrbit 28s linear infinite;
+  animation-play-state: var(--hero-play-state);
+  filter: drop-shadow(0 24px 28px #00183240);
+}
+.front {
+  width: 230px;
+  z-index: 4;
+  transform: translate(-50%, -50%) translate(44px, 54px);
+  animation: frontOrbit 28s linear infinite;
+  animation-play-state: var(--hero-play-state);
+  filter: drop-shadow(0 30px 32px #00152c55);
+}
+/* Translation follows an ellipse; the devices never turn upside down. */
+@keyframes frontOrbit {
+  0%, 100% { transform: translate(-50%, -50%) translate(44px, 54px) scale(1) rotate(0deg); z-index: 4; }
+  25% { transform: translate(-50%, -50%) translate(62px, -14px) scale(.94) rotate(3deg); z-index: 4; }
+  49% { z-index: 4; }
+  50% { transform: translate(-50%, -50%) translate(-44px, -54px) scale(.85) rotate(-2deg); z-index: 2; }
+  75% { transform: translate(-50%, -50%) translate(-62px, 14px) scale(.94) rotate(-3deg); z-index: 2; }
+  99% { z-index: 2; }
+}
+@keyframes backOrbit {
+  0%, 100% { transform: translate(-50%, -50%) translate(-46px, -65px) scale(.84) rotate(-7deg); z-index: 2; }
+  25% { transform: translate(-50%, -50%) translate(-62px, 14px) scale(.91) rotate(-4deg); z-index: 2; }
+  49% { z-index: 2; }
+  50% { transform: translate(-50%, -50%) translate(46px, 65px) scale(1) rotate(-2deg); z-index: 4; }
+  75% { transform: translate(-50%, -50%) translate(62px, -14px) scale(.91) rotate(-4deg); z-index: 4; }
+  99% { z-index: 4; }
+}
+.card {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  z-index: 6;
+  width: 180px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid #ffffffb3;
+  border-radius: 17px;
+  color: #16365d;
+  background: #fffffff5;
+  box-shadow: 0 12px 30px #00172e28;
+  animation: cardOrbit 38s linear infinite;
+  animation-play-state: var(--hero-play-state);
+  will-change: transform;
+}
+.card0 { animation-delay: -3s; transform: translate(-50%, -50%) translate(0, -224px); }
+.card1 { animation-delay: -15.667s; transform: translate(-50%, -50%) translate(126px, 100px); }
+.card2 { animation-delay: -28.333s; transform: translate(-50%, -50%) translate(-126px, 100px); }
+.icon { flex: 0 0 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; color: #176fe8; background: #e9f3ff; }
+.icon svg { width: 19px; height: 19px; }
+.card strong, .card small { display: block; }
+.card strong { font-size: 12px; line-height: 1.5; }
+.card small { margin-top: 3px; color: #68809c; font-size: 10px; line-height: 1.5; }
+@keyframes cardOrbit {
+  0%, 100% { transform: translate(-50%, -50%) translate(0, -224px); }
+  12.5% { transform: translate(-50%, -50%) translate(92px, -158px); }
+  25% { transform: translate(-50%, -50%) translate(130px, 0); }
+  37.5% { transform: translate(-50%, -50%) translate(92px, 158px); }
+  50% { transform: translate(-50%, -50%) translate(0, 224px); }
+  62.5% { transform: translate(-50%, -50%) translate(-92px, 158px); }
+  75% { transform: translate(-50%, -50%) translate(-130px, 0); }
+  87.5% { transform: translate(-50%, -50%) translate(-92px, -158px); }
+}
+@container (max-width: 1020px) {
+  .scene { width: min(100%, 560px); margin-inline: auto; height: 590px; }
+}
+@container (max-width: 768px) {
+  .scene { height: 420px; margin-top: 14px; }
+  .back { width: 220px; top: 43%; transform: translate(-50%, -50%) translate(-42px, -10px) rotate(-7deg); animation-name: mobileBack; animation-duration: 12s; }
+  .front { width: 160px; top: 49%; transform: translate(-50%, -50%) translate(48px, 12px); animation-name: mobileFront; animation-duration: 12s; }
+  .card { width: 144px; padding: 9px 10px; gap: 7px; animation-name: mobileCard; animation-duration: 10s; }
+  .card strong { font-size: 11px; }
+  .card small { font-size: 9px; }
+  .icon { flex-basis: 28px; height: 28px; }
+  .card0 { left: auto; right: 3%; top: 12%; transform: none; animation-delay: 0s; }
+  .card1 { left: 2%; top: 70%; transform: none; animation-delay: -5s; }
+  .card2 { display: none; }
+  .ring { inset: 10% 8% 16%; }
+}
+@keyframes mobileBack {
+  0%, 100% { transform: translate(-50%, -50%) translate(-42px, -10px) rotate(-7deg); }
+  50% { transform: translate(-50%, -50%) translate(-37px, -16px) rotate(-5deg); }
+}
+@keyframes mobileFront {
+  0%, 100% { transform: translate(-50%, -50%) translate(48px, 12px); }
+  50% { transform: translate(-50%, -50%) translate(44px, 5px) rotate(1deg); }
+}
+@keyframes mobileCard { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) {
+  .scene { --hero-play-state: paused !important; }
+  .animated { animation: none; will-change: auto; }
+}
