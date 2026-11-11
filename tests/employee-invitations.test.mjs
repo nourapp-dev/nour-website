@@ -63,8 +63,8 @@ test('branded email safely escapes content and never places the token in the HTT
  const message=invitationEmail({email:'employee@example.test',name:'<script>alert(1)</script>',inviter:'Manager',role:'Content',link});
  assert.ok(message.match(/^Subject: (.+)$/m)[1].trim().length<=75);
  assert.match(message,/From: Nour App <noreply@nourappglobal.com>/);assert.match(message,/Reply-To: support@nourappglobal.com/);
- const bodies=[...message.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([A-Za-z0-9+/=\r\n]+)\r\n--/g)].map(m=>Buffer.from(m[1].replace(/\s/g,''),'base64').toString());
- assert.equal(bodies.length,2);assert.ok(bodies[1].includes('&lt;script&gt;'));assert.ok(!bodies[1].includes('<script>'));assert.ok(bodies[1].includes('#token=example'));
+ const bodies=[...message.matchAll(/Content-Type: text\/(?:plain|html); charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n([A-Za-z0-9+/=\r\n]+)\r\n--/g)].map(m=>Buffer.from(m[1].replace(/\s/g,''),'base64').toString());
+ assert.equal(bodies.length,2);assert.match(bodies[1], /src="cid:nour-logo"/);assert.match(message,/Content-ID: <nour-logo>/);assert.match(message,/Content-Type: image\/png/);assert.match(bodies[1], /lang="en" dir="ltr"/);assert.match(bodies[1], /<bdi>&lt;script&gt;/);assert.ok(bodies[1].includes('&lt;script&gt;'));assert.ok(!bodies[1].includes('<script>'));assert.ok(bodies[1].includes('#token=example'));
  assert.throws(()=>invitationEmail({email:'a@b.test\r\nBcc: x@y.test',name:'A',inviter:'B',role:'C',link}));
  assert.equal(new URL(link).search,'');
  assert.equal(validInvitationInput({email:'a@b.test',fullName:'A',roleId:role}),true);
