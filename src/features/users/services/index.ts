@@ -30,6 +30,7 @@ export type UpdateAdminUserAccessInput = {
 };
 
 export type InviteAdminUserInput = {
+  fullName: string;
   email: string;
   roleId: string;
 };
