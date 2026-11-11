@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { CheckCircle2, ShieldCheck, Smartphone } from "lucide-react";
+import ProgramInquiryLink from "../components/ProgramInquiryLink";
+import { CheckCircle2, ShieldCheck } from "lucide-react";
 import { useLanguage } from "../../src/core/i18n";
 import { openPrivacySettings } from "../../src/core/privacy/consent";
 
@@ -16,6 +17,7 @@ export default function ProgramDetailsExperience() {
   const [activeSection, setActiveSection] = useState<string>("overview");
   const [hasProgram, setHasProgram] = useState(false);
   const [priceText, setPriceText] = useState("");
+  const [programTitle, setProgramTitle] = useState("");
   const mobileBar = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function ProgramDetailsExperience() {
       const price = document.querySelector<HTMLElement>(".nr-program-details-booking > strong");
 
       setHasProgram(Boolean(booking));
+      setProgramTitle(document.querySelector(".nr-program-details h1")?.textContent?.trim() ?? "");
       setPriceText(price?.textContent?.replace(/\s+/g, " ").trim() ?? "");
     };
 
@@ -122,10 +125,7 @@ export default function ProgramDetailsExperience() {
             {priceText ? <strong>{priceText}</strong> : null}
           </div>
 
-          <span className="nr-app-coming-soon" role="status">
-            <Smartphone aria-hidden="true" />
-            {isArabic ? "التطبيق قريبًا" : "App coming soon"}
-          </span>
+          <ProgramInquiryLink title={programTitle} slug={decodeURIComponent(pathname.split("/")[2] || "")} language={language} />
           <button type="button" className="nr-program-privacy-button" onClick={openPrivacySettings}
             aria-label={isArabic ? "إعدادات الخصوصية" : "Privacy settings"}>
             <ShieldCheck aria-hidden="true" />

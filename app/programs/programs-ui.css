@@ -193,3 +193,5 @@ html[data-theme="dark"] .programs-shell .nr-program-flight-policy > svg { color:
   }
   .programs-shell .nr-program-privacy-button svg { width: 18px; height: 18px; flex-shrink: 0; }
 }
+
+.nr-program-original-description {margin-top:16px;border-top:1px solid var(--public-border,#dce5f0);padding-top:16px}.nr-program-original-description summary {cursor:pointer;font-weight:800;color:var(--public-link,#176fe8);padding:8px 0}.nr-program-flight-price-note {font-size:13px;font-weight:800;color:var(--public-ink,#173557);margin:10px 0}.nr-program-mobile-booking .program-inquiry-link {flex-shrink:0}.nr-program-mobile-booking {flex-wrap:wrap}

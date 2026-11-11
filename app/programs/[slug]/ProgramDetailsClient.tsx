@@ -1,4 +1,5 @@
 "use client";
+import ProgramInquiryLink from "../../components/ProgramInquiryLink";
 
 import pageStyles from "./ProgramDetails.styles";
 import refreshStyles from "./ProgramDetailsRefresh.styles";
@@ -333,7 +334,7 @@ export default function PublicProgramDetailsPage() {
             <h2>{isArabic ? "تفاصيل البرنامج" : "Program Details"}</h2>
 
             {description ? (
-              <p className="nr-program-details-description">{description}</p>
+              <><p className="nr-program-details-description">{summary || (isArabic ? "تعرّف على الإقامة والنقل والخدمات والأسعار في الأقسام أدناه." : "Explore accommodation, transport, services and prices below.")}</p><details className="nr-program-original-description"><summary>{isArabic ? "قراءة الوصف الكامل للبرنامج" : "Read the full program description"}</summary><p className="nr-program-details-description">{description}</p></details></>
             ) : (
               <div className="nr-program-details-empty">
                 {isArabic
@@ -1131,8 +1132,8 @@ export default function PublicProgramDetailsPage() {
               ? "استعرض تفاصيل الإقامة والنقل والخدمات، وتواصل معنا إذا احتجت إلى معلومات إضافية."
               : "Explore accommodation, transport, and services, and contact us if you need more information."}
           </p>
-          <ProgramPriceNote language={language} facts={program.display} isDemo={program.isDemo} />
-          <a className="nr-program-enquiry" href="#contact">{isArabic?"لديك سؤال عن البرنامج؟":"Questions about this program?"}<ArrowLeft size={16}/></a>
+          <ProgramPriceNote language={language} facts={program.display} isDemo={program.isDemo} /><p className="nr-program-flight-price-note">{flightPolicyLabel}</p>
+          <ProgramInquiryLink title={title} slug={program.slug} language={language} />
           <WebsiteBookingNotice language={language} />
 
           <div className="nr-program-details-booking-trust">

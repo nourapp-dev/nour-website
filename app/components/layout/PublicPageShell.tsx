@@ -27,7 +27,7 @@ export default function PublicPageShell({ children, activeSection = "programs" }
       navItems={[
         { id: "home", label: language === "ar" ? "الرئيسية" : "Home", href: languageHref("/", language) },
         { id: "programs", label: language === "ar" ? "البرامج" : "Programs", href: languageHref("/programs", language) },
-        { id: "journey", label: language === "ar" ? "تطبيق نور آب" : "Nour app", href: languageHref("/get-app", language) },
+        { id: "journey", label: language === "ar" ? "رحلات المجموعات" : "Group trips", href: languageHref("/group-trips", language) },
         { id: "contact", label: language === "ar" ? "تواصل معنا" : "Contact", href: "#contact" },
       ]}
       onLanguageChange={toggleLanguage} onThemeChange={() => setTheme(theme === "light" ? "dark" : "light")}

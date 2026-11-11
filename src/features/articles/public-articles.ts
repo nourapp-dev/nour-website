@@ -60,15 +60,23 @@ async function attachMedia(
     }
     for (const r of result.data ?? []) media.set(r.id, r);
   }
+  const correctedCovers: Record<string, string> = {
+    "prepare-umrah-trip": "/images/articles/prepare-umrah.jpg",
+    "choose-umrah-program": "/images/articles/choose-program.jpg",
+    "umrah-guide": "/images/articles/umrah-guide.jpg",
+  };
   return rows.map((r) => {
     const m = r.cover_media_id ? media.get(r.cover_media_id) : undefined;
+    // Replace only the known CEO portrait accidentally reused as these covers.
+    // A new cover selected in the dashboard always takes precedence.
+    const corrected = m?.path.includes("900c7672-f0a0-4195-af34-bb64a89be211") ? correctedCovers[r.slug] : undefined;
     return {
       ...r,
-      image: m
+      image: corrected || (m
         ? client.storage.from(m.bucket).getPublicUrl(m.path).data.publicUrl
-        : "",
-      imageAltAr: m?.alt_ar || r.title_ar,
-      imageAltEn: m?.alt_en || r.title_en,
+        : ""),
+      imageAltAr: corrected ? "الكعبة المشرفة والمسجد الحرام" : m?.alt_ar || r.title_ar,
+      imageAltEn: corrected ? "The Kaaba and the Grand Mosque" : m?.alt_en || r.title_en,
       imageError,
     };
   });

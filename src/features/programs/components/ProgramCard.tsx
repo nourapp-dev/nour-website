@@ -1,5 +1,6 @@
 "use client";
 import { countLabel, durationLabel, stayNights } from "../../../core/i18n/counts";
+import ProgramInquiryLink from "../../../../app/components/ProgramInquiryLink";
 import { useState } from "react";
 import { MapPin, CalendarDays, BedDouble, Route } from "lucide-react";
 import publicStyles from "../../../styles/public-content.module.css";
@@ -173,6 +174,7 @@ export default function ProgramCard({
         >
           {ar ? "تفاصيل البرنامج" : "Program details"}
         </Link>
+        {!compact && <ProgramInquiryLink title={ar ? program.titleAr : program.titleEn} slug={program.slug} language={language} disabled={preview} />}
       </div>
     </article>
   );

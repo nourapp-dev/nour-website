@@ -35,3 +35,12 @@ export function getProgramCountries(programs: ProgramCountry[], language: "ar" |
   }
   return [...countries.values()].sort((a, b) => a.name.localeCompare(b.name, language));
 }
+
+// Group by the published departure's local month, not the visitor's timezone.
+export function departureMonth(startAt: string, timezone: string | null) {
+  if (!Number.isFinite(Date.parse(startAt))) return "";
+  try {
+    const parts = new Intl.DateTimeFormat("en-GB", {year:"numeric", month:"2-digit", timeZone: timezone || "UTC"}).formatToParts(new Date(startAt));
+    return `${parts.find(p=>p.type==="year")?.value}-${parts.find(p=>p.type==="month")?.value}`;
+  } catch { return ""; }
+}

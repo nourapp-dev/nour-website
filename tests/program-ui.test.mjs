@@ -105,7 +105,8 @@ for(const language of ['ar','en']) test(language+': shared card shows stored pri
  await withUI('src/features/programs/components/ProgramCard.tsx',{props:{program:{...program,display},language,returnTo:'/programs?country=sa&city=r&q=test&page=2&sort=price_asc'}},async()=>{
   assert.match(document.body.textContent,language==='ar'?/لا توجد مواعيد قادمة منشورة/:/No upcoming published departures/);
   assert.match(document.body.textContent,language==='ar'?/للفرد.*شامل الضريبة/:/per person.*Tax included/);
-  assert.equal(document.querySelectorAll('article a').length,1);assert.equal(document.querySelectorAll('article button').length,0);
+  assert.equal(document.querySelectorAll('article a').length,2);assert.equal(document.querySelectorAll('article button').length,0);
+  assert.match(document.querySelector('article a.program-inquiry-link').textContent,language==='ar'?/استفسر عن البرنامج/:/Ask about this program/);
   const link=new URL(document.querySelector('article a').href);const from=new URL(link.searchParams.get('from'),'https://nour.test');
   assert.equal(from.searchParams.get('page'),'2');assert.equal(from.searchParams.get('city'),'r');assert.equal(from.searchParams.get('lang'),language);
  });
@@ -432,10 +433,10 @@ for (const language of ["ar", "en"]) test(`${language}: mobile program status ne
     await act(async () => { document.body.append(programStatus); await Promise.resolve(); });
     const strip = document.querySelector(".nr-program-mobile-booking");
     assert.ok(strip);
-    assert.equal(strip.querySelector("a"), null);
+    assert.ok(strip.querySelector("a.program-inquiry-link"));
     assert.equal(strip.querySelectorAll("button").length, 1);
     assert.ok(strip.querySelector(".nr-program-privacy-button"));
-    assert.match(strip.textContent, language === "ar" ? /التطبيق قريبًا/ : /App coming soon/);
+    assert.match(strip.textContent, language === "ar" ? /استفسر عن البرنامج/ : /Ask about this program/);
     await act(async () => { programStatus.remove(); await Promise.resolve(); });
     assert.equal(document.querySelector(".nr-program-mobile-booking"), null);
   });

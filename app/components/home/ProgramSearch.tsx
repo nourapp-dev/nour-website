@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import type { Language } from "../../data/home";
 import usePublicProgramCatalog from "../../../src/features/programs/hooks/usePublicProgramCatalog";
-import { getProgramCountries, programSearchHref } from "../../../src/features/programs/utils/program-discovery";
+import { departureMonth, getProgramCountries, programSearchHref } from "../../../src/features/programs/utils/program-discovery";
 import { languageHref } from "../../../src/core/i18n/public-language";
 
 export default function ProgramSearch({ language }: { language: Language }) {
@@ -14,13 +14,23 @@ export default function ProgramSearch({ language }: { language: Language }) {
   const router = useRouter();
   const [country, setCountry] = useState("all");
   const [duration, setDuration] = useState("all");
+  const [city, setCity] = useState("all");
+  const [month, setMonth] = useState("all");
   const { data: programs = [], isLoading, isError, refetch } = usePublicProgramCatalog();
   const countries = getProgramCountries(programs, language);
   const selectedCountry = countries.some((item) => item.id === country) ? country : "all";
 
+  const scope = programs.filter(p => selectedCountry === "all" || p.countryId === selectedCountry);
+  const cities = [...new Map(scope.flatMap(p => p.display?.origins ?? []).map(c => [c.id, c])).values()];
+  const months = [...new Set(scope.flatMap(p => (p.display?.departures ?? []).filter(d => d.status !== "cancelled" && Date.parse(d.startAt) > Date.now()).map(d => departureMonth(d.startAt,d.timezone))).filter(Boolean))].sort();
+  const selectedCity = cities.some(c => c.id === city) ? city : "all";
+  const selectedMonth = months.includes(month) ? month : "all";
   const search = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    router.push(languageHref(programSearchHref(selectedCountry, duration), language));
+    const url = new URL(programSearchHref(selectedCountry, duration), "https://nourappglobal.com");
+    if (selectedCity !== "all") url.searchParams.set("city", selectedCity);
+    if (selectedMonth !== "all") url.searchParams.set("month", selectedMonth);
+    router.push(languageHref(url.pathname + url.search, language));
   };
 
   return (
@@ -29,7 +39,7 @@ export default function ProgramSearch({ language }: { language: Language }) {
       <div className="nr-program-search-fields">
         <label htmlFor="hero-country">
           <span><MapPin size={16} aria-hidden="true" />{isArabic ? "بلد الانطلاق" : "Departure country"}</span>
-          <select id="hero-country" name="country" value={selectedCountry} onChange={(event) => setCountry(event.target.value)} disabled={isLoading || isError || !countries.length} aria-describedby="hero-search-hint">
+          <select id="hero-country" name="country" value={selectedCountry} onChange={(event) => { setCountry(event.target.value); setCity("all"); setMonth("all"); }} disabled={isLoading || isError || !countries.length} aria-describedby="hero-search-hint">
             <option value="all">{isLoading ? (isArabic ? "جارٍ تحميل الدول..." : "Loading countries...") : (isArabic ? "جميع الدول" : "All countries")}</option>
             {countries.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
           </select>
@@ -43,6 +53,8 @@ export default function ProgramSearch({ language }: { language: Language }) {
             <option value="long">{isArabic ? "10 أيام فأكثر" : "10+ days"}</option>
           </select>
         </label>
+        {cities.length > 0 && <label htmlFor="hero-city"><span><MapPin size={16}/>{isArabic ? "مدينة الانطلاق" : "Departure city"}</span><select id="hero-city" name="city" value={selectedCity} onChange={e=>setCity(e.target.value)}><option value="all">{isArabic ? "جميع المدن" : "All cities"}</option>{cities.map(c=><option key={c.id} value={c.id}>{isArabic ? c.nameAr : c.nameEn}</option>)}</select></label>}
+        {months.length > 0 && <label htmlFor="hero-month"><span><CalendarDays size={16}/>{isArabic ? "شهر السفر" : "Travel month"}</span><select id="hero-month" name="month" value={selectedMonth} onChange={e=>setMonth(e.target.value)}><option value="all">{isArabic ? "جميع المواعيد المنشورة" : "All published dates"}</option>{months.map(m=><option key={m} value={m}>{new Intl.DateTimeFormat(isArabic ? "ar-SA-u-ca-gregory" : "en-GB",{month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(m+"-01T12:00:00Z"))}</option>)}</select></label>}
       </div>
       <button className="nr-program-search-submit" type="submit">
         {isArabic ? "استعرض البرامج" : "Explore programs"}
@@ -52,7 +64,9 @@ export default function ProgramSearch({ language }: { language: Language }) {
         {isError ? <>{isArabic ? "تعذر تحميل الدول. يمكنك استعراض جميع البرامج أو " : "Countries could not load. Browse all programs or "}<button type="button" className="nr-program-search-retry" onClick={() => void refetch()}>{isArabic ? "المحاولة مجددًا" : "try again"}</button>.</> : isArabic ? "اختر ما يناسبك، وقارن تفاصيل البرامج والخدمات." : "Find your fit and compare program details and services."}
       </p>
       <WebsiteBookingNotice language={language} compact />
+      <div className="search-next"><a href={languageHref("/group-trips",language)}>{isArabic ? "تخطط لرحلة جماعية؟ اطلب برنامجًا لمجموعتك ←" : "Traveling together? Request a group program →"}</a><a href="#official-documents">{isArabic ? "التراخيص والتوثيق" : "Licenses and verification"}</a></div>
       <style jsx>{`
+        .search-next {display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;font-size:12px;line-height:1.8}.search-next a {color:#0a57b8;font-weight:800;text-underline-offset:4px}
         .nr-program-search { margin-top: 26px; max-width: 640px; padding: 20px; border: 1px solid rgba(255,255,255,.4); border-radius: 22px; background: #fff; box-shadow: 0 18px 48px rgba(7,35,81,.18); color: #173557; text-align: start; }
         .nr-program-search-fields { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; }
         label { display: block; min-width: 0; }

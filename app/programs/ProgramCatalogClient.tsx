@@ -30,6 +30,7 @@ import { createClient } from "../../src/lib/supabase/client";
 import { getJourneyCatalog } from "../../src/features/journeys/journey.service";
 import usePublicProgramCatalog from "../../src/features/programs/hooks/usePublicProgramCatalog";
 import {
+  departureMonth,
   getProgramCountries,
   matchesProgramDuration,
   parseProgramDuration,
@@ -112,6 +113,7 @@ function PublicProgramsContent() {
       ),
     [journey.data, cityFilter],
   );
+  const monthFilter = /^\d{4}-\d{2}$/.test(params.get("month") || "") ? params.get("month")! : "all";
   const durationFilter = parseProgramDuration(params.get("duration"));
   const updateDiscoveryFilter = (key: "country" | "duration", value: string) =>
     updateFilter(key, value);
@@ -160,6 +162,7 @@ function PublicProgramsContent() {
         (!cityFilter ||
           program.display?.origins.some((c) => c.id === cityFilter) ||
           cityProgramIds.has(program.id)) &&
+        (monthFilter === "all" || program.display?.departures.some(d => d.status !== "cancelled" && Date.parse(d.startAt) > Date.now() && departureMonth(d.startAt,d.timezone) === monthFilter)) &&
         matchesSearch &&
         matchesCountry &&
         matchesDuration &&
@@ -205,6 +208,7 @@ function PublicProgramsContent() {
     searchValue,
     countryFilter,
     durationFilter,
+    monthFilter,
     flightFilter,
     sortBy,
     isArabic,
@@ -272,6 +276,7 @@ function PublicProgramsContent() {
           },
         ]
       : []),
+    ...(monthFilter !== "all" ? [{id:"month", label: `${isArabic ? "شهر السفر" : "Travel month"}: ${monthFilter}`, remove:()=>updateFilter("month","all")}] : []),
     ...(durationFilter !== "all"
       ? [
           {

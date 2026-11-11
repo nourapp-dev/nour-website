@@ -40,27 +40,27 @@ export default function ProgramDepartures() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("programs")
-        .select("id")
+        .select("id,is_demo")
         .eq("slug", slug)
         .eq("status", "published")
         .eq("is_active", true)
         .is("deleted_at", null)
         .maybeSingle();
       if (error) throw error;
-      return data?.id ?? null;
+      return data ?? null;
     },
   });
 
   const departuresQuery = useQuery({
-    queryKey: ["public", "program-departures", programQuery.data],
+    queryKey: ["public", "program-departures", programQuery.data?.id],
     enabled: Boolean(programQuery.data),
-    queryFn: () => getPublicProgramDepartures(supabase, programQuery.data!),
+    queryFn: () => getPublicProgramDepartures(supabase, programQuery.data!.id),
   });
 
   const pricingQuery = useQuery({
-    queryKey: ["public", "program-departure-pricing", programQuery.data],
+    queryKey: ["public", "program-departure-pricing", programQuery.data?.id],
     enabled: Boolean(programQuery.data),
-    queryFn: () => getPublicDeparturePriceTiers(supabase, programQuery.data!),
+    queryFn: () => getPublicDeparturePriceTiers(supabase, programQuery.data!.id),
   });
 
   const [now] = useState(() => Date.now());
@@ -97,6 +97,7 @@ export default function ProgramDepartures() {
       <ProgramSectionState
         language={language}
         title={isArabic ? "المواعيد" : "Departures"}
+        emptyMessage={programQuery.data.is_demo ? (isArabic ? "هذا برنامج تجريبي. أي فترة مذكورة في وصفه تخطيطية وليست موعدًا مؤكدًا؛ لم تُنشر مواعيد تشغيل معتمدة لهذا البرنامج." : "This is a demo program. Any period mentioned in its description is provisional, not a confirmed departure; no approved operating dates have been published.") : (isArabic ? "لا توجد مواعيد منشورة حاليًا. استفسر عن البرنامج لمعرفة المستجدات." : "No departures are currently published. Ask about this program for updates.")}
         state="empty"
       />
     );

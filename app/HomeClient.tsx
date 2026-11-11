@@ -1,4 +1,5 @@
 "use client";
+import GroupTripsTeaser from "./components/home/GroupTripsTeaser";
 
 import { useEffect, useMemo, useState } from "react";
 import { MotionConfig } from "framer-motion";
@@ -88,6 +89,7 @@ export default function Home() {
         />
         <Hero t={t} />
         <ProgramsPreview language={language} />
+        <GroupTripsTeaser language={language} />
         <VideoShowcase language={language} />
         {presentation.sections.services.visible && (
           <Services language={language} />
