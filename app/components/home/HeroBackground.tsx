@@ -10,7 +10,7 @@ const rayEnds = [
   [344, 189], [393, 161], [411, 150], [441, 134],
 ];
 
-export default function HeroBackground() {
+export default function HeroBackground({ orbit = false }: { orbit?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,13 +34,14 @@ export default function HeroBackground() {
   }, []);
 
   return (
-    <div ref={ref} className={styles.background} data-active="false" aria-hidden="true">
-      <svg className={styles.shimmer} viewBox="0 0 460 270" fill="none" focusable="false">
+    <div ref={ref} className={orbit ? styles.orbitBackground : styles.background} data-active="false" aria-hidden="true">
+      {orbit && <svg className={styles.shimmer} viewBox="0 0 460 270" fill="none" focusable="false">
         {rayEnds.map(([x, y]) => (
           <path key={x} className={styles.ray} d={`M230 10L${x} ${y}`} pathLength={100} />
         ))}
         <path className={styles.gold} d="M200 247 230 264 260 247" pathLength={100} />
-      </svg>
+      </svg>}
     </div>
   );
 }
+
