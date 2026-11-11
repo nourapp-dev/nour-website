@@ -1,12 +1,15 @@
 "use client";
 
 import pageStyles from "./ProgramDetails.styles";
+import refreshStyles from "./ProgramDetailsRefresh.styles";
+import ProgramGallery, {type ProgramPhoto} from "../ProgramGallery";
 
 import ProgramSectionState from "../ProgramSectionState";
 import {
   isActualFlight,
   travelMode,
   locationLabel,
+  travelLabel,
 } from "../../../src/features/programs/display";
 import ProgramDisplaySummary from "../../../src/features/programs/components/ProgramDisplaySummary";
 import { useSearchParams } from "next/navigation";
@@ -50,7 +53,7 @@ import { getVisasForProgram } from "../../../src/features/visas/services";
 
 function formatNumber(value: number, language: "ar" | "en") {
   return new Intl.NumberFormat(language === "ar" ? "ar-SA" : "en-US", {
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(value);
 }
 
@@ -247,72 +250,39 @@ export default function PublicProgramDetailsPage() {
     ? program.flightNotesAr
     : program.flightNotesEn;
 
+  const photos:ProgramPhoto[] = [
+    ...(program.coverUrl ? [{src:program.coverUrl,label:title}] : []),
+    ...program.hotels.flatMap(hotel => {
+      const hotelName=isArabic?hotel.nameAr:hotel.nameEn;
+      return [hotel.coverUrl,...(hotel.galleryUrls ?? [])].filter((url):url is string=>Boolean(url)).map(src=>({src,label:(isArabic?'صور الإقامة · ':'Accommodation · ')+hotelName}));
+    }),
+  ];
+
   return (
     <main className="nr-program-details" dir={isArabic ? "rtl" : "ltr"}>
-      <section className="nr-program-details-hero">
-        {program.coverUrl ? (
-          <Image
-            src={program.coverUrl}
-            alt={title}
-            fill
-            unoptimized
-            priority
-            className="nr-program-details-cover"
-          />
-        ) : null}
-
-        <div className="nr-program-details-overlay" aria-hidden="true" />
-
+      <section className="nr-program-details-hero nr-program-refreshed-hero">
         <div className="nr-program-details-container nr-program-details-hero-content">
-          <Link
-            href={languageHref("/programs", language)}
-            className="nr-program-details-back"
-          >
-            <ArrowLeft size={17} />
-
-            {isArabic ? "العودة للبرامج" : "Back to Programs"}
-          </Link>
-
-          <div className="nr-program-details-copy">
-            <div className="nr-program-details-top-tags">
-              {program.isFeatured ? (
-                <span className="nr-program-details-badge">
-                  <Sparkles size={14} />
-                  {isArabic ? "برنامج مختار" : "Selected Program"}
-                </span>
-              ) : null}
-
-              {country ? (
-                <span className="nr-program-details-country">
-                  <MapPin size={16} />
-                  {country}
-                </span>
-              ) : null}
+          <div className="nr-program-details-breadcrumbs"><Link href={languageHref(returnHref,language)}><ArrowLeft size={16}/>{isArabic?'جميع البرامج':'All programs'}</Link><span>/</span><span>{country || (isArabic?'تفاصيل البرنامج':'Program details')}</span></div>
+          <div className="nr-program-hero-grid">
+            <div className="nr-program-details-copy">
+              <div className="nr-program-details-top-tags">
+                {program.isFeatured && <span className="nr-program-details-badge"><Sparkles size={14}/>{isArabic?'من مختارات نور آب':'A Nour App selection'}</span>}
+                {country && <span className="nr-program-details-country"><MapPin size={15}/>{country}</span>}
+              </div>
+              <h1>{title}</h1>
+              {summary && <p>{summary}</p>}
+              <div className="nr-program-details-facts">
+                <span><CalendarDays/><strong>{countLabel(program.durationDays,'day',language)}</strong></span>
+                <span><Moon/><strong>{stayNights(program.durationNights,language)}</strong></span>
+                <span><MapPin/><strong>{travelLabel(travelMode(program.display),isArabic)}</strong></span>
+              </div>
+              <div className="nr-program-hero-price"><span>{isArabic?'السعر الابتدائي':'Starting price'}</span><strong dir="ltr"><bdi>{formatNumber(program.basePrice,language)}</bdi> <bdi>{program.currencyCode}</bdi></strong></div>
+              <ProgramPriceNote language={language} facts={program.display} isDemo={program.isDemo}/>
+              <div className="nr-program-hero-actions"><a href="#overview">{isArabic?'استكشف تفاصيل الرحلة':'Explore the journey'}<ArrowLeft size={17}/></a><a href="#departures"><CalendarDays size={17}/>{isArabic?'المواعيد المنشورة':'Published departures'}</a></div>
             </div>
-
-            <h1>{title}</h1>
-
-            {summary ? <p>{summary}</p> : null}
-
-            <div className="nr-program-details-facts">
-              <span>
-                <CalendarDays />
-                <strong>{countLabel(program.durationDays,"day",language)}</strong>
-              </span>
-
-              <span>
-                <Moon />
-                <strong>{stayNights(program.durationNights,language)}</strong>
-              </span>
-
-              <span className="is-price">
-                <small>{isArabic ? "من" : "From"}</small>
-                <strong>{formatNumber(program.basePrice, language)}</strong>
-                {` ${program.currencyCode}`}
-              </span>
-            </div>
-            <WebsiteBookingNotice language={language} compact />
+            <ProgramGallery key={program.id+language} photos={photos} language={language}/>
           </div>
+          <WebsiteBookingNotice language={language} compact/>
         </div>
       </section>
 
@@ -1142,11 +1112,7 @@ export default function PublicProgramDetailsPage() {
 
           <span>{isArabic ? "السعر يبدأ من" : "Starting from"}</span>
 
-          <strong>
-            {formatNumber(program.basePrice, language)}
-
-            <small>{program.currencyCode}</small>
-          </strong>
+          <strong className="nr-program-price-amount" dir="ltr"><bdi>{formatNumber(program.basePrice, language)}</bdi> <small><bdi>{program.currencyCode}</bdi></small></strong>
 
           <div className="nr-program-details-booking-facts">
             <span>
@@ -1166,6 +1132,7 @@ export default function PublicProgramDetailsPage() {
               : "Explore accommodation, transport, and services, and contact us if you need more information."}
           </p>
           <ProgramPriceNote language={language} facts={program.display} isDemo={program.isDemo} />
+          <a className="nr-program-enquiry" href="#contact">{isArabic?"لديك سؤال عن البرنامج؟":"Questions about this program?"}<ArrowLeft size={16}/></a>
           <WebsiteBookingNotice language={language} />
 
           <div className="nr-program-details-booking-trust">
@@ -1194,6 +1161,7 @@ export default function PublicProgramDetailsPage() {
       <style jsx global>
         {pageStyles}
       </style>
+      <style jsx global>{refreshStyles}</style>
     </main>
   );
 }
