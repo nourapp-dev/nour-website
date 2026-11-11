@@ -1,143 +1,61 @@
 "use client";
-
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "../../../../src/lib/supabase/client";
-
+import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
+type Preview = {
+    name: string;
+    email: string;
+    inviter: string;
+    role: string;
+    expiresAt: string;
+};
 export default function AdminInvitePage() {
-  const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isReady, setIsReady] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function init() {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session && mounted) {
-        setErrorMessage("تعذر التحقق من جلسة الدعوة. افتح رابط الدعوة من البريد مرة أخرى.");
-      }
-
-      if (mounted) setIsReady(true);
+    const tokenRef = useRef<string | null>(null);
+    const [token, setToken] = useState(''), [preview, setPreview] = useState<Preview | null>(null), [error, setError] = useState(''), [busy, setBusy] = useState(false), [ready, setReady] = useState(false), [done, setDone] = useState(false), [password, setPassword] = useState(''), [confirmation, setConfirmation] = useState('');
+    useEffect(() => {
+        const value = tokenRef.current ?? (tokenRef.current = new URLSearchParams(window.location.hash.slice(1)).get('token') ?? '');
+        // Fragment tokens never enter HTTP access logs or referral headers.
+        window.history.replaceState(null, '', window.location.pathname);
+        setToken(value);
+        if (!value) {
+            setError('هذه دعوة قديمة أو غير صالحة. اطلب من المسؤول إعادة إرسالها من تبويب الدعوات.');
+            setReady(true);
+            return;
+        }
+        const controller = new AbortController();
+        fetch('/api/admin-invitations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'preview', token: value }), signal: controller.signal }).then(async (r) => { const data = await r.json(); if (!r.ok)
+            throw Error(data.message); setPreview(data.invitation); }).catch(e => { if (e.name !== 'AbortError')
+            setError(e.message); }).finally(() => { if (!controller.signal.aborted)
+            setReady(true); });
+        return () => controller.abort();
+    }, []);
+    async function accept(e: React.FormEvent) {
+        e.preventDefault();
+        if (busy || !preview)
+            return;
+        if (password !== confirmation) {
+            setError('كلمتا المرور غير متطابقتين.');
+            return;
+        }
+        setBusy(true);
+        setError('');
+        try {
+            const r = await fetch('/api/admin-invitations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'accept', token, password }) });
+            const data = await r.json();
+            if (!r.ok)
+                throw Error(data.message);
+            setDone(true);
+            setPassword('');
+            setConfirmation('');
+            setToken('');
+        }
+        catch (e) {
+            setError(e instanceof Error ? e.message : 'تعذر التفعيل. أعد المحاولة.');
+        }
+        finally {
+            setBusy(false);
+        }
     }
-
-    void init();
-    return () => { mounted = false; };
-  }, [supabase]);
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setErrorMessage("");
-
-    if (password.length < 8) {
-      setErrorMessage("يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setErrorMessage("كلمتا المرور غير متطابقتين.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    const { error } = await supabase.auth.updateUser({ password });
-
-    if (error) {
-      setErrorMessage(error.message);
-      setIsSubmitting(false);
-      return;
-    }
-
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (user) {
-      await supabase
-        .from("admin_profiles")
-        .update({
-          status: "active",
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", user.id);
-    }
-
-    await supabase.auth.signOut();
-
-    router.replace("/admin/login?invited=1");
-    router.refresh();
-  }
-
-  return (
-    <main className="nr-auth-page" dir="rtl">
-      <section className="nr-auth-card">
-        <div className="nr-auth-brand">
-          <div className="nr-auth-logo">NR</div>
-          <div>
-            <span>NourApp Platform</span>
-            <strong>تفعيل الحساب الإداري</strong>
-          </div>
-        </div>
-
-        <div className="nr-auth-heading">
-          <span>دعوة مستخدم</span>
-          <h1>أنشئ كلمة المرور</h1>
-          <p>أكمل تفعيل حسابك الإداري ثم سجل الدخول إلى لوحة نور آب.</p>
-        </div>
-
-        {!isReady ? (
-          <div className="nr-auth-state">جاري التحقق من الدعوة...</div>
-        ) : (
-          <form className="nr-auth-form" onSubmit={handleSubmit}>
-            <label>
-              <span>كلمة المرور الجديدة</span>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="new-password"
-                minLength={8}
-                required
-              />
-            </label>
-
-            <label>
-              <span>تأكيد كلمة المرور</span>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                autoComplete="new-password"
-                minLength={8}
-                required
-              />
-            </label>
-
-            {errorMessage ? <div className="nr-auth-error">{errorMessage}</div> : null}
-
-            <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "جارٍ تفعيل الحساب..." : "تفعيل الحساب"}
-            </button>
-          </form>
-        )}
-      </section>
-
-      <style jsx>{`
-        .nr-auth-page{min-height:100vh;display:grid;place-items:center;padding:24px;background:#07182c;color:#14253d}
-        .nr-auth-card{width:min(100%,470px);padding:30px;border-radius:24px;background:#fff;box-shadow:0 28px 90px rgba(0,0,0,.28)}
-        .nr-auth-brand{display:flex;align-items:center;gap:12px}.nr-auth-logo{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#ffc313;font-weight:1000}
-        .nr-auth-brand div:last-child{display:flex;flex-direction:column;gap:3px}.nr-auth-brand span{color:#718198;font-size:11px;font-weight:800}.nr-auth-brand strong{color:#17304f;font-size:13px}
-        .nr-auth-heading{margin-top:28px}.nr-auth-heading>span{color:#176fe8;font-size:11px;font-weight:900}.nr-auth-heading h1{margin:7px 0 10px;font-size:30px}.nr-auth-heading p{margin:0;color:#6f7e92;line-height:1.8;font-size:13px}
-        .nr-auth-form{display:grid;gap:16px;margin-top:24px}.nr-auth-form label{display:grid;gap:8px}.nr-auth-form label>span{font-size:12px;font-weight:900}
-        .nr-auth-form input{min-height:50px;padding-inline:14px;border:1px solid #d6e0ec;border-radius:12px;background:#f8fafd;font:inherit}
-        .nr-auth-form button{min-height:52px;border:0;border-radius:13px;background:#ffc313;color:#12345d;font:inherit;font-weight:1000;cursor:pointer}.nr-auth-form button:disabled{opacity:.65}
-        .nr-auth-error{padding:11px 12px;border:1px solid rgba(220,38,38,.18);border-radius:10px;color:#b91c1c;background:rgba(220,38,38,.05);font-size:12px}
-        .nr-auth-state{margin-top:22px;padding:18px;border:1px dashed #d6e0ec;border-radius:12px;color:#718198;background:#f8fafd;text-align:center;font-size:12px}
-      `}</style>
-    </main>
-  );
+    return <main className="staff-activation" dir="rtl"><section><header><strong>نور آب <span dir="ltr">NOUR APP</span></strong><p>دعوة الانضمام إلى فريق العمل</p></header><div className="activation-body">
+ {!ready ? <p role="status">جارٍ التحقق من الدعوة…</p> : done ? <><h1>تم تفعيل حسابك</h1><p>يمكنك الآن تسجيل الدخول إلى لوحة نور آب بصلاحيات الدور المحدد.</p><Link href="/admin/login?invited=1">تسجيل الدخول</Link></> : <><h1>مرحبًا {preview?.name ?? 'بك'}</h1>{preview && <><p>دعاك <strong>{preview.inviter}</strong> للانضمام بدور <strong>{preview.role}</strong>.</p><p dir="ltr">{preview.email}</p><p>تنتهي الدعوة: {new Date(preview.expiresAt).toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' })} بتوقيت الرياض.</p></>}{error && <p role="alert" className="activation-error">{error}</p>}{preview && <form onSubmit={accept}><label>كلمة المرور الجديدة<input type="password" autoComplete="new-password" minLength={12} maxLength={128} required value={password} onChange={e => setPassword(e.target.value)} disabled={busy}/></label><label>تأكيد كلمة المرور<input type="password" autoComplete="new-password" minLength={12} maxLength={128} required value={confirmation} onChange={e => setConfirmation(e.target.value)} disabled={busy}/></label><p>12 حرفًا على الأقل. الدعوة صالحة لمدة 24 ساعة ولمرة واحدة.</p><button disabled={busy}>{busy ? 'جارٍ التفعيل…' : 'تفعيل حساب الموظف'}</button></form>}</>}
+ </div></section><style jsx>{`.staff-activation{min-height:100vh;display:grid;place-items:center;padding:24px;background:#071c34;color:#132e4d}.staff-activation section{width:min(100%,500px);border-radius:22px;background:#fff;overflow:hidden;box-shadow:0 24px 80px #0003}.staff-activation header{background:#0b2e54;padding:28px;color:white}.staff-activation header strong{font-size:25px}.staff-activation header span{float:left}.activation-body{padding:28px}.activation-body h1{font-size:25px}.activation-body p{line-height:1.8}.activation-body form,.activation-body label{display:grid;gap:10px}.activation-body form{gap:18px}.activation-body input{padding:13px;border:1px solid #bdccdc;border-radius:10px;color:#132e4d;background:white;font:inherit}.activation-body button,.activation-body a{display:block;padding:14px;border:0;border-radius:10px;background:#ffc400;color:#102e50;font:inherit;font-weight:bold;text-align:center}.activation-error{background:#fff1f1;color:#a21a26;padding:12px;border-radius:8px}`}</style></main>;
 }
