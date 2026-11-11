@@ -1,0 +1,14 @@
+[Unit]
+Description=Check Nour website HTTP response and recover a hung process
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nour-website-healthcheck
+TimeoutStartSec=120
+UMask=0077
+NoNewPrivileges=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/nour-website-health /var/lib/nour-website-reports /run/lock
+PrivateTmp=true

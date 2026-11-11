@@ -11,22 +11,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { routePermission } from "../../features/admin-workspace/navigation";
 import { safeAdminNext } from "../../features/admin-workspace/contracts";
-
-async function readMaintenanceMode(
-  supabase: ReturnType<typeof createServerClient>,
-): Promise<boolean> {
-  try {
-    const { data, error } = await supabase.rpc("get_maintenance_mode");
-
-    if (error) {
-      return false;
-    }
-
-    return data === true;
-  } catch {
-    return false;
-  }
-}
+import { readMaintenanceMode } from "./maintenance";
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
