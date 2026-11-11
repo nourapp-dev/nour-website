@@ -1,4 +1,7 @@
+"use client";
 import Image from "next/image";
+import { useState } from "react";
+import { BookOpen } from "lucide-react";
 import Link from "next/link";
 import { ArrowUpLeft, ArrowUpRight } from "lucide-react";
 import {
@@ -16,6 +19,7 @@ export default function ArticleCard({
   article: PublicArticle;
   language: "ar" | "en";
 }) {
+  const [contain, setContain] = useState(false), [imageFailed, setImageFailed] = useState(false);
   const ar = language === "ar",
     category = articleCategory(article),
     title = ar ? article.title_ar : article.title_en;
@@ -29,16 +33,18 @@ export default function ArticleCard({
       }
       dir={ar ? "rtl" : "ltr"}
     >
-      <div className={styles.image + " public-article-image"}>
-        {article.image && (
+      <div className={styles.image + " public-article-image" + (contain ? " " + styles.contain : "")}>
+        {article.image && !imageFailed ? (
           <Image
             src={article.image}
             alt={ar ? article.imageAltAr : article.imageAltEn}
             fill
             sizes="(max-width:700px) 100vw, (max-width:1100px) 50vw, 380px"
             unoptimized
+            onError={() => setImageFailed(true)}
+            onLoad={e => setContain(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight < 1.3)}
           />
-        )}
+        ) : <span className={styles.placeholder}><BookOpen size={36} aria-hidden="true"/><span>{ar ? "من أدلة نور آب" : "A Nour App guide"}</span></span>}
       </div>
       <div className={styles.body + " public-article-body"}>
         {(category || article.published_at) && (
@@ -67,6 +73,7 @@ export default function ArticleCard({
             "/articles/" + encodeURIComponent(article.slug),
             language,
           )}
+          aria-label={(ar ? "قراءة: " : "Read: ") + title}
         >
           {ar ? "قراءة المقال" : "Read article"}
           <Arrow size={17} aria-hidden="true" />
