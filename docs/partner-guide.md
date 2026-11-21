@@ -52,3 +52,12 @@ and PyMuPDF rasterization provided the visual verification instead.
 Use scripts/partners/clean_guide_fields.py to stage a new cleanup from the blank
 originals. The importer also understands empty PARTNER_ content controls, so
 future imports do not lose the 48 readiness field labels.
+
+## Online settlement update
+
+The bilingual reading guide has a 22 November 2026 update in sections 04 and 08
+covering the partner wallet and geographic scope. Print from the website to
+save the updated reading guide as a PDF. The public source templates remain
+available for completing the qualification pack. When reimporting a template,
+review the JSON diff and retain the online additions until a new template
+includes them.

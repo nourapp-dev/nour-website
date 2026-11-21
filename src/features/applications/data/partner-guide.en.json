@@ -2,7 +2,7 @@
   "language": "en",
   "title": "International Partner Readiness and Approval Guide",
   "version": "1.2",
-  "updatedAt": "2026-11-06",
+  "updatedAt": "2026-11-22",
   "sections": [
     {
       "id": "start",
@@ -245,6 +245,46 @@
         {
           "kind": "paragraph",
           "text": "The contract must identify who sells to the customer, collects payment, issues invoices and makes refunds. A ready bank account does not itself authorize collection in Nour App's name."
+        },
+        {
+          "kind": "heading",
+          "text": "Partner Wallet and Settlement"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The wallet is used to settle amounts due to Nour App from partners authorized to sell and collect payments when the partnership agreement adopts this arrangement. The agreement specifies who collects payments, the settlement currency, how the wallet is funded, and how amounts due and refunds are handled."
+        },
+        {
+          "kind": "heading",
+          "text": "Collecting Customer Payments"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The customer books through Nour App and pays in the currency approved for the market using a link tied to their booking. The payment is collected through the partner’s merchant account with the approved payment provider. Both parties see the booking marked Paid once the payment is confirmed and linked to the booking reference."
+        },
+        {
+          "kind": "heading",
+          "text": "Funding the Wallet and Deducting Amounts Due"
+        },
+        {
+          "kind": "paragraph",
+          "text": "The partner funds the wallet in advance using the agreed method. Once the customer payment is confirmed, the net amount due to Nour App under the agreement is deducted automatically. The wallet ledger records the deduction and its booking reference."
+        },
+        {
+          "kind": "heading",
+          "text": "Refunding Customer Payments"
+        },
+        {
+          "kind": "paragraph",
+          "text": "Once a refund is approved, the partner returns the amount to the original payment method through the approved payment provider. The related adjustment to the amount due to Nour App is recorded as a separate wallet entry tied to the booking, in accordance with the agreement."
+        },
+        {
+          "kind": "heading",
+          "text": "Benefits for Both Parties"
+        },
+        {
+          "kind": "paragraph",
+          "text": "A prefunded balance can settle multiple bookings, reducing separate bank transfers and manual follow-up. Both parties can track the balance, deductions and adjustments by booking reference, simplifying reconciliation as booking volume grows."
         }
       ]
     },
@@ -521,6 +561,10 @@
         {
           "kind": "paragraph",
           "text": "Record a documented result for each area: Applies / Does not apply, with reason / Review needed. Do not assume that every country requires a local company, server or separate app license, or that operation is permitted without verification."
+        },
+        {
+          "kind": "paragraph",
+          "text": "In the qualification pack, state whether the proposed coverage includes one state or region or several. List each by name and specify where operations would begin if coverage will expand in phases."
         }
       ]
     },

@@ -129,8 +129,8 @@ export default function GuideReader({ initialLanguage, fileSizes }: { initialLan
     <div className={styles.container}>
       <section id="guide-top" className={styles.intro} tabIndex={-1}>
         <span className={styles.eyebrow}><BookOpenText size={17} aria-hidden="true"/>{t.kicker}</span>
-        <h1>{guide.title}</h1>{partnerGuide.ar.version!==partnerGuide.en.version&&<p role="note">{ar?`تختلف أرقام إصدارات المصدر: العربية ${partnerGuide.ar.version} والإنجليزية ${partnerGuide.en.version}. رقم هذه الصفحة يطابق ملفات اللغة المختارة؛ يبقى الإصدار العربي 1.1 محفوظًا.`:`Source versions differ: Arabic ${partnerGuide.ar.version}, English ${partnerGuide.en.version}. This reader matches the selected language files; the Arabic 1.1 baseline is retained.`}</p>}<p className={styles.purpose}>{t.purpose}</p>
-        <p className={styles.meta}>{t.version} <bdi>{guide.version}</bdi><span aria-hidden="true"> / </span>{t.updated}: {updated}</p>
+        <h1>{guide.title}</h1><p className={styles.purpose}>{t.purpose}</p>
+        <p className={styles.meta}>{t.updated} <bdi>{updated}</bdi></p>
         <div className={styles.introActions}><Link href={`/become-a-partner?lang=${language}#interest`} className={styles.primaryButton}>{t.apply}</Link><a className={styles.secondaryButton} href="#guide-downloads" onClick={event => navigate(event, "guide-downloads", active)}><ArrowDownToLine size={17} aria-hidden="true"/>{t.download}</a></div>
         <div className={styles.notice}><ShieldCheck size={21} aria-hidden="true"/><div><strong>{t.later}</strong><p>{t.readOnly}</p></div></div>
       </section>
@@ -160,7 +160,7 @@ export default function GuideReader({ initialLanguage, fileSizes }: { initialLan
       </div>
       <section id="guide-downloads" className={styles.downloadCenter} tabIndex={-1} aria-labelledby="guide-downloads-title">
         <div><span className={styles.eyebrow}><FileDown size={17} aria-hidden="true"/>{t.download}</span><h2 id="guide-downloads-title">{t.downloads}</h2><p>{t.downloadHint}</p></div>
-        <div className={styles.downloadCards}>{(["pdf", "word"] as const).map(format => <div className={styles.downloadCard} key={format}><span className={styles.fileIcon}>{format === "pdf" ? "PDF" : "DOCX"}</span><div><h3>{format === "pdf" ? "PDF" : "Word"}</h3><p>{t[format]}</p><span>{t.fileLanguage}: {t.language} · {t.version} <bdi>{guide.version}</bdi>{fileSizes[language][format] !== null && <> · <bdi>{formatSize(fileSizes[language][format]!, language)}</bdi></>}</span></div><a href={guide.downloads[format]} download><ArrowDownToLine size={18} aria-hidden="true"/>{t.download}<span className={styles.srOnly}> {format === "pdf" ? "PDF" : "Word"} · {t.language}</span></a></div>)}</div>
+        <div className={styles.downloadCards}>{(["pdf", "word"] as const).map(format => <div className={styles.downloadCard} key={format}><span className={styles.fileIcon}>{format === "pdf" ? "PDF" : "DOCX"}</span><div><h3>{format === "pdf" ? "PDF" : "Word"}</h3><p>{t[format]}</p><span>{t.fileLanguage}: {t.language} · {t.templateVersion} <bdi>{guide.version}</bdi>{fileSizes[language][format] !== null && <> · <bdi>{formatSize(fileSizes[language][format]!, language)}</bdi></>}</span></div><a href={guide.downloads[format]} download><ArrowDownToLine size={18} aria-hidden="true"/>{t.download}<span className={styles.srOnly}> {format === "pdf" ? "PDF" : "Word"} · {t.language}</span></a></div>)}</div>
         <div className={styles.printAction}><button type="button" className={styles.secondaryButton} onClick={() => window.print()}><Printer size={18} aria-hidden="true"/>{t.print}</button><p>{t.printHint}</p></div>
       </section>
       <footer className={styles.footer}><span>{t.brand} · {t.kicker}</span><Link href={`/become-a-partner?lang=${language}#interest`}>{t.apply}</Link></footer>
