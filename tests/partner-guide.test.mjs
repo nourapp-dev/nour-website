@@ -23,7 +23,7 @@ for (const [language, version, direction] of [["ar", "1.1", "rtl"], ["en", "1.2"
   test(`${language}: guide retains source version, 48 fields, ten navigable sections and locale downloads`, () => {
     const guide = partnerGuide[language];
     assert.equal(guide.version, version);
-    assert.equal(guide.updatedAt, "2026-11-06");
+    assert.equal(guide.updatedAt, "2026-11-22");
     assert.equal(guide.sections.length, 10);
     assert.equal(guide.sections.flatMap(section => section.blocks).filter(block => block.kind === "field").length, 48);
     assert.doesNotMatch(JSON.stringify(guide), /Click here to enter details|انقر هنا لاستكمال البيانات/);
@@ -48,6 +48,13 @@ for (const [language, version, direction] of [["ar", "1.1", "rtl"], ["en", "1.2"
     assert.equal(document.querySelector("main").lang, language);
     assert.equal(document.querySelectorAll("article > section").length, 10);
     assert.equal(document.querySelectorAll(".requirementList li").length, 48);
+    const finance = document.getElementById("finance");
+    const marketScope = document.getElementById("country");
+    assert.match(finance.textContent, language === "ar" ? /محفظة الشريك والتسوية المالية/ : /Partner Wallet and Settlement/);
+    assert.match(finance.textContent, language === "ar" ? /بعد تأكيد دفعة العميل، يُخصم تلقائيًا/ : /Once the customer payment is confirmed.*deducted automatically/);
+    assert.match(finance.textContent, language === "ar" ? /وسيلة الدفع الأصلية/ : /original payment method/);
+    assert.match(marketScope.textContent, language === "ar" ? /واذكروا أسماءها/ : /List each by name/);
+    assert.doesNotMatch(finance.textContent, /\bSquare\b/i);
     for (const section of guide.sections) {
       assert.ok(document.getElementById(section.id));
       assert.ok(document.querySelector(`nav a[href="#${section.id}"]`));
